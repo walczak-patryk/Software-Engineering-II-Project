@@ -17,3 +17,15 @@ General Project Game schedule:
 29.04 / 06.05 Deadline for the 'Communication' part.
 
 20.05 Deadline for the 'Cooperation' part.
+
+
+Typical Project Meeting:
+	In Extreme Programming the main focus is put on completing the task at hand instead of planning long meetings.
+	Due to that we decide to organize a short (~1 hour) meeting each week in order to evaluate the progress and set a plan for the upcoming weeks.
+	Thanks to the overview of the previous week both the customer and the team can conduct a functionality test, to estimate the current state of the system. 
+	Doing this on a regular basis allows us to spot and recode any mistakes.
+	Planning for the next week is the main point of the meeting. 
+	We will separate the tasks into short stories, which will then be implemented by the members.
+
+Tools which will be used:
+	monday.com
