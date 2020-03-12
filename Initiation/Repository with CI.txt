@@ -1,0 +1,2 @@
+In Our project as continuous integration we use the bitbucket pipelines ("bitbucket-pipelines.yml").
+The pipelines will be updated when we prepare tests for our .Net Core project.
