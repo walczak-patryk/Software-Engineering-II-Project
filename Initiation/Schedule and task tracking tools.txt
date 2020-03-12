@@ -12,11 +12,24 @@ General Project Game schedule:
 ● Lab 14: Championship
 ● Lab 15: Final review
 
-1.04 Deadline for the 'Game' part.
+-> 21.03 Initial work on the 'Game' part.
+22.03 Review of the 'Game' part.
+-> 28.03 Finished work on the 'Game' part.
+29.03 Final review of the 'Game' part.
+	1.04 Deadline for the 'Game' part.
 
-29.04 / 06.05 Deadline for the 'Communication' part.
+-> 11.04 Initial work on the 'Communication' part.
+12.04 Review of the 'Communication' part.
+19.04 Review of the 'Communication' part.
+-> 25.04 Finished work on the 'Communication' part.
+26.04 Final review of the 'Communication' part.
+	29.04 / 06.05 Deadline for the 'Communication' part.
 
-20.05 Deadline for the 'Cooperation' part.
+-> 09.05 Initial work on the 'Cooperation' part.
+10.05 Review of the 'Cooperation' part.
+-> 16.05 Finished work on the 'Cooperation' part.
+17.05 Final review of the 'Cooperation' part.
+	20.05 Deadline for the 'Cooperation' part.
 
 
 Typical Project Meeting:
@@ -27,5 +40,5 @@ Typical Project Meeting:
 	Planning for the next week is the main point of the meeting. 
 	We will separate the tasks into short stories, which will then be implemented by the members.
 
-Tools which will be used:
+Tracking tools which will be used:
 	monday.com
