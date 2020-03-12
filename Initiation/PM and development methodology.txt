@@ -1,0 +1,30 @@
+Methodology: Extreme Programming
+
+Code development rules:
+Naming conventions for local variables, global variables, constants and functions:
+Meaningful and understandable variables name helps anyone to understand the reason of using it.
+Local variables should be named using camel case lettering starting with small letter (e.g. localData) whereas Global variables names should start with a capital letter (e.g. GlobalData). Constant names should be formed using capital letters only (e.g. CONSDATA).
+It is better to avoid the use of digits in variable names.
+The names of the function should be written in camel case starting with small letters.
+The name of the function must describe the reason of using the function clearly and briefly.
+
+Indentation:
+There must be a space after giving a comma between two function arguments.
+Each nested block should be properly indented and spaced.
+Proper Indentation should be there at the beginning and at the end of each block in the program.
+All braces should start from a new line and the code following the end of braces also start from a new line.
+Avoid using a coding style that is too difficult to understand
+Avoid using an identifier for multiple purposes
+Length of functions should not be very large
+
+Technology: C# with .NET Core
+
+Meetings organisation: Originally we planned to make physical meetings, 
+but due to possible quarantine we will most likely organise our meeting via hangouts.
+
+Meeting structure will look as follows: Code development -> Tests development -> Testing
+
+Tasks estimation: It will be based on the release plan given by the project supervisors. We have a milestone given for each week. Hence, each week will be an iteration. We assume that everyone will spend 8 hours on the project every week. Of course extra hours are an option if necessary. Every week we will distribute the given amount of time e.g. 40 hours for particular steps that have to be done in order to complete the iteration. Because of lack of experience any delays should be immediately reported so that the reorganization of the schedule would be possible.
+
+Rules of Code review: Each team member will have a number assigned. After one completes his piece of code,
+he draws one of remaining number to determine who is his reviewer for this task
