@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 
-namespace GameMaster
-{
+namespace Game.Board
+{ 
     interface IBoard
     {
         void UpdateBoard(string[] message);
@@ -15,7 +15,7 @@ namespace GameMaster
         void PlacePiece();
     }
 
-    class Board : IBoard
+    public class Board : IBoard
     {
         public int DisplayManhattanDistance(int x, int y)
         {
