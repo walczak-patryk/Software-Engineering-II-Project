@@ -11,9 +11,9 @@ namespace GameMaster
         string Listen();
         void MessageManager();
     }
-    class GM
+    class GameMaster
     {
-       
+
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
