@@ -4,11 +4,11 @@ namespace GameMaster
 {
     interface IGameMaster
     {
-        void GenerateBoard();
-        void UpdateBoard(string[] );
         void SendMessage(string message);
-
-        string Lis();
+        void GenerateTeams();
+        void StartGame();
+        void EndGame();
+        string Listen();
         void MessageManager();
     }
     class GM
