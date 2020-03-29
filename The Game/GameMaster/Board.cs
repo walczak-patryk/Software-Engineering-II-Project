@@ -5,46 +5,19 @@ using System.Windows;
 
 namespace Game.Board
 { 
-    interface IBoard
+    public class Board
     {
-        void UpdateBoard(string[] message);
-        void PieceInformation();
-        void GeneratePiece();
-        int DisplayManhattanDistance(int x, int y);
-        bool FieldOccupied();
-        void PlacePiece();
-    }
+        Cell[,] cellsGrid;
+        int goalAreaHeight;
+        int taksAreaHeight;
+        int boardWidth;
+        int boardHeight;
 
-    public class Board : IBoard
-    {
-        public int DisplayManhattanDistance(int x, int y)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool FieldOccupied()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void GeneratePiece()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PieceInformation()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PlacePiece()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateBoard(string[] message)
-        {
-            throw new NotImplementedException();
-        }
+        public Board(int boardWidth, int goalAreaHeight, int taksAreaHeight) { }
+        public void GetField(SequencePosition position) { }
+        public void UpdateField(Field field) { }
+        public void UpdateCell(Cell cell, Position position) { }
+        public Cell GetCell(Position position) { }
+        public void InitializeCellGrid() { }
     }
 }
