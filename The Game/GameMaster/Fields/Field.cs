@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using GameMaster.Cells;
+using GameMaster.Positions;
 
-namespace GameMaster.Field
+namespace GameMaster.Fields
 {
     public class Field
     {

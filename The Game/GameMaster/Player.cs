@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using GameMaster.Boards;
+using GameMaster.Positions;
+using System;
 
 namespace GameMaster
 {
@@ -49,7 +49,7 @@ namespace GameMaster
         }
     }
 
-    class PlayerDto
+    public class PlayerDTO
     {
         public Guid playerGiud;
         public Position playerPosition;
