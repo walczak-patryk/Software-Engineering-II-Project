@@ -1,5 +1,5 @@
-Team Leader / Coordinator - Filip Szymczak
-Implementer - Bartłomiej Żyła
+Filip Szymczak - Team Leader / Coordinator
+Bartłomiej Żyła - Implementer
 Patryk Walczak - Completer Finisher
 Martin Mrugała - Plant
 Maciej Zalewski - Resource Investigator
