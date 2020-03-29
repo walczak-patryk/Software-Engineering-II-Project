@@ -41,4 +41,4 @@ Typical Project Meeting:
 	We will separate the tasks into short stories, which will then be implemented by the members.
 
 Tracking tools which will be used:
-	monday.com
+	clickup.com
