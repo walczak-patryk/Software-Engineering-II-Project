@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Net;
 
 namespace CommunicationServer
 {
-    class Program
+    class CommunicationServer
     {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello World!");
-        }
+        private int portNumber;
+        private IPAddress ipAddress;
+
+        private void Listen();
     }
 }
