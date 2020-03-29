@@ -42,3 +42,4 @@ Typical Project Meeting:
 
 Tracking tools which will be used:
 	clickup.com
+	https://share.clickup.com/b/h/6-17265255-2/e8f20b2ec03ebec
