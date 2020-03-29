@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GameMaster.Cell
+﻿namespace GameMaster.Cells
 {
     public enum CellState
     {

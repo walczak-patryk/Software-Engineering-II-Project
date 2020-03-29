@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using GameMaster.Cells;
+using GameMaster.Fields;
+using GameMaster.Positions;
+using System;
 
-namespace Game.Board
-{ 
+namespace GameMaster.Boards
+{
     public class Board
     {
         Cell[,] cellsGrid;
@@ -17,7 +17,7 @@ namespace Game.Board
         public void GetField(SequencePosition position) { }
         public void UpdateField(Field field) { }
         public void UpdateCell(Cell cell, Position position) { }
-        public Cell GetCell(Position position) { }
+        public Cell GetCell(Position position) { return new Cell(); }
         public void InitializeCellGrid() { }
     }
 }

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using GameMaster.Positions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameMaster.Cell
+namespace GameMaster.Cells
 {
     public class Cell
     {
