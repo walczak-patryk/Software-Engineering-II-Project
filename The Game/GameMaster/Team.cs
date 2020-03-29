@@ -32,10 +32,8 @@ namespace GameMaster
 
         public Player GetLeader()
         {
-
-        }
-
-        
+            return new Player(1,"name",new Team(),false);
+        }   
     }
 
     public enum TeamRole

@@ -1,6 +1,5 @@
 ﻿using GameMaster.Boards;
 using GameMaster.Positions;
-using System;
 
 namespace GameMaster
 {
@@ -11,7 +10,7 @@ namespace GameMaster
         public Team team;
         public bool isLeader;
         public Position position;
-        public Piece piece;
+        public bool piece;
         public Board board;
         public ActionType lastAction;
         private string guid;
@@ -22,20 +21,19 @@ namespace GameMaster
             this.id = Id;
             this.team = Team;
             this.isLeader = IsLeader;
-            this.position = new Position(-1, -1);
-            this.piece = null;
-            this.board = new Board();
+            this.position = new Position();
+            this.piece = false;
+            this.board = new Board(0,0,0);
         }
 
         private void Move(int x, int y)
         {
-            this.position = new Position(x, y);
+            this.position = new Position();
         }
 
-        private void TakePiece(Piece piece)
+        private void TakePiece(bool piece)
         {
-            if(this.piece == null)
-                this.piece = piece;
+            this.piece = piece;
         }
 
         private void TestPiece()

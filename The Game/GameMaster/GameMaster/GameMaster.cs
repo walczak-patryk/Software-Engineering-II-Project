@@ -1,6 +1,6 @@
-﻿using System;
+﻿using GameMaster.Boards;
 using System.Collections.Generic;
-using System.Text;
+using System.Net;
 
 namespace GameMaster
 {
@@ -48,8 +48,5 @@ namespace GameMaster
         {
 
         }
-
-
-
     }
 }
