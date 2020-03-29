@@ -1,3 +1,4 @@
+using Game.Board;
 using NUnit.Framework;
 
 namespace Tests
@@ -7,6 +8,7 @@ namespace Tests
         [SetUp]
         public void Setup()
         {
+            Board board = new Board();
         }
 
         [Test]

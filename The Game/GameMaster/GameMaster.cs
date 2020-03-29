@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GameMaster
+namespace Game.GameMaster
 {
     interface IGameMaster
     {
@@ -11,12 +11,37 @@ namespace GameMaster
         string Listen();
         void MessageManager();
     }
-    class GameMaster
+    public class GameMaster : IGameMaster
     {
-
-        static void Main(string[] args)
+        public static void Main() { }
+        public void EndGame()
         {
-            Console.WriteLine("Hello World!");
+            throw new NotImplementedException();
+        }
+
+        public void GenerateTeams()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Listen()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void MessageManager()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendMessage(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StartGame()
+        {
+            throw new NotImplementedException();
         }
     }
 }
