@@ -2,13 +2,11 @@
 {
     public class Position
     {
-        private int x;
-        private int y;
+        public int x;
+        public int y;
 
-        public Position(int x, int y)
+        public Position()
         {
-            this.x = x;
-            this.y = y;
         }
         public void ChangePosition(Direction direction)
         {

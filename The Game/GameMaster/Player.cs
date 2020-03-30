@@ -3,7 +3,7 @@ using GameMaster.Positions;
 
 namespace GameMaster
 {
-    class Player
+    public class Player
     {
         public int id;
         public string playerName;
