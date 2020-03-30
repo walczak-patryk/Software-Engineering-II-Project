@@ -32,7 +32,7 @@ namespace Tests
         [Test]
         public void GivenPositionGetField()
         {
-            GameMaster.Positions.Position position = new Position();
+            GameMaster.Positions.Position position = new Position(0,0);
             Cell cell = new Cell();
             Assert.AreSame(position, cell.GetField(position));
         }
@@ -40,13 +40,11 @@ namespace Tests
         [Test]
         public void GivenPositionGetDifferentField()
         {
-            GameMaster.Positions.Position position = new Position();
-            GameMaster.Positions.Position secondPosition = new Position();
+            GameMaster.Positions.Position position = new Position(0,0);
+            GameMaster.Positions.Position secondPosition = new Position(0,0);
             Cell cell = new Cell();
             Assert.AreNotSame(secondPosition, cell.GetField(position));
 
         }
-
-
     }
 }

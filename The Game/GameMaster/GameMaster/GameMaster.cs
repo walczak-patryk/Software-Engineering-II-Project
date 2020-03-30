@@ -16,7 +16,11 @@ namespace GameMaster
 
         public void StartGame()
         {
-
+            this.configuration = new GameMasterConfiguration();
+            this.board = new GameMasterBoard(this.configuration.boardGoalHeight, this.configuration.boardGoalHeight, this.configuration.boardTaskHeight);
+            this.status = GameMasterStatus.Active;
+            teamBlueGuids = new List<Guid> { new Guid(), new Guid(), new Guid() };
+            teamRedGuids = new List<Guid> { new Guid(), new Guid(), new Guid() };
         }
 
         private void listen()

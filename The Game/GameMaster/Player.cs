@@ -21,14 +21,14 @@ namespace GameMaster
             this.id = Id;
             this.team = Team;
             this.isLeader = IsLeader;
-            this.position = new Position();
+            this.position = new Position(0,0);
             this.piece = false;
             this.board = new Board(0,0,0);
         }
 
         private void Move(int x, int y)
         {
-            this.position = new Position();
+            this.position = new Position(x,y);
         }
 
         private void TakePiece(bool piece)
