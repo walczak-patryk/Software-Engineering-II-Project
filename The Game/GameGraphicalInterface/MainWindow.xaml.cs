@@ -131,7 +131,7 @@ namespace GameGraphicalInterface
             else
                 team.SetColor(GameMaster.TeamColor.Blue);
 
-            PlayerWindow playerWindow = new PlayerWindow(this, pName, team);
+            PlayerWindow playerWindow = new PlayerWindow(this, pName, team, GMboard.boardWidth, GMboard.goalAreaHeight, GMboard.taskAreaHeight);
             playerWindow.Show();
         }
     }
