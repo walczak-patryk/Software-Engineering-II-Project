@@ -7,17 +7,33 @@ namespace GameMaster.Boards
 {
     public class Board
     {
-        Cell[,] cellsGrid;
-        int goalAreaHeight;
-        int taksAreaHeight;
-        int boardWidth;
-        int boardHeight;
+        public Cell[,] cellsGrid;
+        public int goalAreaHeight;
+        public int taskAreaHeight;
+        public int boardWidth;
+        public int boardHeight;
 
-        public Board(int boardWidth, int goalAreaHeight, int taksAreaHeight) { }
-        public void GetField(SequencePosition position) { }
+        public Board(int boardWidth, int goalAreaHeight, int taskAreaHeight) {
+            this.boardWidth = boardWidth;
+            this.goalAreaHeight = goalAreaHeight;
+            this.taskAreaHeight = taskAreaHeight;
+            boardHeight = 2 * goalAreaHeight + taskAreaHeight;
+            cellsGrid = new Cell[boardWidth, boardHeight];
+
+            InitializeCellGrid();
+        }
+        public void GetField(Position position) { }
         public void UpdateField(Field field) { }
         public void UpdateCell(Cell cell, Position position) { }
-        public Cell GetCell(Position position) { return new Cell(); }
-        public void InitializeCellGrid() { }
+        public Cell GetCell(Position position) {
+            return cellsGrid[position.x, position.y]; 
+        }
+        public void InitializeCellGrid() {
+            for (int i = 0; i < boardWidth; i++)
+            {
+                for (int j = 0; j < boardHeight; j++)
+                    cellsGrid[i, j] = new Cell();
+            }
+        }
     }
 }
