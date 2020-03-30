@@ -24,13 +24,11 @@ namespace GameGraphicalInterface
     /// </summary>
     public partial class MainWindow : Window
     {
-        GameMaster.GameMaster GM;
         GameMasterBoard GMboard;
         DispatcherTimer PTimer;
         public MainWindow()
         {
             InitializeComponent();
-            GM = new GameMaster.GameMaster();
         }
 
         private void AddGoal(object sender, RoutedEventArgs e)
