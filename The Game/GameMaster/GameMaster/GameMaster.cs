@@ -1,4 +1,5 @@
-﻿using GameMaster.Boards;
+﻿using GameGraphicalInterface;
+using GameMaster.Boards;
 using System.Collections.Generic;
 using System.Net;
 
@@ -16,6 +17,8 @@ namespace GameMaster
 
         public void StartGame()
         {
+            var mainWindow = new MainWindow();
+            mainWindow.Show();
             this.configuration = new GameMasterConfiguration();
             this.board = new GameMasterBoard(this.configuration.boardGoalHeight, this.configuration.boardGoalHeight, this.configuration.boardTaskHeight);
             this.status = GameMasterStatus.Active;
