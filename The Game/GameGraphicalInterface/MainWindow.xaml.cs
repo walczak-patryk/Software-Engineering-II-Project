@@ -31,6 +31,11 @@ namespace GameGraphicalInterface
             InitializeComponent();
         }
 
+        public string ReturnPath()
+        {
+            return Environment.CurrentDirectory;
+        }
+
         private void AddGoal(object sender, RoutedEventArgs e)
         {
             int x = Int32.Parse(gxBox.Text);

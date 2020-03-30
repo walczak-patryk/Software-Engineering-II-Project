@@ -8,6 +8,6 @@ namespace CommunicationServer
         private int portNumber;
         private IPAddress ipAddress;
 
-        private void Listen();
+        private void Listen() { }
     }
 }
