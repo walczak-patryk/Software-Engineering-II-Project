@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace GameMaster
 {
@@ -8,10 +11,7 @@ namespace GameMaster
         static void Main(string[] args)
         {
             Console.WriteLine("Start Game");
-            //Thread t = new Thread(ThreadProc);
-            //t.SetApartmentState(ApartmentState.STA);
-            //t.Start();
-            new GameMaster().StartGame();
+            new GameMaster().StartGame();           
         }
     }
 }
