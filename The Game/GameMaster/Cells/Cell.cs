@@ -11,6 +11,11 @@ namespace GameMaster.Cells
         private int distance;
         private string playGuids;
 
+        public Cell()
+        {
+            cellState = CellState.Empty;
+            distance = 0;
+        }
         public CellState GetCellState()
         {
             return this.cellState;

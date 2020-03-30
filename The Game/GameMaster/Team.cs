@@ -1,11 +1,15 @@
 ﻿namespace GameMaster
 {
-    class Team
+    public class Team
     {
         public TeamColor color;
         public TeamRole role;
         public int size;
 
+        public Team()
+        {
+            size = 0;
+        }
         public TeamColor getColor()
         {
             return color;

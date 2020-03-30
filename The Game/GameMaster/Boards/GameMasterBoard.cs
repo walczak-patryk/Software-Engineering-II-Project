@@ -13,12 +13,41 @@ namespace GameMaster.Boards
         ISet<Position> piecesPositions;
 
         public GameMasterBoard(int boardWidth, int goalAreaHeight, int taksAreaHeight) : base(boardWidth, goalAreaHeight, taksAreaHeight)
-        { }
+        {
+            piecesPositions = new SortedSet<Position>();
+        }
 
         public Position PlayerMove(PlayerDTO player, Direction direction) { return new Position(); }
         public CellState TakePiece(Position position) { return new CellState(); }
-        public Position generatePiece(double chance) { return new Position(); }
-        public void SetGoal(Position position) { }
+        public Position generatePiece(double chance) {
+            if (piecesPositions.Count != 0)
+            {
+                piecesPositions.Clear();
+                foreach(var i in cellsGrid)
+                {
+                    if (i.GetCellState() == CellState.Piece || i.GetCellState() == CellState.Sham)
+                        i.SetCellState(CellState.Empty);
+                }
+            }
+
+            Random random = new Random();
+            int x = random.Next() % boardWidth;
+            int y = random.Next() % taskAreaHeight;
+            Position pos = new Position();
+            pos.x = x;
+            pos.y = y + goalAreaHeight;
+            piecesPositions.Add(pos);
+
+            if (random.NextDouble() < chance)
+                cellsGrid[pos.x, pos.y].SetCellState(CellState.Sham);
+            else
+                cellsGrid[pos.x, pos.y].SetCellState(CellState.Piece);
+
+            return pos; 
+        }
+        public void SetGoal(Position position) {
+            GetCell(position).SetCellState(CellState.Goal);
+        }
         public PlacementResult PlacePiece(Position position) { return PlacementResult.Correct; }
         public Position PlacePlayer(PlayerDTO playerDTO) { return new Position(); }
         public void CheckWinCondition(TeamColor teamColor) { }
