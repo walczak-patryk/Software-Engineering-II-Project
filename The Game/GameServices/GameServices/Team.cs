@@ -10,6 +10,7 @@
         {
             size = 0;
         }
+
         public TeamColor getColor()
         {
             return color;

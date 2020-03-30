@@ -28,7 +28,9 @@ namespace GameMaster.Boards
         
         }
         public void UpdateField(Field field) { }
-        public void UpdateCell(Cell cell, Position position) { }
+        public void UpdateCell(Cell cell, Position position) {
+            cellsGrid[position.x, position.y] = cell;
+        }
         public Cell GetCell(Position position) {
             return cellsGrid[position.x, position.y]; 
         }

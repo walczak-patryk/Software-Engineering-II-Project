@@ -30,14 +30,6 @@ namespace Tests
 
 
         [Test]
-        public void GivenPositionGetField()
-        {
-            GameMaster.Positions.Position position = new Position(0,0);
-            Cell cell = new Cell();
-            Assert.AreSame(position, cell.GetField(position));
-        }
-
-        [Test]
         public void GivenPositionGetDifferentField()
         {
             GameMaster.Positions.Position position = new Position(0,0);
