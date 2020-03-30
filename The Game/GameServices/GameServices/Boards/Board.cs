@@ -22,7 +22,11 @@ namespace GameMaster.Boards
 
             InitializeCellGrid();
         }
-        public void GetField(Position position) { }
+        public Field GetField(Position position) 
+        {
+            return cellsGrid[position.x, position.y].GetField(position);
+        
+        }
         public void UpdateField(Field field) { }
         public void UpdateCell(Cell cell, Position position) { }
         public Cell GetCell(Position position) {

@@ -1,4 +1,5 @@
-﻿using GameMaster.Positions;
+﻿using GameMaster.Fields;
+using GameMaster.Positions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -26,9 +27,9 @@ namespace GameMaster.Cells
             this.cellState = state;
         }
 
-        public Position GetField(Position position)
+        public Field GetField(Position position)
         {
-            return position;
+            return null;
         }
     }
 }

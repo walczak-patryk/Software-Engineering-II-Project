@@ -26,9 +26,17 @@ namespace GameMaster
             this.board = new Board(0,0,0);
         }
 
-        private void Move(int x, int y)
+        private void Move(Direction x,Direction y)
         {
-            this.position = new Position(x,y);
+            if (0 <= (position.x + (int)x) && (position.x + (int)x) < board.boardWidth)
+            {
+                position.ChangePosition(x);
+            }
+            if (0 <= (position.x + (int)y) && (position.x + (int)y) < board.boardHeight)
+            {
+                position.ChangePosition(y);
+            }
+
         }
 
         private void TakePiece(bool piece)
