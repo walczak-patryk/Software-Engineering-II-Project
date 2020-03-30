@@ -26,5 +26,10 @@ namespace GameGraphicalInterface
             player = new Player(0, name, team, false);
             InitializeComponent();
         }
+
+        private void upButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
