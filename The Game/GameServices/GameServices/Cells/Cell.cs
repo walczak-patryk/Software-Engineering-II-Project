@@ -10,13 +10,24 @@ namespace GameMaster.Cells
     {
         private CellState cellState;
         private int distance;
-        private string playGuids;
+        private string playerGuid;
 
         public Cell()
         {
             cellState = CellState.Empty;
             distance = 0;
         }
+
+        public string GetPlayerGuid()
+        {
+            return this.playerGuid;
+        }
+
+        public void SetPlayerGuid(string playerGuid)
+        {
+            this.playerGuid = playerGuid;
+        }
+
         public CellState GetCellState()
         {
             return this.cellState;
