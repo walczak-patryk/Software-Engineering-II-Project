@@ -1,5 +1,6 @@
 ﻿using GameGraphicalInterface;
 using GameMaster.Boards;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
@@ -16,6 +17,9 @@ namespace GameMaster
         private List<Guid> teamRedGuids;
         private List<Guid> teamBlueGuids;
 
+        private Process GuiWindow;
+
+
         public void StartGame()
         {
             this.StartGUI();
@@ -26,20 +30,21 @@ namespace GameMaster
             teamRedGuids = new List<Guid> { new Guid(), new Guid(), new Guid() };
         }
 
+        public void EndGame()
+        {
+            this.GuiWindow.Kill();
+        }
+
         private void StartGUI()
         {
-            var mainWindow = new MainWindow();
-            //mainWindow.Show();
-            //System.Console.WriteLine(mainWindow.ReturnPath());
-            //Process.Start(mainWindow.ReturnPath() + "/GameGraphicalInterface.exe");
-
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = "GameGraphicalInterface.exe";
-            psi.Arguments = mainWindow.ReturnPath();
-            Process p = Process.Start(psi);
-            if (p != null && !p.HasExited)
-                p.WaitForExit();
+            psi.Arguments = new MainWindow().ReturnPath();
+            psi.UseShellExecute = true;
+            this.GuiWindow = Process.Start(psi);
         }
+
+
 
         private void listen()
         {
