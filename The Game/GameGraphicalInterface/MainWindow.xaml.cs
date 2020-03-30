@@ -103,6 +103,11 @@ namespace GameGraphicalInterface
                     txtb.TextAlignment = TextAlignment.Center;
                     txtb.IsReadOnly = true;
 
+                    if (i < GMboard.goalAreaHeight || i >= GMboard.goalAreaHeight + GMboard.taskAreaHeight)
+                    {
+                        txtb.BorderBrush = new SolidColorBrush(Colors.Black);
+                        txtb.BorderThickness = new Thickness(1);
+                    }
                     if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Goal)
                     { 
                         txtb.Text = "G";
@@ -126,7 +131,7 @@ namespace GameGraphicalInterface
             string tStr = plTeam.Text;
 
             GameMaster.Team team = new GameMaster.Team();
-            if (tStr == "red")
+            if (tStr == "Red")
                 team.SetColor(GameMaster.TeamColor.Red);
             else
                 team.SetColor(GameMaster.TeamColor.Blue);
