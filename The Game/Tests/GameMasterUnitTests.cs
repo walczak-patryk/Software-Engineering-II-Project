@@ -1,4 +1,4 @@
-using Game.GameMaster;
+using GameMaster;
 using NUnit.Framework;
 
 namespace Tests
@@ -8,7 +8,7 @@ namespace Tests
         [SetUp]
         public void Setup()
         {
-            GameMaster gameMaster = new GameMaster();
+            GameMaster.GameMaster gameMaster = new GameMaster.GameMaster();
         }
 
         [Test]

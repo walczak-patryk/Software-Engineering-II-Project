@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Game.Board;
+using GameMaster.Boards;
 
 namespace Tests
 {
@@ -8,7 +8,7 @@ namespace Tests
         [SetUp]
         public void Setup()
         {
-            Board board = new Board();
+            //Board board = new Board();
         }
 
         [Test]
