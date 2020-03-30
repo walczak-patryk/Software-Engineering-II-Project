@@ -29,10 +29,27 @@ namespace GameMaster
             this.board = new Board(0,0,0);
         }
 
-        private void Move(Direction x, Direction y)
+        public void Move(Direction x, Direction y)
         {
-            int destinationX = position.x + (int)x;
-            int destinationY = position.y + (int)y;
+            int destinationX = position.x;
+            int destinationY = position.y;
+            if(x==Direction.Right)
+            {
+                destinationX++;
+            }
+            else if(x==Direction.Left)
+            {
+                destinationX--;
+            }
+            if (y == Direction.Down)
+            {
+                destinationY++;
+            }
+            else if (y == Direction.Up)
+            {
+                destinationY--;
+            }
+
             switch (team.color)
             {
                 case TeamColor.Red:
@@ -85,18 +102,26 @@ namespace GameMaster
         }
 
 
-        private void TakePiece(bool piece)
+        public void TakePiece()
         {
+            Cell cell;
             CellState cellState = board.GetCell(position).GetCellState();
             if (cellState == CellState.Piece)
             {
+
+                cell = board.GetCell(position);
                 this.piece = true;
                 this.pieceIsSham = false;
+                cell.SetCellState(CellState.Empty);
+                board.UpdateCell(cell, position);
             }
             else if (cellState == CellState.Sham)
             {
+                cell = board.GetCell(position);
                 this.piece = true;
                 this.pieceIsSham = true;
+                cell.SetCellState(CellState.Empty);
+                board.UpdateCell(cell, position);
             }
             else
             {
@@ -110,10 +135,10 @@ namespace GameMaster
 
         }
 
-        private void PlacePiece()
+        public void PlacePiece()
         {
             if((team.color==TeamColor.Red && position.y<board.goalAreaHeight)||
-                (team.color == TeamColor.Red && position.y >= board.boardHeight-board.goalAreaHeight))
+                (team.color == TeamColor.Blue && position.y >= board.boardHeight-board.goalAreaHeight))
             {
                 if(board.GetCell(position).GetCellState()==CellState.Valid&&piece&&!pieceIsSham)
                 {
