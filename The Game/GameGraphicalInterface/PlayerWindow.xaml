@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameGraphicalInterface"
         mc:Ignorable="d"
-        Title="PlayerWindow" Height="500" Width="250" MinHeight="500" MinWidth="250">
+        Title="PlayerWindow" Height="500" Width="250" MinHeight="500" MinWidth="250" Closing="PlayerClosed">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

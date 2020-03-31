@@ -15,7 +15,7 @@ namespace GameMaster
         public bool pieceIsSham;
         public Board board;
         public ActionType lastAction;
-        private string guid;
+        public string guid;
         private PlayerState state;
 
         public Player(int Id, string name, Team Team, bool IsLeader)
@@ -27,6 +27,7 @@ namespace GameMaster
             this.piece = false;
             this.pieceIsSham = false;
             this.board = new Board(0,0,0);
+            this.guid = Team.getColor().ToString()[0] + Id.ToString(); 
         }
 
         public void Move(Direction x, Direction y)

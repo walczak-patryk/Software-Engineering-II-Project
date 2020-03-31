@@ -16,6 +16,7 @@ namespace GameMaster.Cells
         {
             cellState = CellState.Empty;
             distance = 0;
+            playerGuid = null;
         }
 
         public string GetPlayerGuid()
