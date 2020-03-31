@@ -22,9 +22,9 @@
                     break;
                 case Direction.Right: this.x += 1;
                     break;
-                case Direction.Up:  this.y += 1;
+                case Direction.Up:  this.y -= 1;
                     break;
-                case Direction.Down: this.y -= 1;
+                case Direction.Down: this.y += 1;
                     break;
             }
         }

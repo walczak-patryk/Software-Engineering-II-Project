@@ -170,6 +170,10 @@ namespace GameGraphicalInterface
                 {
                     TextBox txtb = stkp.Children[j] as TextBox;
 
+                    txtb.Text = "";
+                    txtb.Background = Brushes.White;
+                    txtb.Foreground = Brushes.Black;
+
                     if (i < GMboard.goalAreaHeight || i >= GMboard.goalAreaHeight + GMboard.taskAreaHeight)
                     {
                         txtb.BorderBrush = new SolidColorBrush(Colors.Black);
@@ -181,13 +185,15 @@ namespace GameGraphicalInterface
                         txtb.Text = "G";
                         txtb.Background = Brushes.LightYellow;
                     }
-                    else if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Piece || GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Sham)
+                    
+                    if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Piece || GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Sham)
                     {
                         txtb.Text = "P";
                         txtb.Background = Brushes.Black;
                         txtb.Foreground = Brushes.White;
                     }
-                    else if (GMboard.cellsGrid[j, i].GetPlayerGuid() != null)
+                    
+                    if (GMboard.cellsGrid[j, i].GetPlayerGuid() != null)
                     {
                         Player p = players.Find(x => x.guid == GMboard.cellsGrid[j, i].GetPlayerGuid());
                         if (p.team.getColor() == TeamColor.Red)
@@ -196,12 +202,6 @@ namespace GameGraphicalInterface
                             txtb.Background = Brushes.Blue;
                         txtb.Foreground = Brushes.White;
                         txtb.Text = GMboard.cellsGrid[j, i].GetPlayerGuid();
-                    }
-                    else
-                    {
-                        txtb.Text = "";
-                        txtb.Background = Brushes.White;
-                        txtb.Foreground = Brushes.Black;
                     }
                 }
             }

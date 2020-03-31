@@ -155,5 +155,36 @@ namespace GameGraphicalInterface
             main.players.Remove(player);
             main.GMboard.cellsGrid[player.position.x, player.position.y].SetPlayerGuid(null);
         }
+
+        private void PlayerMove(object sender, RoutedEventArgs e)
+        {
+            main.GMboard.cellsGrid[player.position.x, player.position.y].SetPlayerGuid(null);
+            Button butt = sender as Button;
+            switch(butt.Content.ToString())
+            {
+                case "U":
+                    {
+                        player.Move(Direction.Up);
+                        break;
+                    }
+                case "D":
+                    {
+                        player.Move(Direction.Down);
+                        break;
+                    }
+                case "L":
+                    {
+                        player.Move(Direction.Left);
+                        break;
+                    }
+                case "R":
+                    {
+                        player.Move(Direction.Right);
+                        break;
+                    }
+                default: break;
+            }
+            main.GMboard.cellsGrid[player.position.x, player.position.y].SetPlayerGuid(player.guid);
+        }
     }
 }
