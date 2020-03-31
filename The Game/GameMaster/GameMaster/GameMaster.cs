@@ -22,12 +22,12 @@ namespace GameMaster
 
         public void StartGame()
         {
-            this.StartGUI();
             this.configuration = new GameMasterConfiguration();
             this.board = new GameMasterBoard(this.configuration.boardGoalHeight, this.configuration.boardGoalHeight, this.configuration.boardTaskHeight);
             this.status = GameMasterStatus.Active;
             teamBlueGuids = new List<Guid> { new Guid(), new Guid(), new Guid() };
             teamRedGuids = new List<Guid> { new Guid(), new Guid(), new Guid() };
+            this.StartGUI();
         }
 
         public void EndGame()
@@ -39,7 +39,7 @@ namespace GameMaster
         {
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = "GameGraphicalInterface.exe";
-            psi.Arguments = new MainWindow().ReturnPath();
+            psi.Arguments = new MainWindow(board, configuration.shamProbability, configuration.maxPieces, configuration.initialPieces, configuration.predefinedGoalPositions).ReturnPath();
             psi.UseShellExecute = true;
             this.GuiWindow = Process.Start(psi);
         }

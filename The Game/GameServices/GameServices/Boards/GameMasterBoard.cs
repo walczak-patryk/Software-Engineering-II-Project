@@ -14,13 +14,13 @@ namespace GameMaster.Boards
 
         public GameMasterBoard(int boardWidth, int goalAreaHeight, int taksAreaHeight) : base(boardWidth, goalAreaHeight, taksAreaHeight)
         {
-            piecesPositions = new SortedSet<Position>();
+            piecesPositions = new HashSet<Position>();
         }
 
         public Position PlayerMove(PlayerDTO player, Direction direction) { return new Position(); }
         public CellState TakePiece(Position position) { return new CellState(); }
-        public Position generatePiece(double chance) {
-            if (piecesPositions.Count != 0)
+        public Position generatePiece(double chance, int maxPieces) {
+            if (piecesPositions.Count >= maxPieces)
             {
                 piecesPositions.Clear();
                 foreach(var i in cellsGrid)

@@ -26,9 +26,28 @@ namespace GameGraphicalInterface
     {
         GameMasterBoard GMboard;
         DispatcherTimer PTimer;
+        double shamChance;
+        int maxPieces;
+        int initPieces;
+        System.Drawing.Point[] goals;
         public MainWindow()
         {
             InitializeComponent();
+            GMboard = null;
+            shamChance = 0.5;
+            maxPieces = 2;
+            initPieces = 3;
+            goals = new System.Drawing.Point[] { new System.Drawing.Point(3, 0), new System.Drawing.Point(3, 2) };
+        }
+
+        public MainWindow(GameMasterBoard gmboard, double shamProb, int maxPieces, int initPieces, System.Drawing.Point[] goals)
+        {
+            InitializeComponent();
+            GMboard = gmboard;
+            shamChance = shamProb;
+            this.maxPieces = maxPieces;
+            this.initPieces = initPieces;
+            this.goals = goals;
         }
 
         public string ReturnPath()
@@ -60,69 +79,123 @@ namespace GameGraphicalInterface
 
         private void GenerateBoard(object sender, RoutedEventArgs e)
         {
-            if (GMboard != null)
-                return;
-
-            GMboard = new GameMasterBoard(Int32.Parse(bwidthBox.Text), Int32.Parse(goalhBox.Text), Int32.Parse(taskhBox.Text));
+            if (GMboard == null)
+                GMboard = new GameMasterBoard(Int32.Parse(bwidthBox.Text), Int32.Parse(goalhBox.Text), Int32.Parse(taskhBox.Text));
 
             bwidthBox.IsReadOnly = true;
             goalhBox.IsReadOnly = true;
             taskhBox.IsReadOnly = true;
 
-            PTimer = new DispatcherTimer();
-            PTimer.Interval = TimeSpan.FromSeconds(30);
-            PTimer.Tick += OnTimedEvent;
-            PTimer.Start();
+            if(PTimer == null)
+            {
+                PTimer = new DispatcherTimer();
+                PTimer.Interval = TimeSpan.FromSeconds(30);
+                PTimer.Tick += OnTimedEvent;
+                PTimer.Start();
+            }
+
+            if (goals != null)
+            {
+                foreach (var i in goals)
+                {
+                    GMboard.SetGoal(new Position() { x = i.X, y = i.Y });
+                    GMboard.SetGoal(new Position() { x = i.X, y = i.Y + GMboard.taskAreaHeight + GMboard.goalAreaHeight });
+                }
+            }
+
+            for (int i = 0; i < initPieces; i++)
+                GMboard.generatePiece(shamChance, initPieces);
         }
 
         private void OnTimedEvent(object sender, EventArgs e)
         {
-            GMboard.generatePiece(0.5);
+            for(int i = 0; i < maxPieces; i++)
+                GMboard.generatePiece(shamChance, maxPieces);
             PrintBoard(this, e as RoutedEventArgs);
         }
 
         private void PrintBoard(object sender, RoutedEventArgs e)
         {
-            panel.Children.Clear();
-
-            for (int i = 0; i < GMboard.boardHeight; i++)
+            if(panel.Children.Count == 0)
             {
-                StackPanel stkp = new StackPanel();
-                stkp.Orientation = Orientation.Horizontal;
-                stkp.Width = 30 * GMboard.boardWidth;
-                stkp.Height = 30;
-                stkp.HorizontalAlignment = HorizontalAlignment.Stretch;
-                stkp.VerticalAlignment = VerticalAlignment.Stretch;
-                panel.Children.Add(stkp);
+                panel.Children.Clear();
 
-                for (int j = 0; j < GMboard.boardWidth; j++)
+                for (int i = 0; i < GMboard.boardHeight; i++)
                 {
-                    TextBox txtb = new TextBox();
-                    txtb.Height = 30;
-                    txtb.Width = 30;
-                    txtb.TextAlignment = TextAlignment.Center;
-                    txtb.IsReadOnly = true;
+                    StackPanel stkp = new StackPanel();
+                    stkp.Orientation = Orientation.Horizontal;
+                    stkp.Width = 30 * GMboard.boardWidth;
+                    stkp.Height = 30;
+                    stkp.HorizontalAlignment = HorizontalAlignment.Stretch;
+                    stkp.VerticalAlignment = VerticalAlignment.Stretch;
+                    panel.Children.Add(stkp);
 
-                    if (i < GMboard.goalAreaHeight || i >= GMboard.goalAreaHeight + GMboard.taskAreaHeight)
+                    for (int j = 0; j < GMboard.boardWidth; j++)
                     {
-                        txtb.BorderBrush = new SolidColorBrush(Colors.Black);
-                        txtb.BorderThickness = new Thickness(1);
-                    }
-                    if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Goal)
-                    { 
-                        txtb.Text = "G";
-                        txtb.Background = Brushes.LightYellow;
-                    }
-                    if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Piece || GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Sham)
-                    {
-                        txtb.Text = "P";
-                        txtb.Background = Brushes.Black;
-                        txtb.Foreground = Brushes.White;
-                    }
+                        TextBox txtb = new TextBox();
+                        txtb.Height = 30;
+                        txtb.Width = 30;
+                        txtb.TextAlignment = TextAlignment.Center;
+                        txtb.IsReadOnly = true;
 
-                    stkp.Children.Add(txtb);
+                        if (i < GMboard.goalAreaHeight || i >= GMboard.goalAreaHeight + GMboard.taskAreaHeight)
+                        {
+                            txtb.BorderBrush = new SolidColorBrush(Colors.Black);
+                            txtb.BorderThickness = new Thickness(1);
+                        }
+                        if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Goal)
+                        {
+                            txtb.Text = "G";
+                            txtb.Background = Brushes.LightYellow;
+                        }
+                        if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Piece || GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Sham)
+                        {
+                            txtb.Text = "P";
+                            txtb.Background = Brushes.Black;
+                            txtb.Foreground = Brushes.White;
+                        }
+
+                        stkp.Children.Add(txtb);
+                    }
                 }
             }
+            else
+            {
+                UIElementCollection panels = panel.Children;
+                for (int i = 0; i < GMboard.boardHeight; i++)
+                {
+                    StackPanel stkp = panels[i] as StackPanel;
+                    for (int j = 0; j < GMboard.boardWidth; j++)
+                    {
+                        TextBox txtb = stkp.Children[j] as TextBox;
+
+                        if (i < GMboard.goalAreaHeight || i >= GMboard.goalAreaHeight + GMboard.taskAreaHeight)
+                        {
+                            txtb.BorderBrush = new SolidColorBrush(Colors.Black);
+                            txtb.BorderThickness = new Thickness(1);
+                        }
+
+                        if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Goal)
+                        {
+                            txtb.Text = "G";
+                            txtb.Background = Brushes.LightYellow;
+                        }
+                        else if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Piece || GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Sham)
+                        {
+                            txtb.Text = "P";
+                            txtb.Background = Brushes.Black;
+                            txtb.Foreground = Brushes.White;
+                        }
+                        else
+                        {
+                            txtb.Text = "";
+                            txtb.Background = Brushes.White;
+                            txtb.Foreground = Brushes.Black;
+                        }
+                    }
+                }
+            }
+            
         }
 
         private void CreatePlayer(object sender, RoutedEventArgs e)
