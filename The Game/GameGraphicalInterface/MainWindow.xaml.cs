@@ -17,6 +17,8 @@ using GameMaster.Boards;
 using System.Timers;
 using System.Windows.Threading;
 using GameMaster;
+using System.IO.Pipes;
+using System.IO;
 
 namespace GameGraphicalInterface
 {
@@ -55,12 +57,63 @@ namespace GameGraphicalInterface
             this.initPieces = initPieces;
             this.goals = goals;
             players = new List<Player>();
+            var t = Task.Run(() =>
+            {
+                while (true)
+                    this.ReceiveFromGM();
+            });
         }
 
+        #region GM Communication
         public string ReturnPath()
         {
             return Environment.CurrentDirectory;
         }
+
+        private void SendToGM(string message)
+        {
+            using (NamedPipeClientStream pipeClient =
+            new NamedPipeClientStream(".", "GM_Pipe_Server", PipeDirection.Out))
+            {
+                pipeClient.Connect();
+                try
+                {
+                    using (StreamWriter sw = new StreamWriter(pipeClient))
+                    {
+                        sw.AutoFlush = true;
+                        sw.WriteLine(message);
+                    }
+                }
+                catch (IOException e)
+                {
+                    MessageBox.Show("ERROR: {0}", e.Message);
+                }
+            }
+        }
+
+        private void ReceiveFromGM()
+        {
+            using (NamedPipeServerStream pipeServer =
+            new NamedPipeServerStream("GUI_Pipe_Server", PipeDirection.In))
+            {
+                pipeServer.WaitForConnection();
+                using (StreamReader sr = new StreamReader(pipeServer))
+                {
+                    string temp;
+                    while ((temp = sr.ReadLine()) != null)
+                    {
+                        MessageBox.Show("Received from server: {0}", temp);
+                    }
+                }
+            }
+        }
+
+        private void Send(object sender, RoutedEventArgs e)
+        {
+            SendToGM("nacisnieto przycisk send");
+        }
+        #endregion
+
 
         private void AddGoal(object sender, RoutedEventArgs e)
         {
@@ -222,5 +275,13 @@ namespace GameGraphicalInterface
             PlayerWindow playerWindow = new PlayerWindow(this, pName, team);
             playerWindow.Show();
         }
+
+
+
+        private void StartServer()
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }
