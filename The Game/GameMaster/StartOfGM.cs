@@ -24,6 +24,8 @@ namespace GameMaster
             {  
                 Console.Write("type \"exit\" to shutdown or close console\n# ");
                 testString = Console.ReadLine();
+                if (testString.Contains("msg"))
+                    GM.gm.SendToGUI(testString);
             }
             GM.gm.EndGame();
         }

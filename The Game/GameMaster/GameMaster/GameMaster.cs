@@ -3,7 +3,11 @@ using GameMaster.Boards;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.IO.Pipes;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace GameMaster
 {
@@ -27,24 +31,69 @@ namespace GameMaster
             this.status = GameMasterStatus.Active;
             teamBlueGuids = new List<Guid> { new Guid(), new Guid(), new Guid() };
             teamRedGuids = new List<Guid> { new Guid(), new Guid(), new Guid() };
-            this.StartGUI();
+            this.StartGUIAsync();
         }
 
         public void EndGame()
         {
-            this.GuiWindow.Kill();
+            if (this.GuiWindow != null)
+                this.GuiWindow.Kill();
         }
 
-        private void StartGUI()
+        #region GUI Managment
+        private void StartGUIAsync()
         {
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = "GameGraphicalInterface.exe";
             psi.Arguments = new MainWindow(board, configuration.shamProbability, configuration.maxPieces, configuration.initialPieces, configuration.predefinedGoalPositions).ReturnPath();
             psi.UseShellExecute = true;
             this.GuiWindow = Process.Start(psi);
+            var t = Task.Run(() =>
+            {
+                while (true)
+                    this.ReceiveFromGUI();
+            });
         }
 
+        private void ReceiveFromGUI()   
+        {
+            using (NamedPipeServerStream pipeServer =
+            new NamedPipeServerStream("GM_Pipe_Server", PipeDirection.In))
+            {
+                pipeServer.WaitForConnection();
 
+                using (StreamReader sr = new StreamReader(pipeServer))
+                {
+                    string temp;
+                    while ((temp = sr.ReadLine()) != null)
+                    {
+                        Console.WriteLine("Received from server: {0}", temp);
+                    }
+                }
+            }
+        }
+
+        public void SendToGUI(string message)
+        {
+            using (NamedPipeClientStream pipeClient =
+            new NamedPipeClientStream(".", "GUI_Pipe_Server", PipeDirection.Out))
+            {
+                pipeClient.Connect();
+                try
+                {
+                    using (StreamWriter sw = new StreamWriter(pipeClient))
+                    {
+                        sw.AutoFlush = true;
+                        sw.WriteLine(message);
+                    }
+                }
+                catch (IOException e)
+                {
+                    Console.WriteLine("ERROR: {0}", e.Message);
+                }
+            }
+        }
+        #endregion
 
         private void listen()
         {

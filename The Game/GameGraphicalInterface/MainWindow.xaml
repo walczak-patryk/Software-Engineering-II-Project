@@ -33,7 +33,9 @@
         <Label Content="Player Creator" Grid.Column="1" Margin="0,135,0,0"/>
         <Label Content="Player Name:" Grid.Column="1" Margin="0,160,0,0"/>
         <TextBox x:Name="plName" Grid.Column="1" Margin="80,165,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="70" TextAlignment="Center"/>
-        <Label Content="Player Team:" Grid.Column="1" Margin="0,185,0,0"/>
+        <Label Grid.Column="1" Margin="100,210,0,0">
+            <Button Content="send" Click="Send"/>
+        </Label>
         <ComboBox x:Name="plTeam" Grid.Column="1" Margin="80,185,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedIndex="0">
             <ComboBoxItem Content="Red"/>
             <ComboBoxItem Content="Blue"/>
