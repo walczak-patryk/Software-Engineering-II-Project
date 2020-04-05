@@ -20,8 +20,8 @@ namespace GameMaster
         private GameMasterBoard board;
         private GameMasterStatus status;
         private GameMasterConfiguration configuration;
-        private List<Guid> teamRedGuids;
-        private List<Guid> teamBlueGuids;
+        private List<string> teamRedGuids;
+        private List<string> teamBlueGuids;
 
         private Process GuiWindow;
 
@@ -31,8 +31,8 @@ namespace GameMaster
             this.configuration = new GameMasterConfiguration();
             this.board = new GameMasterBoard(this.configuration.boardGoalHeight, this.configuration.boardGoalHeight, this.configuration.boardTaskHeight);
             this.status = GameMasterStatus.Active;
-            teamBlueGuids = new List<Guid> { new Guid(), new Guid(), new Guid() };
-            teamRedGuids = new List<Guid> { new Guid(), new Guid(), new Guid() };
+            teamBlueGuids = new List<string>();
+            teamRedGuids = new List<string>();
             Task.Run(() =>
             {
                 while (true)
@@ -137,7 +137,7 @@ namespace GameMaster
 
         }
 
-        public void TakePiece(string playerGUID)
+        public bool TakePiece(string playerGUID)
         {
 
             Cell cell = new Cell();
@@ -149,12 +149,145 @@ namespace GameMaster
                     break;
                 }
             }
+
+            return true;
         }
 
-        public void Move(string playerGUID,Direction direction)
+        public bool Move(string playerGUID,Direction direction)
         {
-       
+            int playerX = -1;
+            int playerY = -1;
+            bool playerFound = false;
+            for(int x=0;x<board.boardWidth;x++)
+            {
+                for(int y=0; y<board.boardHeight;y++)
+                {
+                    if(board.cellsGrid[x,y].GetPlayerGuid()==playerGUID)
+                    {
+                        playerX = x;
+                        playerY = y;
+                        playerFound = true;
+                        break;
+                    }
+                }
+                if(playerFound)
+                {
+                    break;
+                }
+            }
+
+
+
+            int destinationX = playerX;
+            int destinationY = playerY;
+            if (direction == Direction.Right)
+            {
+                destinationX++;
+            }
+            else if (direction == Direction.Left)
+            {
+                destinationX--;
+            }
+            else if (direction == Direction.Down)
+            {
+                destinationY++;
+            }
+            else if (direction == Direction.Up)
+            {
+                destinationY--;
+            }
+            TeamColor teamColor;
+            if(teamRedGuids.Contains(playerGUID))
+            {
+                teamColor = TeamColor.Red;
+            }
+            else
+            {
+                teamColor = TeamColor.Blue;
+            }
+
+            Position playerPosition = new Position(playerX, playerY);
+            Position destinationPosition = new Position(destinationX, destinationY);
+            switch (teamColor)
+            {
+                case TeamColor.Red:
+                    if (0 <= destinationX && destinationX < board.boardWidth
+                        && 0 <= destinationY && destinationY < board.boardHeight - board.goalAreaHeight)
+                    {
+                        if (board.GetCell(destinationPosition).GetPlayerGuid() == null)
+                        {
+                            board.GetCell(playerPosition).SetPlayerGuid(null);
+                            board.GetCell(destinationPosition).SetPlayerGuid(playerGUID);
+                            return true;
+                        }
+
+                    }
+                    break;
+                case TeamColor.Blue:
+                    if (0 <= destinationX && destinationX < board.boardWidth && board.goalAreaHeight <= destinationY && destinationY < board.boardHeight)
+                    {
+                        if (board.GetCell(destinationPosition).GetPlayerGuid() == null)
+                        {
+                            board.GetCell(playerPosition).SetPlayerGuid(null);
+                            board.GetCell(destinationPosition).SetPlayerGuid(playerGUID);
+                            return true;
+                        }
+
+                    }
+                    break;
+            }
+
+            return false;
         }
+
+        public void PlacePiece(string playerGUID)
+        {
+            int playerX = -1;
+            int playerY = -1;
+            bool playerFound = false;
+            for (int x = 0; x < board.boardWidth; x++)
+            {
+                for (int y = 0; y < board.boardHeight; y++)
+                {
+                    if (board.cellsGrid[x, y].GetPlayerGuid() == playerGUID)
+                    {
+                        playerX = x;
+                        playerY = y;
+                        playerFound = true;
+                        break;
+                    }
+                }
+                if (playerFound)
+                {
+                    break;
+                }
+            }
+
+            TeamColor teamColor;
+            if (teamRedGuids.Contains(playerGUID))
+            {
+                teamColor = TeamColor.Red;
+            }
+            else
+            {
+                teamColor = TeamColor.Blue;
+            }
+            Position position = new Position(playerX, playerY);
+            if ((teamColor == TeamColor.Red && playerX < board.goalAreaHeight) ||
+                (teamColor == TeamColor.Blue && playerY >= board.boardHeight - board.goalAreaHeight))
+            {
+                if (board.GetCell(position).GetCellState() == CellState.Valid)
+                {
+                    Cell cell = board.GetCell(position);
+                    cell.SetCellState(CellState.Goal);
+                }
+            }
+        }
+
+
+
+
+
 
 
     }
