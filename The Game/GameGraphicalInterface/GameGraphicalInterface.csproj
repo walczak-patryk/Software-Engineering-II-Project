@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GameServices\GameServices\GameServices.csproj" />
+    <ProjectReference Include="..\GameServices\GameServices\GamePlayer.csproj" />
   </ItemGroup>
 
 </Project>

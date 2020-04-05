@@ -31,7 +31,13 @@ namespace GameMaster
             this.status = GameMasterStatus.Active;
             teamBlueGuids = new List<Guid> { new Guid(), new Guid(), new Guid() };
             teamRedGuids = new List<Guid> { new Guid(), new Guid(), new Guid() };
-            this.StartGUIAsync();
+            Task.Run(() =>
+            {
+                while (true)
+                    this.ReceiveFromGUI();
+            });
+            StartGUIAsync();
+            StartPlayer();
         }
 
         public void EndGame()
@@ -48,11 +54,6 @@ namespace GameMaster
             psi.Arguments = new MainWindow(board, configuration.shamProbability, configuration.maxPieces, configuration.initialPieces, configuration.predefinedGoalPositions).ReturnPath();
             psi.UseShellExecute = true;
             this.GuiWindow = Process.Start(psi);
-            var t = Task.Run(() =>
-            {
-                while (true)
-                    this.ReceiveFromGUI();
-            });
         }
 
         private void ReceiveFromGUI()   
@@ -94,7 +95,16 @@ namespace GameMaster
             }
         }
         #endregion
-
+        #region Players Managment
+        void StartPlayer()
+        {
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = "GamePlayer.exe";
+            psi.Arguments = new Player(1,"1", new Team(),true).ReturnPath();
+            psi.UseShellExecute = true;
+            Process.Start(psi);
+        }
+        #endregion
         private void listen()
         {
 

@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GameGraphicalInterface\GameGraphicalInterface.csproj" />
-    <ProjectReference Include="..\GameServices\GameServices\GameServices.csproj" />
+    <ProjectReference Include="..\GameServices\GameServices\GamePlayer.csproj" />
   </ItemGroup>
 
 </Project>

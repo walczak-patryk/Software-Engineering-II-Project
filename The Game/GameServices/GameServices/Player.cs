@@ -22,6 +22,15 @@ namespace GameMaster
         private PlayerState state;
         private string pipe;
 
+        public static void Main()
+        {
+            Console.WriteLine("Player");
+            var p = new Player(1, "1", new Team(), false);
+            p.SendToGM("I work");
+            Console.ReadLine();
+            //TODO player
+        }
+
         public Player(int Id, string name, Team Team, bool IsLeader)
         {
             this.id = Id;
@@ -94,7 +103,12 @@ namespace GameMaster
         }
 
         #region Communication wih GM
-        private void ReceiveFromGUI()
+
+        public string ReturnPath()
+        {
+            return Environment.CurrentDirectory;
+        }
+        private void ReceiveFromGM()
         {
             if (this.pipe != "" && this.pipe != null)
             {
@@ -115,7 +129,7 @@ namespace GameMaster
             }
         }
 
-        public void SendToGUI(string message)
+        public void SendToGM(string message)
         {
             using (NamedPipeClientStream pipeClient =
             new NamedPipeClientStream(".", "GM_Pipe_Server", PipeDirection.Out))
