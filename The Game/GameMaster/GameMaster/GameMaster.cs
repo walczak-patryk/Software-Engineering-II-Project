@@ -317,6 +317,46 @@ namespace GameMaster
         }
 
 
+              private void ReceiveFromPlayer()   
+        {
+            using (NamedPipeServerStream pipeServer =
+            new NamedPipeServerStream("GM_Player_Server", PipeDirection.In))
+            {
+                pipeServer.WaitForConnection();
+
+                using (StreamReader sr = new StreamReader(pipeServer))
+                {
+                    string temp;
+                    while ((temp = sr.ReadLine()) != null)
+                    {
+                        Console.WriteLine("Received from server: {0}", temp);
+                    }
+                }
+            }
+        }
+
+        public void SendToPlayer(string message, string guid)
+        {
+            using (NamedPipeClientStream pipeClient =
+            new NamedPipeClientStream(".", "Player_Pipe_Server"+guid, PipeDirection.Out))
+            {
+                pipeClient.Connect();
+                try
+                {
+                    using (StreamWriter sw = new StreamWriter(pipeClient))
+                    {
+                        sw.AutoFlush = true;
+                        sw.WriteLine(message);
+                    }
+                }
+                catch (IOException e)
+                {
+                    Console.WriteLine("ERROR: {0}", e.Message);
+                }
+            }
+        }
+
+
 
 
     }
