@@ -22,14 +22,13 @@ namespace GameMaster
         public ActionType lastAction;
         public string guid;
         private PlayerState state;
-        private string pipe;
 
         public int turnsSinceDiscover;
 
         public static void Main()
         {
             Console.WriteLine("Player");
-            var p = new Player(1, "1", new Team(), false);
+            var p = new Player(1, new Team(), false);
             p.SendToGM("I work");
             while (true)
             {
@@ -48,7 +47,7 @@ namespace GameMaster
             //TODO player
         }
 
-        public Player(int Id, string name, Team Team, bool IsLeader)
+        public Player(int Id, Team Team, bool IsLeader)
         {
             this.id = Id;
             this.team = Team;
@@ -71,9 +70,8 @@ namespace GameMaster
         }
         private string ReceiveFromGM()
         {
-            if (this.pipe != "" && this.pipe != null)
-            {
-                using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("Player_Pipe_Server" + this.pipe, PipeDirection.In))
+
+                using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("Player_Pipe_Server" + guid, PipeDirection.In))
                 {
                     pipeServer.WaitForConnection();
 
@@ -87,9 +85,7 @@ namespace GameMaster
                         //}
                     }
                 }
-            }
-            else
-                return "";
+
         }
 
         public void SendToGM(string message)
