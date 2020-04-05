@@ -48,5 +48,10 @@ namespace GameMaster.Cells
         {
             return distance;
         }
+
+        public void SetDistance(int dist)
+        {
+            distance = dist;
+        }
     }
 }
