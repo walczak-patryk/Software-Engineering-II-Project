@@ -31,7 +31,18 @@ namespace GameMaster
             Console.WriteLine("Player");
             var p = new Player(1, "1", new Team(), false);
             p.SendToGM("I work");
-            Console.ReadLine();
+            while (true)
+            {
+                string message = p.id.ToString();
+                message += p.AIMove();
+                p.SendToGM(message);
+                string response = p.ReceiveFromGM();
+                if(response.Split("_")[1] == "4")
+                {
+                    p.Discover(p.ParseDiscover(response.Split("_")[2]));
+                }
+            }
+            //Console.ReadLine();
             //TODO player
         }
 
@@ -50,34 +61,33 @@ namespace GameMaster
         }
 
 
-
-
-
         #region Communication wih GM
 
         public string ReturnPath()
         {
             return Environment.CurrentDirectory;
         }
-        private void ReceiveFromGM()
+        private string ReceiveFromGM()
         {
             if (this.pipe != "" && this.pipe != null)
             {
-                using (NamedPipeServerStream pipeServer =
-           new NamedPipeServerStream("Player_Pipe_Server" + this.pipe, PipeDirection.In))
+                using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("Player_Pipe_Server" + this.pipe, PipeDirection.In))
                 {
                     pipeServer.WaitForConnection();
 
                     using (StreamReader sr = new StreamReader(pipeServer))
                     {
-                        string temp;
-                        while ((temp = sr.ReadLine()) != null)
-                        {
-                            Console.WriteLine("Received from server: {0}", temp);
-                        }
+                        return sr.ReadLine();
+                        //string temp;
+                        //while ((temp = sr.ReadLine()) != null)
+                        //{
+                        //    Console.WriteLine("Received from server: {0}", temp);
+                        //}
                     }
                 }
             }
+            else
+                return "";
         }
 
         public void SendToGM(string message)
@@ -153,9 +163,27 @@ namespace GameMaster
             }
         }
 
-        private void Discover()
+        public List<int> ParseDiscover(string response)
         {
+            List<int> distances = new List<int>();
+            string[] distancesString = response.Split(",");
+            foreach(string s in distancesString)
+            {
+                distances.Add(Int32.Parse(s));
+            }
+            return distances;
+        }
 
+        private void Discover(List<int> distances)
+        {
+            for (int index = 0, j = -1; j <= 1; j++, index++)
+            {
+                for (int i = -1; i <= 1; i++, index++)
+                {
+                    if (!(position.x + i < 0 || position.y + j < 0 || position.x + i > board.boardWidth || position.y + j > board.boardHeight))
+                        board.cellsGrid[position.x + i, position.y + j].SetDistance(distances[index]);
+                }
+            }
         }
 
         public void MakeAction()
@@ -226,13 +254,17 @@ namespace GameMaster
         }
 
 
-        void AIMove() //simple AI for player
+        string AIMove() //simple AI for player
         {
             Random rand = new Random();
             if (piece == false)
             {
                 if (turnsSinceDiscover > 0)
-                    Discover();
+                {
+                    //Discover();
+                    turnsSinceDiscover = 0;
+                    return "4";
+                }
                 else
                 {
                     List<int> distances = new List<int>();
@@ -248,75 +280,108 @@ namespace GameMaster
                     }
                     int min = distances[0];
                     int dir = 0;
-                    for (int i = 1; i < distances.Count; ++i)
+                    for (int i = 1; i < distances.Count; i++)
                     {
                         if (distances[i] < min)
                         {
                             min = distances[i];
                             dir = i;
                         }
-
-                        switch (dir)
-                        {
-                            case 0:
-                                {
-                                    if (rand.Next() % 2 == 0)
-                                        Move(Direction.Left);
-                                    else
-                                        Move(Direction.Up);
-                                    break;
-                                }
-                            case 1:
-                                {
-                                    Move(Direction.Up);
-                                    break;
-                                }
-                            case 2:
-                                {
-                                    if (rand.Next() % 2 == 0)
-                                        Move(Direction.Right);
-                                    else
-                                        Move(Direction.Up);
-                                    break;
-                                }
-                            case 3:
+                    }
+                    switch (dir)
+                    {
+                        case 0:
+                            {
+                                if (rand.Next() % 2 == 0)
                                 {
                                     Move(Direction.Left);
-                                    break;
+                                    turnsSinceDiscover++;
+                                    return "0_2";
                                 }
-                            case 4:
+
+                                else
                                 {
-                                    TakePiece();
-                                    break;
+                                    Move(Direction.Up);
+                                    turnsSinceDiscover++;
+                                    return "0_0";
                                 }
-                            case 5:
+                            }
+                        case 1:
+                            {
+                                Move(Direction.Up);
+                                turnsSinceDiscover++;
+                                return "0_0";
+                            }
+                        case 2:
+                            {
+                                if (rand.Next() % 2 == 0)
                                 {
                                     Move(Direction.Right);
-                                    break;
+                                    turnsSinceDiscover++;
+                                    return "0_3";
                                 }
-                            case 6:
+                                else
                                 {
-                                    if (rand.Next() % 2 == 0)
-                                        Move(Direction.Left);
-                                    else
-                                        Move(Direction.Down);
-                                    break;
+                                    Move(Direction.Up);
+                                    turnsSinceDiscover++;
+                                    return "0_0";
                                 }
-                            case 7:
+                            }
+                        case 3:
+                            {
+                                Move(Direction.Left);
+                                turnsSinceDiscover++;
+                                return "0_2";
+                            }
+                        case 4:
+                            {
+                                TakePiece();
+                                turnsSinceDiscover++;
+                                return "1";
+                            }
+                        case 5:
+                            {
+                                Move(Direction.Right);
+                                turnsSinceDiscover++;
+                                return "0_3";
+                            }
+                        case 6:
+                            {
+                                if (rand.Next() % 2 == 0)
+                                {
+                                    Move(Direction.Left);
+                                    turnsSinceDiscover++;
+                                    return "0_2";
+                                }
+                                else
                                 {
                                     Move(Direction.Down);
-                                    break;
+                                    turnsSinceDiscover++;
+                                    return "0_1";
                                 }
-                            case 8:
+                            }
+                        case 7:
+                            {
+                                Move(Direction.Down);
+                                turnsSinceDiscover++;
+                                return "0_1";
+                            }
+                        case 8:
+                            {
+                                if (rand.Next() % 2 == 0)
                                 {
-                                    if (rand.Next() % 2 == 0)
-                                        Move(Direction.Right);
-                                    else
-                                        Move(Direction.Down);
-                                    break;
+                                    Move(Direction.Right);
+                                    turnsSinceDiscover++;
+                                    return "0_3";
                                 }
-                            default: break;
-                        }
+                                else
+                                {
+                                    Move(Direction.Down);
+                                    turnsSinceDiscover++;
+                                    return "0_1";
+                                }
+                            }
+                        default: return "";
                     }
                 }
             }
@@ -325,35 +390,59 @@ namespace GameMaster
                 if (!isDiscovered)
                 {
                     TestPiece();
+                    turnsSinceDiscover++;
+                    return "2";
                 }
                 else
                 {
                     if (team.getColor() == TeamColor.Blue)
                     {
                         if (position.y < board.taskAreaHeight + board.goalAreaHeight)
+                        {
                             Move(Direction.Up);
+                            turnsSinceDiscover++;
+                            return "0_0";
+                        }
                         else
                         {
                             if (board.GetCell(position).GetCellState() == CellState.Goal)
                             {
-                                Move(Direction.Up + rand.Next() % 3);
+                                int dir = rand.Next() % 3;
+                                Move(Direction.Up + dir);
+                                turnsSinceDiscover++;
+                                return "0_" + dir.ToString();
                             }
                             else
+                            {
                                 PlacePiece();
+                                turnsSinceDiscover++;
+                                return "3";
+                            }
                         }
                     }
                     else
                     {
                         if (position.y > board.goalAreaHeight)
+                        {
                             Move(Direction.Down);
+                            turnsSinceDiscover++;
+                            return "0_1";
+                        }
                         else
                         {
                             if (board.GetCell(position).GetCellState() == CellState.Goal)
                             {
-                                Move(Direction.Up + rand.Next() % 3);
+                                int dir = rand.Next() % 3;
+                                Move(Direction.Up + dir);
+                                turnsSinceDiscover++;
+                                return "0_" + dir.ToString();
                             }
                             else
+                            {
                                 PlacePiece();
+                                turnsSinceDiscover++;
+                                return "3";
+                            }
                         }
                     }
                 }
@@ -383,7 +472,7 @@ namespace GameMaster
         Pickup,
         Test,
         Place,
-        Dscover,
+        Discover,
         Destroy,
         Send
     }
