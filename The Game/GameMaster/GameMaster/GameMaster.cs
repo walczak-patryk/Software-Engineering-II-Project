@@ -288,7 +288,7 @@ namespace GameMaster
         }
 
 
-        public bool processMessage(string message)
+        public void processMessage(string message)
         {
             string[] messageSplit = message.Split("_");
             string playerGUID = messageSplit[0];
@@ -297,10 +297,15 @@ namespace GameMaster
             switch(action)
             {
                 case ActionType.Move:
-                    {
+                        Direction direction= (Direction)int.Parse(messageSplit[2]);
+                        Move(playerGUID, direction);
                         break;
-                    }
-
+                case ActionType.Pickup:
+                    TakePiece(playerGUID);
+                    break;
+                case ActionType.Place:
+                    PlacePiece(playerGUID);
+                    break;
 
             }
 
