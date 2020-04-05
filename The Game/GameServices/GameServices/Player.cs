@@ -43,64 +43,9 @@ namespace GameMaster
             this.guid = Team.getColor().ToString()[0] + Id.ToString(); 
         }
 
-        public void Move(Direction x, Direction y)
-        {
-            int destinationX = position.x;
-            int destinationY = position.y;
-            if(x==Direction.Right)
-            {
-                destinationX++;
-            }
-            else if(x==Direction.Left)
-            {
-                destinationX--;
-            }
-            if (y == Direction.Down)
-            {
-                destinationY++;
-            }
-            else if (y == Direction.Up)
-            {
-                destinationY--;
-            }
-
-            switch (team.color)
-            {
-                case TeamColor.Red:
-                    if (0 <= destinationX && destinationX < board.boardWidth
-                        && 0 <= destinationY && destinationY < board.boardHeight - board.goalAreaHeight)
-                    {
-                        if (board.GetCell(new Position(destinationX, destinationY)).GetPlayerGuid() == null)
-                        {
-                            position.ChangePosition(x);
-                            position.ChangePosition(y);
-                        }
-
-                    }
-                    break;
-                case TeamColor.Blue:
-                    if (0 <= destinationX && destinationX < board.boardWidth
-    && board.goalAreaHeight <= destinationY && destinationY < board.boardHeight)
-                    {
-                        if (board.GetCell(new Position(destinationX, destinationY)).GetPlayerGuid() == null)
-                        {
-                            position.ChangePosition(x);
-                            position.ChangePosition(y);
-                        }
-
-                    }
-
-
-                    break;
 
 
 
-        }
-
-
-
-
-        }
 
         #region Communication wih GM
 
