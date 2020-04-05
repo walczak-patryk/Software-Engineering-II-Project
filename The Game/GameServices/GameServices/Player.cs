@@ -38,9 +38,14 @@ namespace GameMaster
                 Console.WriteLine("I'm sending to GM: " + message);
                 string response = p.ReceiveFromGM();
                 Console.WriteLine("I received from GM: " + response);
-                if(response.Split("_")[1] == "4")
+                if (response.Split("_").Length < 2)
+                    Console.WriteLine("Error while receiveing response from GM");
+                else
                 {
-                    p.Discover(p.ParseDiscover(response.Split("_")[2]));
+                    if (response.Split("_")[1] == "4")
+                    {
+                        p.Discover(p.ParseDiscover(response.Split("_")[2]));
+                    }
                 }
             }
             //Console.ReadLine();
@@ -270,7 +275,7 @@ namespace GameMaster
                     {
                         for (int i = -1; i <= 1; i++)
                         {
-                            if (position.x + i < 0 || position.y + j < 0 || position.x + i > board.boardWidth || position.y + j > board.boardHeight)
+                            if (position.x + i < 0 || position.y + j < 0 || position.x + i > board.boardWidth - 1 || position.y + j > board.boardHeight - 1)
                                 distances.Add(Math.Max(board.boardWidth, board.boardHeight));
                             else
                                 distances.Add(board.cellsGrid[position.x + i, position.y + j].GetDistance());

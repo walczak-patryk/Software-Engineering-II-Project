@@ -36,7 +36,10 @@ namespace GameMaster
             Task.Run(() =>
             {
                 while (true)
+                {
                     this.ReceiveFromGUI();
+                    this.SendToGUI("0_1");
+                }
             });
             StartGUIAsync();
             StartPlayer();
