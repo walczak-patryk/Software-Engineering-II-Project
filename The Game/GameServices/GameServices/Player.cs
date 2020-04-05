@@ -248,7 +248,14 @@ namespace GameMaster
 
         private void TestPiece()
         {
-
+            if(this.piece==true)
+            {
+                return;
+            }
+            if(this.pieceIsSham==false)
+            {
+                this.piece = false;
+            }
         }
 
         public void PlacePiece()

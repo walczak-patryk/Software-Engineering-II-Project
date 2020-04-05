@@ -1,5 +1,7 @@
 ﻿using GameGraphicalInterface;
 using GameMaster.Boards;
+using GameMaster.Cells;
+using GameMaster.Positions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -134,5 +136,26 @@ namespace GameMaster
         {
 
         }
+
+        public void TakePiece(string playerGUID)
+        {
+
+            Cell cell = new Cell();
+            foreach (var elem in board.cellsGrid)
+            {
+                if(elem.GetPlayerGuid()==playerGUID)
+                {
+                    elem.SetCellState(CellState.Empty);
+                    break;
+                }
+            }
+        }
+
+        public void Move(string playerGUID,Direction direction)
+        {
+       
+        }
+
+
     }
 }
