@@ -287,6 +287,7 @@ namespace GameMaster
         Pickup,
         Test,
         Place,
+        Dscover,
         Destroy,
         Send
     }
