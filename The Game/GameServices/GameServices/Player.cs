@@ -1,6 +1,9 @@
 ﻿using GameMaster.Boards;
 using GameMaster.Cells;
 using GameMaster.Positions;
+using System;
+using System.IO;
+using System.IO.Pipes;
 
 namespace GameMaster
 {
@@ -17,6 +20,7 @@ namespace GameMaster
         public ActionType lastAction;
         public string guid;
         private PlayerState state;
+        private string pipe;
 
         public Player(int Id, string name, Team Team, bool IsLeader)
         {
@@ -88,6 +92,50 @@ namespace GameMaster
 
 
         }
+
+        #region Communication wih GM
+        private void ReceiveFromGUI()
+        {
+            if (this.pipe != "" && this.pipe != null)
+            {
+                using (NamedPipeServerStream pipeServer =
+           new NamedPipeServerStream("Player_Pipe_Server" + this.pipe, PipeDirection.In))
+                {
+                    pipeServer.WaitForConnection();
+
+                    using (StreamReader sr = new StreamReader(pipeServer))
+                    {
+                        string temp;
+                        while ((temp = sr.ReadLine()) != null)
+                        {
+                            Console.WriteLine("Received from server: {0}", temp);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void SendToGUI(string message)
+        {
+            using (NamedPipeClientStream pipeClient =
+            new NamedPipeClientStream(".", "GM_Pipe_Server", PipeDirection.Out))
+            {
+                pipeClient.Connect();
+                try
+                {
+                    using (StreamWriter sw = new StreamWriter(pipeClient))
+                    {
+                        sw.AutoFlush = true;
+                        sw.WriteLine(message);
+                    }
+                }
+                catch (IOException e)
+                {
+                    Console.WriteLine("ERROR: {0}", e.Message);
+                }
+            }
+        }
+        #endregion
 
         public void Move(Direction x)
         {
