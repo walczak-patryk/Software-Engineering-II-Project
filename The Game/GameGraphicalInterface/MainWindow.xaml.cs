@@ -30,6 +30,7 @@ namespace GameGraphicalInterface
         public GameMasterBoard GMboard;
         DispatcherTimer PTimer;
         DispatcherTimer PrintTimer;
+        DispatcherTimer MsgTimer;
         //To be changed to GameMasterConfiguration and GameMaster
         double shamChance;
         int maxPieces;
@@ -37,6 +38,8 @@ namespace GameGraphicalInterface
         System.Drawing.Point[] goals;
         public List<Player> players;
         //=======
+        bool generated;
+        string GMmsg;
         public MainWindow()
         {
             InitializeComponent();
@@ -46,6 +49,13 @@ namespace GameGraphicalInterface
             initPieces = 3;
             goals = new System.Drawing.Point[] { new System.Drawing.Point(3, 0), new System.Drawing.Point(3, 2) };
             players = new List<Player>();
+            generated = false;
+            GMmsg = "";
+            var t = Task.Run(() =>
+            {
+                while (true)
+                    this.ReceiveFromGM();
+            });
         }
 
         public MainWindow(GameMasterBoard gmboard, double shamProb, int maxPieces, int initPieces, System.Drawing.Point[] goals)
@@ -57,6 +67,8 @@ namespace GameGraphicalInterface
             this.initPieces = initPieces;
             this.goals = goals;
             players = new List<Player>();
+            generated = false;
+            GMmsg = "";
             var t = Task.Run(() =>
             {
                 while (true)
@@ -93,6 +105,7 @@ namespace GameGraphicalInterface
 
         private void ReceiveFromGM()
         {
+            string res = "";
             using (NamedPipeServerStream pipeServer =
             new NamedPipeServerStream("GUI_Pipe_Server", PipeDirection.In))
             {
@@ -102,10 +115,13 @@ namespace GameGraphicalInterface
                     string temp;
                     while ((temp = sr.ReadLine()) != null)
                     {
+                        res = temp;
                         MessageBox.Show("Received from server: {0}", temp);
                     }
                 }
             }
+            GMmsg = res;
+            return;
         }
 
         private void Send(object sender, RoutedEventArgs e)
@@ -139,40 +155,50 @@ namespace GameGraphicalInterface
 
         private void GenerateBoard(object sender, RoutedEventArgs e)
         {
-            if (GMboard == null)
-                GMboard = new GameMasterBoard(Int32.Parse(bwidthBox.Text), Int32.Parse(goalhBox.Text), Int32.Parse(taskhBox.Text));
-
-            bwidthBox.IsReadOnly = true;
-            goalhBox.IsReadOnly = true;
-            taskhBox.IsReadOnly = true;
-
-            if(PTimer == null)
+            try
             {
-                PTimer = new DispatcherTimer();
-                PTimer.Interval = TimeSpan.FromSeconds(30);
-                PTimer.Tick += OnTimedEvent;
-                PTimer.Start();
-            }
+                if (GMboard == null)
+                    GMboard = new GameMasterBoard(Int32.Parse(bwidthBox.Text), Int32.Parse(goalhBox.Text), Int32.Parse(taskhBox.Text));
 
-            if (PrintTimer == null)
-            {
-                PrintTimer = new DispatcherTimer();
-                PrintTimer.Interval = TimeSpan.FromSeconds(1);
-                PrintTimer.Tick += OnTimedEvent2;
-                PrintTimer.Start();
-            }
+                bwidthBox.IsReadOnly = true;
+                goalhBox.IsReadOnly = true;
+                taskhBox.IsReadOnly = true;
 
-            if (goals != null)
-            {
-                foreach (var i in goals)
+                if (PTimer == null)
                 {
-                    GMboard.SetGoal(new Position(i.X, i.Y));
-                    GMboard.SetGoal(new Position(i.X, i.Y + GMboard.taskAreaHeight + GMboard.goalAreaHeight));
+                    PTimer = new DispatcherTimer();
+                    PTimer.Interval = TimeSpan.FromSeconds(30);
+                    PTimer.Tick += OnTimedEvent;
+                    PTimer.Start();
                 }
-            }
 
-            for (int i = 0; i < initPieces; i++)
-                GMboard.generatePiece(shamChance, initPieces);
+                if (PrintTimer == null)
+                {
+                    PrintTimer = new DispatcherTimer();
+                    PrintTimer.Interval = TimeSpan.FromSeconds(1);
+                    PrintTimer.Tick += OnTimedEvent2;
+                    PrintTimer.Start();
+                }
+
+                if (goals != null)
+                {
+                    foreach (var i in goals)
+                    {
+                        GMboard.SetGoal(new Position(i.X, i.Y));
+                        GMboard.SetGoal(new Position(i.X, i.Y + GMboard.taskAreaHeight + GMboard.goalAreaHeight));
+                    }
+                }
+
+                for (int i = 0; i < initPieces; i++)
+                    GMboard.generatePiece(shamChance, initPieces);
+
+                generated = true;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
         }
 
         private void OnTimedEvent(object sender, EventArgs e)
@@ -189,6 +215,9 @@ namespace GameGraphicalInterface
 
         private void PrintBoard(object sender, RoutedEventArgs e)
         {
+            if (!generated)
+                return;
+
             if(panel.Children.Count == 0)
             {
                 panel.Children.Clear();
@@ -281,6 +310,30 @@ namespace GameGraphicalInterface
         private void StartServer()
         {
             throw new NotImplementedException();
+        }
+
+        private void Listen(object sender, RoutedEventArgs e)
+        {
+            if (MsgTimer == null)
+            {
+                MsgTimer = new DispatcherTimer();
+                MsgTimer.Interval = TimeSpan.FromSeconds(1);
+                MsgTimer.Tick += OnTimedEvent3;
+                MsgTimer.Start();
+            }
+            //plName.Text = GMmsg;
+        }
+
+        private void OnTimedEvent3(object sender, EventArgs e)
+        {
+            if (GMmsg != "")
+            {
+                if (GMmsg == "msg generate board")
+                    GenerateBoard(this, e as RoutedEventArgs);
+                if (GMmsg == "msg print board")
+                    PrintBoard(this, e as RoutedEventArgs);
+                GMmsg = "";
+            }
         }
 
     }

@@ -14,7 +14,7 @@ namespace GameMaster.Boards
 
         public GameMasterBoard(int boardWidth, int goalAreaHeight, int taksAreaHeight) : base(boardWidth, goalAreaHeight, taksAreaHeight)
         {
-            piecesPositions = new SortedSet<Position>();
+            piecesPositions = new HashSet<Position>();
         }
 
         public Position PlayerMove(PlayerDTO player, Direction direction) { return new Position(); }

@@ -33,7 +33,7 @@
 
         public Player GetLeader()
         {
-            return new Player(1,"name",new Team(),false);
+            return new Player(1,new Team(),false);
         }   
     }
 
