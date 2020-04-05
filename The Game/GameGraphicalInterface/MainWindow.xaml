@@ -41,6 +41,7 @@
             <ComboBoxItem Content="Blue"/>
         </ComboBox>
         <Button Content="Create Player" Grid.Column="1" Margin="5,215,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="CreatePlayer"/>
+        <Button Content="Start Listening" Grid.Column="1" Margin="5,240,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Listen"/>
 
 
     </Grid>

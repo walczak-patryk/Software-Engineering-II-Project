@@ -29,7 +29,7 @@ namespace GameGraphicalInterface
         {
             main = wind;
             Random rand = new Random();
-            player = new Player(rand.Next() % 50 , name, team, false);
+            player = new Player(rand.Next() % 50 , team, false);
             InitializeComponent();
             SetInfo(name, team);
             playerBoard = new Board(main.GMboard.boardWidth, main.GMboard.goalAreaHeight, main.GMboard.taskAreaHeight);

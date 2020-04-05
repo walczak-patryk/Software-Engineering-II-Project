@@ -53,7 +53,7 @@ namespace GameMaster
         {
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = "GameGraphicalInterface.exe";
-            psi.Arguments = new MainWindow(board, configuration.shamProbability, configuration.maxPieces, configuration.initialPieces, configuration.predefinedGoalPositions).ReturnPath();
+            //psi.Arguments = new MainWindow(board, configuration.shamProbability, configuration.maxPieces, configuration.initialPieces, configuration.predefinedGoalPositions).ReturnPath();
             psi.UseShellExecute = true;
             this.GuiWindow = Process.Start(psi);
         }
@@ -102,7 +102,7 @@ namespace GameMaster
         {
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = "GamePlayer.exe";
-            psi.Arguments = new Player(1,"1", new Team(),true).ReturnPath();
+            psi.Arguments = new Player(1, new Team(),true).ReturnPath();
             psi.UseShellExecute = true;
             Process.Start(psi);
         }
