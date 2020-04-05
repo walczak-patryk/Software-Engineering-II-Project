@@ -140,7 +140,7 @@ namespace GameMaster
         public bool TakePiece(string playerGUID)
         {
 
-            Cell cell = new Cell();
+            //Cell cell = new Cell();
             foreach (var elem in board.cellsGrid)
             {
                 if(elem.GetPlayerGuid()==playerGUID)
@@ -240,7 +240,7 @@ namespace GameMaster
             return false;
         }
 
-        public void PlacePiece(string playerGUID)
+        public bool PlacePiece(string playerGUID)
         {
             int playerX = -1;
             int playerY = -1;
@@ -280,12 +280,33 @@ namespace GameMaster
                 {
                     Cell cell = board.GetCell(position);
                     cell.SetCellState(CellState.Goal);
+                    return true;
                 }
             }
+
+            return false;
         }
 
 
+        public bool processMessage(string message)
+        {
+            string[] messageSplit = message.Split("_");
+            string playerGUID = messageSplit[0];
+            ActionType action = (ActionType)int.Parse(messageSplit[1]);
 
+            switch(action)
+            {
+                case ActionType.Move:
+                    {
+                        break;
+                    }
+
+
+            }
+
+
+
+        }
 
 
 
