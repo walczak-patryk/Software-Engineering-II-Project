@@ -38,7 +38,7 @@ namespace GameMaster.Boards
             for (int i = 0; i < boardWidth; i++)
             {
                 for (int j = 0; j < boardHeight; j++)
-                    cellsGrid[i, j] = new Cell();
+                    cellsGrid[i, j] = new Cell(Math.Max(boardWidth, goalAreaHeight + taskAreaHeight));
             }
         }
     }
