@@ -33,10 +33,12 @@ namespace GameMaster
             p.SendToGM("I work");
             while (true)
             {
-                string message = p.id.ToString();
+                string message = p.id.ToString() +  "_";
                 message += p.AIMove();
                 p.SendToGM(message);
+                Console.WriteLine("I'm sending to GM: " + message);
                 string response = p.ReceiveFromGM();
+                Console.WriteLine("I received from GM: " + response);
                 if(response.Split("_")[1] == "4")
                 {
                     p.Discover(p.ParseDiscover(response.Split("_")[2]));
