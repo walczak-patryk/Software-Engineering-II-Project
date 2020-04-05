@@ -33,18 +33,48 @@ namespace GameMaster
             while (true)
             {
                 string message = p.id.ToString() +  "_";
-                message += p.AIMove();
+                string action = p.AIMove();
+                message += action;
                 p.SendToGM(message);
                 Console.WriteLine("I'm sending to GM: " + message);
                 string response = p.ReceiveFromGM();
                 Console.WriteLine("I received from GM: " + response);
-                if (response.Split("_").Length < 2)
+                if (response.Split("_").Length < 3)
                     Console.WriteLine("Error while receiveing response from GM");
                 else
                 {
-                    if (response.Split("_")[1] == "4")
+                    string[] responses = response.Split("_");
+                    if (responses[1] == "4")
                     {
-                        p.Discover(p.ParseDiscover(response.Split("_")[2]));
+                        p.Discover(p.ParseDiscover(responses[2]));
+                        p.turnsSinceDiscover = 0;
+                    }
+                    else if(responses[1] == "0")
+                    {
+                        if (responses[2] == "OK")
+                        {
+                            p.Move((Direction)int.Parse(action.Split("_")[1]));
+                            p.turnsSinceDiscover++;
+                        }
+                    }
+                    else if(responses[1] == "1")
+                    {
+                        if (responses[2] == "T")
+                            p.board.cellsGrid[p.position.x, p.position.y].SetCellState(CellState.Piece);
+                        else
+                            p.board.cellsGrid[p.position.x, p.position.y].SetCellState(CellState.Sham);
+                        p.TakePiece();
+                        p.turnsSinceDiscover++;
+                    }
+                    else if(responses[1] == "2")
+                    {
+                        p.TestPiece();
+                        p.turnsSinceDiscover++;
+                    }
+                    else if(responses[1] == "3")
+                    {
+                        p.PlacePiece();
+                        p.turnsSinceDiscover++;
                     }
                 }
             }
@@ -170,9 +200,9 @@ namespace GameMaster
         {
             List<int> distances = new List<int>();
             string[] distancesString = response.Split(",");
-            foreach(string s in distancesString)
+            foreach (string s in distancesString)
             {
-                distances.Add(Int32.Parse(s));
+                distances.Add(int.Parse(s));
             }
             return distances;
         }
@@ -264,8 +294,6 @@ namespace GameMaster
             {
                 if (turnsSinceDiscover > 0)
                 {
-                    //Discover();
-                    turnsSinceDiscover = 0;
                     return "4";
                 }
                 else
@@ -297,90 +325,64 @@ namespace GameMaster
                             {
                                 if (rand.Next() % 2 == 0)
                                 {
-                                    Move(Direction.Left);
-                                    turnsSinceDiscover++;
                                     return "0_2";
                                 }
 
                                 else
                                 {
-                                    Move(Direction.Up);
-                                    turnsSinceDiscover++;
                                     return "0_0";
                                 }
                             }
                         case 1:
                             {
-                                Move(Direction.Up);
-                                turnsSinceDiscover++;
                                 return "0_0";
                             }
                         case 2:
                             {
                                 if (rand.Next() % 2 == 0)
                                 {
-                                    Move(Direction.Right);
-                                    turnsSinceDiscover++;
                                     return "0_3";
                                 }
                                 else
                                 {
-                                    Move(Direction.Up);
-                                    turnsSinceDiscover++;
                                     return "0_0";
                                 }
                             }
                         case 3:
                             {
-                                Move(Direction.Left);
-                                turnsSinceDiscover++;
                                 return "0_2";
                             }
                         case 4:
                             {
-                                TakePiece();
-                                turnsSinceDiscover++;
                                 return "1";
                             }
                         case 5:
                             {
-                                Move(Direction.Right);
-                                turnsSinceDiscover++;
                                 return "0_3";
                             }
                         case 6:
                             {
                                 if (rand.Next() % 2 == 0)
                                 {
-                                    Move(Direction.Left);
-                                    turnsSinceDiscover++;
                                     return "0_2";
                                 }
                                 else
                                 {
-                                    Move(Direction.Down);
-                                    turnsSinceDiscover++;
                                     return "0_1";
                                 }
                             }
                         case 7:
                             {
-                                Move(Direction.Down);
-                                turnsSinceDiscover++;
                                 return "0_1";
                             }
                         case 8:
                             {
                                 if (rand.Next() % 2 == 0)
                                 {
-                                    Move(Direction.Right);
-                                    turnsSinceDiscover++;
                                     return "0_3";
                                 }
                                 else
                                 {
-                                    Move(Direction.Down);
-                                    turnsSinceDiscover++;
                                     return "0_1";
                                 }
                             }
@@ -392,8 +394,6 @@ namespace GameMaster
             {
                 if (!isDiscovered)
                 {
-                    TestPiece();
-                    turnsSinceDiscover++;
                     return "2";
                 }
                 else
@@ -402,8 +402,6 @@ namespace GameMaster
                     {
                         if (position.y < board.taskAreaHeight + board.goalAreaHeight)
                         {
-                            Move(Direction.Up);
-                            turnsSinceDiscover++;
                             return "0_0";
                         }
                         else
@@ -411,14 +409,10 @@ namespace GameMaster
                             if (board.GetCell(position).GetCellState() == CellState.Goal)
                             {
                                 int dir = rand.Next() % 3;
-                                Move(Direction.Up + dir);
-                                turnsSinceDiscover++;
                                 return "0_" + dir.ToString();
                             }
                             else
                             {
-                                PlacePiece();
-                                turnsSinceDiscover++;
                                 return "3";
                             }
                         }
@@ -427,8 +421,6 @@ namespace GameMaster
                     {
                         if (position.y > board.goalAreaHeight)
                         {
-                            Move(Direction.Down);
-                            turnsSinceDiscover++;
                             return "0_1";
                         }
                         else
@@ -436,14 +428,10 @@ namespace GameMaster
                             if (board.GetCell(position).GetCellState() == CellState.Goal)
                             {
                                 int dir = rand.Next() % 3;
-                                Move(Direction.Up + dir);
-                                turnsSinceDiscover++;
                                 return "0_" + dir.ToString();
                             }
                             else
                             {
-                                PlacePiece();
-                                turnsSinceDiscover++;
                                 return "3";
                             }
                         }
