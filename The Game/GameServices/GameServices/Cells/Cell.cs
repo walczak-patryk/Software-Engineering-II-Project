@@ -12,10 +12,10 @@ namespace GameMaster.Cells
         private int distance;
         private string playerGuid;
 
-        public Cell()
+        public Cell(int maxsize)
         {
             cellState = CellState.Empty;
-            distance = 0;
+            distance = maxsize;
             playerGuid = null;
         }
 
@@ -42,6 +42,11 @@ namespace GameMaster.Cells
         public Field GetField(Position position)
         {
             return null;
+        }
+
+        public int GetDistance()
+        {
+            return distance;
         }
     }
 }
