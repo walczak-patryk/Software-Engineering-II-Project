@@ -14,7 +14,7 @@ namespace GameMaster.Boards
 
         public GameMasterBoard(int boardWidth, int goalAreaHeight, int taksAreaHeight) : base(boardWidth, goalAreaHeight, taksAreaHeight)
         {
-            piecesPositions = new HashSet<Position>();
+            piecesPositions = new SortedSet<Position>();
         }
 
         public Position PlayerMove(PlayerDTO player, Direction direction) { return new Position(); }
@@ -52,7 +52,27 @@ namespace GameMaster.Boards
         public Position PlacePlayer(PlayerDTO playerDTO) { return new Position(); }
         public void CheckWinCondition(TeamColor teamColor) { }
         public List<Field> Discover(Position position) { return new List<Field>(); }
-        public int ManhattanDistanceTwoPoints(Point pointA, Point pointB) { return 1; }
+        public List<int> ManhattanDistance(Position playerPosition) {
+            List<int> list = new List<int>();
+            for (int j = -1; j <= 1; j++)
+            {
+                for (int i = -1; i <= 1; i++)
+                {
+                    if (playerPosition.x + i < 0 || playerPosition.x + i > boardWidth || playerPosition.y + j < taskAreaHeight || playerPosition.y + j > boardHeight + taskAreaHeight)
+                        list.Add(Math.Max(boardWidth, boardHeight + taskAreaHeight));
+                    else
+                    {
+                        int distance = Math.Max(boardWidth, boardHeight + taskAreaHeight);
+                        foreach (var piece in piecesPositions) {
+                            if (distance > Math.Abs(playerPosition.x + i - piece.x) + Math.Abs(playerPosition.y + j - piece.y))
+                                distance = Math.Abs(playerPosition.x + i - piece.x) + Math.Abs(playerPosition.y + j - piece.y);
+                        }
+                        list.Add(distance);
+                    }
+                }
+            }
+            return list;
+        }
     }
 
     public enum PlacementResult{
