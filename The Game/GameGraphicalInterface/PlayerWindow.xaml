@@ -73,10 +73,10 @@
 
                                 <Button Name="pickButton" Grid.Row="0" Width="25" Height="15" FontSize="8" Click="pickButton_Click">Pick</Button>
                                 <Button Name="placeButton" Grid.Row="0" Width="25" Height="10" FontSize="6" Visibility="Hidden" Click="placeButton_Click">Place</Button>
-                                <Button Name="testButton" Grid.Row="1" Width="25" Height="10" FontSize="6" Visibility="Collapsed">Test</Button>
+                                <Button Name="testButton" Grid.Row="1" Width="25" Height="10" FontSize="6" Visibility="Collapsed" Click="testButton_Click">Test</Button>
                             </Grid>
 
-                            <Button Grid.Row="1" Grid.Column="1" Height="15" Width="28" FontSize="6">Discover</Button>
+                            <Button Grid.Row="1" Grid.Column="1" Height="15" Width="28" FontSize="6" Click="Discover_Click">Discover</Button>
 
                         </Grid>
                     </Border>

@@ -10,11 +10,11 @@ namespace GameMaster.Boards
     public class GameMasterBoard : Board
     {
 
-        ISet<Position> piecesPositions;
+        public List<Position> piecesPositions;
 
         public GameMasterBoard(int boardWidth, int goalAreaHeight, int taksAreaHeight) : base(boardWidth, goalAreaHeight, taksAreaHeight)
         {
-            piecesPositions = new HashSet<Position>();
+            piecesPositions = new List<Position>();
         }
 
         public Position PlayerMove(PlayerDTO player, Direction direction) { return new Position(); }
@@ -36,6 +36,11 @@ namespace GameMaster.Boards
             Position pos = new Position();
             pos.x = x;
             pos.y = y + goalAreaHeight;
+            while (piecesPositions.Find(p => p.x == pos.x && p.y == pos.y) != null)
+            {
+                pos.x = random.Next() % boardWidth;
+                pos.y = random.Next() % taskAreaHeight + goalAreaHeight;
+            }
             piecesPositions.Add(pos);
 
             if (random.NextDouble() < chance)
@@ -46,7 +51,7 @@ namespace GameMaster.Boards
             return pos; 
         }
         public void SetGoal(Position position) {
-            GetCell(position).SetCellState(CellState.Goal);
+            GetCell(position).SetCellState(CellState.Valid);
         }
         public PlacementResult PlacePiece(Position position) { return PlacementResult.Correct; }
         public Position PlacePlayer(PlayerDTO playerDTO) { return new Position(); }
@@ -58,11 +63,11 @@ namespace GameMaster.Boards
             {
                 for (int i = -1; i <= 1; i++)
                 {
-                    if (playerPosition.x + i < 0 || playerPosition.x + i > boardWidth || playerPosition.y + j < taskAreaHeight || playerPosition.y + j > boardHeight + taskAreaHeight)
+                    if (playerPosition.x + i < 0 || playerPosition.x + i >= boardWidth || playerPosition.y + j < goalAreaHeight || playerPosition.y + j >= goalAreaHeight + taskAreaHeight)
                         list.Add(Math.Max(boardWidth, boardHeight + taskAreaHeight));
                     else
                     {
-                        int distance = Math.Max(boardWidth, boardHeight + taskAreaHeight);
+                        int distance = Math.Max(boardWidth, boardHeight);
                         foreach (var piece in piecesPositions) {
                             if (distance > Math.Abs(playerPosition.x + i - piece.x) + Math.Abs(playerPosition.y + j - piece.y))
                                 distance = Math.Abs(playerPosition.x + i - piece.x) + Math.Abs(playerPosition.y + j - piece.y);
