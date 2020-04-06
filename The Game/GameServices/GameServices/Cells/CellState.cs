@@ -7,6 +7,7 @@
         Piece,
         Sham,
         Valid,
-        Unknown
+        Unknown,
+        NoGoal
     }
 }

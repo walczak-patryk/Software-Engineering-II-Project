@@ -32,14 +32,17 @@ namespace GameGraphicalInterface
         DispatcherTimer PrintTimer;
         DispatcherTimer MsgTimer;
         //To be changed to GameMasterConfiguration and GameMaster
-        double shamChance;
-        int maxPieces;
+        public double shamChance;
+        public int maxPieces;
         int initPieces;
         System.Drawing.Point[] goals;
         public List<Player> players;
+        List<PlayerWindow> playerWs;
         //=======
         bool generated;
         string GMmsg;
+        public int redScore;
+        public int blueScore;
         public MainWindow()
         {
             InitializeComponent();
@@ -56,6 +59,9 @@ namespace GameGraphicalInterface
                 while (true)
                     this.ReceiveFromGM();
             });
+            redScore = 0;
+            blueScore = 0;
+            playerWs = new List<PlayerWindow>();
         }
 
         public MainWindow(GameMasterBoard gmboard, double shamProb, int maxPieces, int initPieces, System.Drawing.Point[] goals)
@@ -150,7 +156,7 @@ namespace GameGraphicalInterface
             pos2.y = y + GMboard.taskAreaHeight + GMboard.goalAreaHeight;
             
             GMboard.SetGoal(pos);
-            GMboard.SetGoal(pos2);
+            GMboard.SetGoal(pos2);          
         }
 
         private void GenerateBoard(object sender, RoutedEventArgs e)
@@ -189,8 +195,8 @@ namespace GameGraphicalInterface
                     }
                 }
 
-                for (int i = 0; i < initPieces; i++)
-                    GMboard.generatePiece(shamChance, initPieces);
+                for (int i = 0; i < maxPieces; i++)
+                    GMboard.generatePiece(shamChance, maxPieces);
 
                 generated = true;
             }
@@ -203,14 +209,28 @@ namespace GameGraphicalInterface
 
         private void OnTimedEvent(object sender, EventArgs e)
         {
-            for(int i = 0; i < maxPieces; i++)
+            int pi = GMboard.piecesPositions.Count();
+            for(int i = pi; i < maxPieces; i++)
                 GMboard.generatePiece(shamChance, maxPieces);
             PrintBoard(this, e as RoutedEventArgs);
+            foreach(var i in players)
+            {
+                for(int j = 0; j < GMboard.boardWidth; j++)
+                {
+                    for (int k = 0; k < GMboard.boardHeight; k++)
+                        //i.board.cellsGrid[j, k].SetDistance(Math.Max(GMboard.boardWidth, GMboard.boardHeight));
+                        i.board.cellsGrid[j, k] = GMboard.cellsGrid[j, k].Copy();
+                }
+            }
         }
 
         private void OnTimedEvent2(object sender, EventArgs e)
         {
             PrintBoard(this, e as RoutedEventArgs);
+            if (redScore == goals.Length)
+                Display.Content = "Read Team has Won!!!";
+            if (blueScore == goals.Length)
+                Display.Content = "Blue Team has Won!!!";
         }
 
         private void PrintBoard(object sender, RoutedEventArgs e)
@@ -262,12 +282,24 @@ namespace GameGraphicalInterface
                         txtb.BorderThickness = new Thickness(1);
                     }
 
-                    if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Goal)
+                    if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Valid)
                     {
                         txtb.Text = "G";
                         txtb.Background = Brushes.LightYellow;
                     }
-                    
+
+                    if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Goal)
+                    {
+                        txtb.Text = "YG";
+                        txtb.Background = Brushes.LightYellow;
+                    }
+
+                    if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.NoGoal)
+                    {
+                        txtb.Text = "NG";
+                        txtb.Background = Brushes.White;
+                    }
+
                     if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Piece || GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Sham)
                     {
                         txtb.Text = "P";
@@ -294,6 +326,7 @@ namespace GameGraphicalInterface
         {
             string pName = plName.Text;
             string tStr = plTeam.Text;
+            string strat = StratCb.Text;
 
             Team team = new Team();
             if (tStr == "Red")
@@ -301,7 +334,8 @@ namespace GameGraphicalInterface
             else
                 team.SetColor(TeamColor.Blue);
 
-            PlayerWindow playerWindow = new PlayerWindow(this, pName, team);
+            PlayerWindow playerWindow = new PlayerWindow(this, pName, team, strat);
+            playerWs.Add(playerWindow);
             playerWindow.Show();
         }
 
@@ -336,5 +370,10 @@ namespace GameGraphicalInterface
             }
         }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            foreach (var i in playerWs)
+                i.Close();
+        }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameGraphicalInterface"
         mc:Ignorable="d"
-        Title="The Project Game" Height="600" Width="600" MinWidth="600" MinHeight="600">
+        Title="The Project Game" Height="600" Width="600" MinWidth="600" MinHeight="600" Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -36,12 +36,17 @@
         <Label Grid.Column="1" Margin="100,210,0,0">
             <Button Content="send" Click="Send"/>
         </Label>
-        <ComboBox x:Name="plTeam" Grid.Column="1" Margin="80,185,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedIndex="0">
+        <ComboBox x:Name="plTeam" Grid.Column="1" Margin="5,185,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedIndex="0">
             <ComboBoxItem Content="Red"/>
             <ComboBoxItem Content="Blue"/>
         </ComboBox>
+        <ComboBox x:Name="StratCb" Grid.Column="1" Margin="60,185,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedIndex="0">
+            <ComboBoxItem Content="Player"/>
+            <ComboBoxItem Content="AI"/>
+        </ComboBox>
         <Button Content="Create Player" Grid.Column="1" Margin="5,215,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="CreatePlayer"/>
         <Button Content="Start Listening" Grid.Column="1" Margin="5,240,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Listen"/>
+        <Label x:Name="Display" Grid.Column="1" Margin="0,270,0,0"/>
 
 
     </Grid>
