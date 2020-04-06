@@ -19,6 +19,15 @@ namespace GameMaster.Cells
             playerGuid = null;
         }
 
+        public Cell Copy()
+        {
+            Cell res = new Cell(distance);
+            res.SetCellState(cellState);
+            res.SetDistance(distance);
+            res.SetPlayerGuid(playerGuid);
+            return res;
+        }
+
         public string GetPlayerGuid()
         {
             return this.playerGuid;
