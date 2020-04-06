@@ -17,7 +17,7 @@ namespace GameMaster
         {
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
             Console.WriteLine("Start Game");
-            GM.gm.StartGame();
+            GM.gm.StartGame(); 
             string testString="";
             Console.WriteLine("Test");
             while (testString != "exit")

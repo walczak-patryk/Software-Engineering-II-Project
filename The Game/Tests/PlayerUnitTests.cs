@@ -17,16 +17,17 @@ namespace Tests
             Team team = new Team();
             team.SetColor(TeamColor.Red);
             Position position = new Position(1, 1);
-            Player player = new Player(1,"Test",team,false);
+            Player player = new Player(1,team,false);
 
             GameMasterBoard masterBoard = new GameMasterBoard(10, 5, 10);
             player.board = masterBoard;
+
             player.piece = true;
             player.pieceIsSham = false;
             player.position = position;
 
             
-            Cell cell = new Cell();
+            Cell cell = new Cell(0);
             cell.SetCellState(CellState.Valid);
             player.board.UpdateCell(cell,position);
 
@@ -41,7 +42,7 @@ namespace Tests
             Team team = new Team();
             team.SetColor(TeamColor.Red);
             Position position = new Position(1, 1);
-            Player player = new Player(1, "Test", team, false);
+            Player player = new Player(1, team, false);
 
             GameMasterBoard masterBoard = new GameMasterBoard(10, 5, 10);
             player.board = masterBoard;
@@ -50,7 +51,7 @@ namespace Tests
             player.position = position;
 
 
-            Cell cell = new Cell();
+            Cell cell = new Cell(0);
             cell.SetCellState(CellState.Valid);
             player.board.UpdateCell(cell, position);
 
@@ -65,7 +66,7 @@ namespace Tests
             Team team = new Team();
             team.SetColor(TeamColor.Red);
             Position position = new Position(1, 1);
-            Player player = new Player(1, "Test", team, false);
+            Player player = new Player(1, team, false);
 
             GameMasterBoard masterBoard = new GameMasterBoard(10, 5, 10);
             player.board = masterBoard;
@@ -74,7 +75,7 @@ namespace Tests
             player.position = position;
 
 
-            Cell cell = new Cell();
+            Cell cell = new Cell(0);
             cell.SetCellState(CellState.Unknown);
             player.board.UpdateCell(cell, position);
 
@@ -89,7 +90,7 @@ namespace Tests
             Team team = new Team();
             team.SetColor(TeamColor.Red);
             Position position = new Position(8, 8) ;
-            Player player = new Player(1, "Test", team, false);
+            Player player = new Player(1, team, false);
 
             GameMasterBoard masterBoard = new GameMasterBoard(10, 5, 10);
             player.board = masterBoard;
@@ -98,7 +99,7 @@ namespace Tests
             player.position = position;
 
 
-            Cell cell = new Cell();
+            Cell cell = new Cell(0);
             cell.SetCellState(CellState.Unknown);
             player.board.UpdateCell(cell, position);
 
@@ -112,7 +113,7 @@ namespace Tests
         {
 
             Position position = new Position(8, 8);
-            Player player = new Player(1, "Test", new Team(), false);
+            Player player = new Player(1, new Team(), false);
 
             GameMasterBoard masterBoard = new GameMasterBoard(10, 5, 10);
             player.board = masterBoard;
@@ -121,7 +122,7 @@ namespace Tests
             player.position = position;
 
 
-            Cell cell = new Cell();
+            Cell cell = new Cell(0);
             cell.SetCellState(CellState.Piece);
             player.board.UpdateCell(cell, position);
 
@@ -137,7 +138,7 @@ namespace Tests
         {
 
             Position position = new Position(8, 8);
-            Player player = new Player(1, "Test", new Team(), false);
+            Player player = new Player(1, new Team(), false);
 
             GameMasterBoard masterBoard = new GameMasterBoard(10, 5, 10);
             player.board = masterBoard;
@@ -146,7 +147,7 @@ namespace Tests
             player.position = position;
 
 
-            Cell cell = new Cell();
+            Cell cell = new Cell(0);
             cell.SetCellState(CellState.Sham);
             player.board.UpdateCell(cell, position);
 
@@ -163,7 +164,7 @@ namespace Tests
         {
 
             Position position = new Position(8, 8);
-            Player player = new Player(1, "Test", new Team(), false);
+            Player player = new Player(1, new Team(), false);
 
             GameMasterBoard masterBoard = new GameMasterBoard(10, 5, 10);
             player.board = masterBoard;
@@ -172,7 +173,7 @@ namespace Tests
             player.position = position;
 
 
-            Cell cell = new Cell();
+            Cell cell = new Cell(0);
             cell.SetCellState(CellState.Unknown);
             player.board.UpdateCell(cell, position);
 
