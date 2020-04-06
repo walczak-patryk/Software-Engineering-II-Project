@@ -140,9 +140,56 @@ namespace Tests
         }
 
         [Test]
-        public void ManhattanDistanceWhenNoPiecesOnBoard()
+        public void ManhattanDistanceWhenNoPieceOnBoard()
         {
-            Assert.Pass();
+            GameMasterBoard gmboard = new GameMasterBoard(2, 2, 2);
+            Position player1 = new Position(1, 1);
+            Position player2 = new Position(2, 3);
+            List<int> result1 = gmboard.ManhattanDistance(player1);
+            List<int> result2 = gmboard.ManhattanDistance(player2);
+
+            int max = System.Math.Max(gmboard.boardWidth, gmboard.boardHeight + gmboard.taskAreaHeight);
+            bool no1 = true;
+            bool no2 = true;
+
+            foreach(var dist in result1)
+                if (dist != max)
+                    no1 = false;
+
+            foreach (var dist in result2)
+                if (dist != max)
+                    no2 = false;
+
+            Assert.IsTrue(no1);
+            Assert.IsTrue(no2);
+        }
+
+        [Test]
+        public void ManhattanDistanceWhenOnePieceOnBoard()
+        {
+            GameMasterBoard gmboard = new GameMasterBoard(2, 2, 2);
+            Position player1 = new Position(1, 1);
+            Position player2 = new Position(2, 3);
+
+            Position piece = gmboard.generatePiece(0.25, 2);
+
+            List<int> result1 = gmboard.ManhattanDistance(player1);
+            List<int> result2 = gmboard.ManhattanDistance(player2);
+
+            int max = System.Math.Max(gmboard.boardWidth, gmboard.boardHeight + gmboard.taskAreaHeight);
+            bool no1 = true;
+            bool no2 = true;
+
+            foreach (var dist in result1)
+                if (dist != max)
+                    no1 = false;
+
+            foreach (var dist in result2)
+                if (dist != max)
+                    no2 = false;
+
+            Assert.IsFalse(no1);
+            Assert.IsFalse(no2);
         }
     }
 }
