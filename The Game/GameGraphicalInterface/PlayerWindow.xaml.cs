@@ -389,20 +389,27 @@ namespace GameGraphicalInterface
                     else
                         tested = false;
                 }
-                if (player.position.y > player.board.goalAreaHeight - 1)
+                if (player.position.y > player.board.goalAreaHeight - 1 && player.team.getColor() == TeamColor.Red)
                 {
                     main.GMboard.cellsGrid[player.position.x, player.position.y].SetPlayerGuid(null);
                     player.Move(Direction.Up);
                     main.GMboard.cellsGrid[player.position.x, player.position.y].SetPlayerGuid(player.guid);
                     player.board.cellsGrid[player.position.x, player.position.y].SetPlayerGuid(player.guid);
                 }
-                else if(player.board.cellsGrid[player.position.x, player.position.y].GetCellState() == GameMaster.Cells.CellState.Empty ||
-                    player.board.cellsGrid[player.position.x, player.position.y].GetCellState() == GameMaster.Cells.CellState.Valid )
+                else if (player.position.y < player.board.goalAreaHeight + player.board.taskAreaHeight && player.team.getColor() == TeamColor.Blue)
+                {
+                    main.GMboard.cellsGrid[player.position.x, player.position.y].SetPlayerGuid(null);
+                    player.Move(Direction.Down);
+                    main.GMboard.cellsGrid[player.position.x, player.position.y].SetPlayerGuid(player.guid);
+                    player.board.cellsGrid[player.position.x, player.position.y].SetPlayerGuid(player.guid);
+                }
+                else if (player.board.cellsGrid[player.position.x, player.position.y].GetCellState() == GameMaster.Cells.CellState.Empty ||
+                    player.board.cellsGrid[player.position.x, player.position.y].GetCellState() == GameMaster.Cells.CellState.Valid)
                 {
                     placeButton_Click(this, null);
                     tested = false;
                 }
-                else if(player.board.cellsGrid[player.position.x, player.position.y].GetCellState() == GameMaster.Cells.CellState.Goal ||
+                else if (player.board.cellsGrid[player.position.x, player.position.y].GetCellState() == GameMaster.Cells.CellState.Goal ||
                     player.board.cellsGrid[player.position.x, player.position.y].GetCellState() == GameMaster.Cells.CellState.NoGoal)
                 {
                     Random rand = new Random();
