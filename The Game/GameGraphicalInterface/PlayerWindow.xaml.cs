@@ -208,7 +208,6 @@ namespace GameGraphicalInterface
                 player.pieceIsSham = true;
 
                 main.GMboard.generatePiece(main.shamChance, main.maxPieces);
-
             }
         }
 

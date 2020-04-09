@@ -28,8 +28,17 @@ namespace GameMaster
         public static void Main()
         {
             Console.WriteLine("Player");
-            var p = new Player(1, new Team(), false);
-            p.SendToGM("I work");
+            string start = "";
+            while (start != "start")
+            {
+                Console.Write("type \"start\" to connect to the game\n# ");
+                start = Console.ReadLine();
+            }
+            Random randomizeID = new Random();
+            var p = new Player(randomizeID.Next(), new Team(), false);
+            Console.WriteLine("I'm sending to GM: " + p.id.ToString());
+            p.SendToGM(p.id.ToString());
+            Console.WriteLine("I'm playing");
             while (true)
             {
                 string message = p.id.ToString() +  "_";
@@ -78,8 +87,6 @@ namespace GameMaster
                     }
                 }
             }
-            //Console.ReadLine();
-            //TODO player
         }
 
         public Player(int Id, Team Team, bool IsLeader)
@@ -105,7 +112,6 @@ namespace GameMaster
         }
         private string ReceiveFromGM()
         {
-
                 using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("Player_Pipe_Server" + guid, PipeDirection.In))
                 {
                     pipeServer.WaitForConnection();
