@@ -17,11 +17,11 @@ namespace GameMaster
     {
         private int portNumber;
         private IPAddress IPAddress;
-        private GameMasterBoard board;
+        public GameMasterBoard board;
         private GameMasterStatus status;
         private GameMasterConfiguration configuration;
-        private List<string> teamRedGuids;
-        private List<string> teamBlueGuids;
+        public List<string> teamRedGuids;
+        public List<string> teamBlueGuids;
 
         private Process GuiWindow;
 
@@ -417,7 +417,73 @@ namespace GameMaster
         }
 
 
+        public void SendToGUI() { }
 
+        public string MessageOptionsForGUI()
+        {
+            string message = "o;";
+
+            message += "w," + board.boardWidth.ToString() + ";";
+            message += "h," + board.boardHeight.ToString() + ";";
+            message += "g," + board.goalAreaHeight.ToString() + ";";
+            message += "t," + board.taskAreaHeight.ToString() + ";";
+
+            if(teamRedGuids != null)
+                message += "r," + teamRedGuids.Count.ToString() + ";";
+            else
+                message += "r,0;";
+
+            if (teamBlueGuids != null)
+                message += "b," + teamBlueGuids.Count.ToString() + ";";
+            else
+                message += "b,0;";
+
+            return message;
+        }
+
+        public string MessageStateForGUI()
+        {
+            string message = "s;";
+
+            for(int j = 0; j < board.boardHeight; j++) {
+                for(int i = 0; i < board.boardWidth; i++)
+                {
+                    bool flag = false;
+                    for (int k = 0; teamRedGuids != null && k < teamRedGuids.Count && !flag; k++)
+                    {
+                        if (board.cellsGrid[i, j].GetPlayerGuid() == teamRedGuids[k])
+                        {
+                            message += "7,r," + board.cellsGrid[i, j].GetPlayerGuid() + ",";
+                            flag = true;
+                        }
+                    }
+                    for (int k = 0; teamBlueGuids != null && k < teamBlueGuids.Count && !flag; k++)
+                    {
+                        if (board.cellsGrid[i, j].GetPlayerGuid() == teamBlueGuids[k])
+                        {
+                            message += "7,b," + board.cellsGrid[i, j].GetPlayerGuid() + ",";
+                            flag = true;
+                        }
+                    }
+                    if(!flag)
+                        message += ((int)(board.cellsGrid[i, j].GetCellState())).ToString() + ",";
+                }
+            }
+
+            message = message.Substring(0, message.Length - 1);
+            message += ";";
+
+            return message;
+        }
+
+        public string MessageEndForGUI() 
+        {
+            string message = "e;";
+
+            message += "End;";
+
+            return message;
+        }
 
     }
 }

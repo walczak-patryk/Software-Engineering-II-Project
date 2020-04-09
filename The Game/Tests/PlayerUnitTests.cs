@@ -184,7 +184,6 @@ namespace Tests
 
         }
 
-
         //[Test]
         //public void GivenPlayerMove()
         //{
