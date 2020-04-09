@@ -156,33 +156,26 @@ namespace GameMaster
             return true;
         }
 
-        public bool Move(string playerGUID,Direction direction)
+        private Position FindPlayer(string playerGUID)
         {
-            int playerX = -1;
-            int playerY = -1;
-            bool playerFound = false;
-            for(int x=0;x<board.boardWidth;x++)
+            for (int x = 0; x < board.boardWidth; x++)
             {
-                for(int y=0; y<board.boardHeight;y++)
+                for (int y = 0; y < board.boardHeight; y++)
                 {
-                    if(board.cellsGrid[x,y].GetPlayerGuid()==playerGUID)
+                    if (board.cellsGrid[x, y].GetPlayerGuid() == playerGUID)
                     {
-                        playerX = x;
-                        playerY = y;
-                        playerFound = true;
-                        break;
+                        return new Position(x, y);
                     }
                 }
-                if(playerFound)
-                {
-                    break;
-                }
             }
+            return null;
+        }
 
-
-
-            int destinationX = playerX;
-            int destinationY = playerY;
+        public bool Move(string playerGUID,Direction direction)
+        {
+            Position playerPosition = FindPlayer(playerGUID);
+            int destinationX = playerPosition.x;
+            int destinationY = playerPosition.y;
             if (direction == Direction.Right)
             {
                 destinationX++;
@@ -209,7 +202,6 @@ namespace GameMaster
                 teamColor = TeamColor.Blue;
             }
 
-            Position playerPosition = new Position(playerX, playerY);
             Position destinationPosition = new Position(destinationX, destinationY);
             switch (teamColor)
             {
@@ -245,26 +237,7 @@ namespace GameMaster
 
         public bool PlacePiece(string playerGUID)
         {
-            int playerX = -1;
-            int playerY = -1;
-            bool playerFound = false;
-            for (int x = 0; x < board.boardWidth; x++)
-            {
-                for (int y = 0; y < board.boardHeight; y++)
-                {
-                    if (board.cellsGrid[x, y].GetPlayerGuid() == playerGUID)
-                    {
-                        playerX = x;
-                        playerY = y;
-                        playerFound = true;
-                        break;
-                    }
-                }
-                if (playerFound)
-                {
-                    break;
-                }
-            }
+            Position playerPosition = FindPlayer(playerGUID);
 
             TeamColor teamColor;
             if (teamRedGuids.Contains(playerGUID))
@@ -275,9 +248,9 @@ namespace GameMaster
             {
                 teamColor = TeamColor.Blue;
             }
-            Position position = new Position(playerX, playerY);
-            if ((teamColor == TeamColor.Red && playerX < board.goalAreaHeight) ||
-                (teamColor == TeamColor.Blue && playerY >= board.boardHeight - board.goalAreaHeight))
+            Position position = new Position(playerPosition.x, playerPosition.y);
+            if ((teamColor == TeamColor.Red && playerPosition.x < board.goalAreaHeight) ||
+                (teamColor == TeamColor.Blue && playerPosition.y >= board.boardHeight - board.goalAreaHeight))
             {
                 if (board.GetCell(position).GetCellState() == CellState.Valid)
                 {
