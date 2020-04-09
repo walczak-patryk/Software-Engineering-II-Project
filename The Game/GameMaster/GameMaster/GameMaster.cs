@@ -101,6 +101,87 @@ namespace GameMaster
         }
         #endregion
         #region Players Managment
+
+        string ParsePlayerAction(string message)
+        {
+            string[] messages = message.Split("_");
+            if (messages.Length < 2)
+                Console.WriteLine("Error");
+            if (messages[1] == "0")
+            {
+                if (messages.Length < 3)
+                {
+                    Console.WriteLine("Error Move");
+                    return "NO";
+                }
+                return DecideMove(messages[0], messages[2]);
+            }
+            else if (messages[1] == "1")
+            {
+                return DecideTake(messages[0]);
+            }
+            else if (messages[1] == "2")
+            {
+                return "OK";
+            }
+            else if (messages[1] == "3")
+            {
+                return DecidePlace(messages[0]);
+            }
+            else if (messages[1] == "4")
+            {
+                return DecideDiscover(messages[0]);
+            }
+            else
+                return "NO";
+        }
+
+        string DecideMove(string guid, string dir)
+        {
+            if (dir != "0" && dir != "1" && dir != "2" && dir != "3")
+                return "NO";
+            if (Move(guid, Direction.Up + int.Parse(dir)))
+                return "OK";
+            else
+                return "NO";
+        }
+
+        string DecideTake(string guid)
+        {
+            if (TakePiece(guid))
+                return "T";
+            else
+                return "F";
+        }
+
+        string DecideDiscover(string guid)
+        {
+            Position playerPosition = FindPlayer(guid);
+            if (playerPosition == null)
+                return "NO";
+            else
+            {
+                List<int> list = board.ManhattanDistance(playerPosition);
+                string distances = "";
+                foreach(int elem in list)
+                {
+                    distances += (elem.ToString() + ",");
+                }
+                if (distances.Split(",").Length != 9)
+                    return "NO";
+                else
+                    return distances;
+            }
+        }
+
+        string DecidePlace(string guid)
+        {
+            if (PlacePiece(guid))
+                return "T";
+            else
+                return "F";
+        }
+
         void StartPlayer()
         {
             ProcessStartInfo psi = new ProcessStartInfo();
@@ -143,17 +224,23 @@ namespace GameMaster
         public bool TakePiece(string playerGUID)
         {
 
-            //Cell cell = new Cell();
             foreach (var elem in board.cellsGrid)
             {
                 if(elem.GetPlayerGuid()==playerGUID)
                 {
-                    elem.SetCellState(CellState.Empty);
-                    break;
+                    if(elem.GetCellState() == CellState.Piece)
+                    {
+                        elem.SetCellState(CellState.Empty);
+                        return true;
+                    }
+                    else
+                    {
+                        elem.SetCellState(CellState.Empty);
+                        return false;
+                    }
                 }
             }
-
-            return true;
+            return false;
         }
 
         private Position FindPlayer(string playerGUID)
