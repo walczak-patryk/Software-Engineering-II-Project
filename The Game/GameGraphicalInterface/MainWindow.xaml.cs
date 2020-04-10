@@ -12,6 +12,7 @@ using GameMaster;
 using System.IO.Pipes;
 using System.IO;
 using System.Threading;
+using GameMaster.Cells;
 
 namespace GameGraphicalInterface
 {
@@ -399,6 +400,107 @@ namespace GameGraphicalInterface
         {
             foreach (var i in playerWs)
                 i.Close();
+        }
+
+        private void ParseMessageFromGUI(string message)
+        {
+            string[] parts = message.Split(";");
+            if ("o" == parts[0])
+            {
+                int width, height, goalHeight, taskHeight, red, blue;
+                for(int i = 1; i < parts.Length; i++) {
+                    string[] option = parts[i].Split(",");
+                    switch(option[0])
+                    {
+                        case "w":
+                            width = int.Parse(option[1]);
+                            break;
+                        case "h":
+                            height = int.Parse(option[1]);
+                            break;
+                        case "g":
+                            goalHeight = int.Parse(option[1]);
+                            break;
+                        case "t":
+                            taskHeight = int.Parse(option[1]);
+                            break;
+                        case "r":
+                            red = int.Parse(option[1]);
+                            break;
+                        case "b":
+                            blue = int.Parse(option[1]);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            else if ("s" == parts[0])
+            {
+                int width = GMboard.boardWidth;
+                int height = GMboard.boardHeight;
+                Cell[,] cells = new Cell[width, height];
+
+                string[] update = parts[1].Split(",");
+
+                List<string> players = new List<string>();
+
+                int indx = 0;
+
+                while (indx < update.Length)
+                {
+                    for (int j = 0; j < height; j++)
+                    {
+                        for (int i = 0; i < width; i++)
+                        {
+                            switch (update[indx])
+                            {
+                                case "0":
+                                    cells[i, j] = new Cell(0);
+                                    cells[i, j].SetCellState(CellState.Empty);
+                                    break;
+                                case "1":
+                                    cells[i, j] = new Cell(0);
+                                    cells[i, j].SetCellState(CellState.Goal);
+                                    break;
+                                case "2":
+                                    cells[i, j] = new Cell(0);
+                                    cells[i, j].SetCellState(CellState.Piece);
+                                    break;
+                                case "3":
+                                    cells[i, j] = new Cell(0);
+                                    cells[i, j].SetCellState(CellState.Sham);
+                                    break;
+                                case "4":
+                                    cells[i, j] = new Cell(0);
+                                    cells[i, j].SetCellState(CellState.Valid);
+                                    break;
+                                case "5":
+                                    cells[i, j] = new Cell(0);
+                                    cells[i, j].SetCellState(CellState.Unknown);
+                                    break;
+                                case "6":
+                                    cells[i, j] = new Cell(0);
+                                    cells[i, j].SetCellState(CellState.NoGoal);
+                                    break;
+                                case "7":
+                                    cells[i, j] = new Cell(0);
+                                    cells[i, j].SetCellState(CellState.Empty);
+                                    string p = i.ToString() + "," + j.ToString() + "," + update[++indx] + "," + update[++indx];
+                                    players.Add(p);
+                                    break;
+                            }
+                            indx++;
+                        }
+                    }
+                }
+            }
+            else if ("e" == parts[0])
+            {
+                // Message with final stats, end game.
+            }
+            else
+                throw new Exception("No option symbol in the message.");
         }
     }
 }
