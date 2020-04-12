@@ -38,6 +38,13 @@ namespace GameGraphicalInterface
         bool newMsg;
         public int redScore;
         public int blueScore;
+
+        // For tests
+        int width, height, goalHeight, taskHeight, red, blue;
+        Cell[,] cells;
+        List<string> playersList;
+        //
+
         public MainWindow()
         {
             InitializeComponent();
@@ -402,12 +409,11 @@ namespace GameGraphicalInterface
                 i.Close();
         }
 
-        private void ParseMessageFromGUI(string message)
+        private void ParseMessageFromGM(string message)
         {
             string[] parts = message.Split(";");
             if ("o" == parts[0])
             {
-                int width, height, goalHeight, taskHeight, red, blue;
                 for(int i = 1; i < parts.Length; i++) {
                     string[] option = parts[i].Split(",");
                     switch(option[0])
@@ -439,11 +445,12 @@ namespace GameGraphicalInterface
             {
                 int width = GMboard.boardWidth;
                 int height = GMboard.boardHeight;
-                Cell[,] cells = new Cell[width, height];
+                if(cells == null)
+                    cells = new Cell[width, height];
+                if(playersList == null)
+                    playersList = new List<string>();
 
                 string[] update = parts[1].Split(",");
-
-                List<string> players = new List<string>();
 
                 int indx = 0;
 
@@ -487,7 +494,7 @@ namespace GameGraphicalInterface
                                     cells[i, j] = new Cell(0);
                                     cells[i, j].SetCellState(CellState.Empty);
                                     string p = i.ToString() + "," + j.ToString() + "," + update[++indx] + "," + update[++indx];
-                                    players.Add(p);
+                                    playersList.Add(p);
                                     break;
                             }
                             indx++;
