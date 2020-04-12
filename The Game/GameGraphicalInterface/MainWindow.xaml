@@ -5,15 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameGraphicalInterface"
         mc:Ignorable="d"
-        Title="The Project Game" Height="600" Width="600" MinWidth="600" MinHeight="600" Closing="Window_Closing">
+        Title="The Project Game" Height="600" Width="600" MinWidth="600" MinHeight="600">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0" x:Name="Board"/>
             <ColumnDefinition Width="*" x:Name="Welcome"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel x:Name="panel" Grid.Column="0" Orientation="Vertical">
-        </StackPanel>
+        <StackPanel x:Name="panel" Height="auto" Width="auto" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Vertical"/>
+
+
 
         <Button x:Name="StartButton" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="100" Click="StartPrinting">Start Show</Button>
 
