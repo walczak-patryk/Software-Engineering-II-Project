@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameGraphicalInterface"
         mc:Ignorable="d"
-        Title="PlayerWindow" Height="500" Width="250" MinHeight="500" MinWidth="250" Closing="PlayerClosed">
+        Title="PlayerWindow" Height="500" Width="250" MinHeight="500" MinWidth="250" >
+    <!--Closing="PlayerClosed"-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -60,10 +61,10 @@
                                 <RowDefinition Height="33"/>
                             </Grid.RowDefinitions>
 
-                            <Button Name="upButton" Grid.Column="1" Grid.Row="0" Height="25" Width="20" Click="PlayerMove">U</Button>
+                            <!--<Button Name="upButton" Grid.Column="1" Grid.Row="0" Height="25" Width="20" Click="PlayerMove">U</Button>
                             <Button Name="leftButton" Grid.Column="0" Grid.Row="1" Height="20" Width="25" Click="PlayerMove">L</Button>
                             <Button Name="rightButton" Grid.Column="2" Grid.Row="1" Height="20" Width="25" Click="PlayerMove">R</Button>
-                            <Button Name="downButton" Grid.Column="1" Grid.Row="2" Height="25" Width="20" Click="PlayerMove">D</Button>
+                            <Button Name="downButton" Grid.Column="1" Grid.Row="2" Height="25" Width="20" Click="PlayerMove">D</Button>-->
 
                             <Grid Grid.Column="2" Grid.Row="0">
                                 <Grid.RowDefinitions>
@@ -71,12 +72,12 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Button Name="pickButton" Grid.Row="0" Width="25" Height="15" FontSize="8" Click="pickButton_Click">Pick</Button>
+                                <!--<Button Name="pickButton" Grid.Row="0" Width="25" Height="15" FontSize="8" Click="pickButton_Click">Pick</Button>
                                 <Button Name="placeButton" Grid.Row="0" Width="25" Height="10" FontSize="6" Visibility="Hidden" Click="placeButton_Click">Place</Button>
-                                <Button Name="testButton" Grid.Row="1" Width="25" Height="10" FontSize="6" Visibility="Collapsed" Click="testButton_Click">Test</Button>
+                                <Button Name="testButton" Grid.Row="1" Width="25" Height="10" FontSize="6" Visibility="Collapsed" Click="testButton_Click">Test</Button>-->
                             </Grid>
 
-                            <Button Grid.Row="1" Grid.Column="1" Height="15" Width="28" FontSize="6" Click="Discover_Click">Discover</Button>
+                            <!--<Button Grid.Row="1" Grid.Column="1" Height="15" Width="28" FontSize="6" Click="Discover_Click">Discover</Button>-->
 
                         </Grid>
                     </Border>
