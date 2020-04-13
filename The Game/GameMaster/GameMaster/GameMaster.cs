@@ -38,7 +38,19 @@ namespace GameMaster
                 while (true)
                 {
                     this.ReceiveFromGUI();
-                    this.SendToGUI("0_1");
+                    string message=ReceiveFromPlayer();
+                    if(message==null)
+                    {
+                        continue;
+                    }
+                    string[] messageParts = message.Split();
+                    if(messageParts.Length>0)
+                    {
+                        string answer=ParsePlayerAction(message);
+                        SendToPlayer(answer, messageParts[0]);
+                        SendToGUI("0_1");
+                    }
+
                 }
             });
             StartGUIAsync();
@@ -377,7 +389,7 @@ namespace GameMaster
         }
 
 
-              private void ReceiveFromPlayer()   
+              private string ReceiveFromPlayer()   
         {
             using (NamedPipeServerStream pipeServer =
             new NamedPipeServerStream("GM_Player_Server", PipeDirection.In))
@@ -390,7 +402,9 @@ namespace GameMaster
                     while ((temp = sr.ReadLine()) != null)
                     {
                         Console.WriteLine("Received from server: {0}", temp);
+                        return temp;
                     }
+                    return null;
                 }
             }
         }
