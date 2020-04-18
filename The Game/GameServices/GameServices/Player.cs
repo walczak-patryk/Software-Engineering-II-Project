@@ -36,16 +36,18 @@ namespace GameMaster
             }
             Random randomizeID = new Random();
             var p = new Player(randomizeID.Next(), new Team(), false);
-            Console.WriteLine("I'm sending to GM: " + p.id.ToString());
-            p.SendToGM(p.id.ToString());
+            //Console.WriteLine("I'm sending to GM: " + p.id.ToString());
+            //p.SendToGM(p.id.ToString());
             Console.WriteLine("I'm playing");
             while (true)
             {
                 string message = p.id.ToString() +  "_";
                 string action = p.AIMove();
                 message += action;
-                p.SendToGM(message);
                 Console.WriteLine("I'm sending to GM: " + message);
+
+                p.SendToGM(message);
+                Console.WriteLine("Player sent");
                 string response = p.ReceiveFromGM();
                 Console.WriteLine("I received from GM: " + response);
                 if (response.Split("_").Length < 3)
@@ -112,7 +114,9 @@ namespace GameMaster
         }
         private string ReceiveFromGM()
         {
-                using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("Player_Pipe_Server" + guid, PipeDirection.In))
+            Console.WriteLine("PLAYER RECEIVE");
+            Console.WriteLine("Player_Pipe_Server" + id.ToString());
+                using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("Player_Pipe_Server" + id.ToString(), PipeDirection.In))
                 {
                     pipeServer.WaitForConnection();
 
@@ -132,7 +136,7 @@ namespace GameMaster
         public void SendToGM(string message)
         {
             using (NamedPipeClientStream pipeClient =
-            new NamedPipeClientStream(".", "GM_Pipe_Server", PipeDirection.Out))
+            new NamedPipeClientStream(".", "GM_Player_Server", PipeDirection.Out))
             {
                 pipeClient.Connect();
                 try
