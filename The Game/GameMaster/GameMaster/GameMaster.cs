@@ -34,18 +34,35 @@ namespace GameMaster
             this.status = GameMasterStatus.Active;
             teamBlueGuids = new List<string>();
             teamRedGuids = new List<string>();
+
             isGuiWorking = false;
-            Task.Run(() =>
+
+            Task t=Task.Run(() =>
             {
                 while (true)
                 {
                     this.ReceiveFromGUI();
+
+                    string message=ReceiveFromPlayer();
+                    if(message==null)
+                    {
+                        continue;
+                    }
+                    Console.WriteLine($"GM received from player: {message}");
+                    string[] messageParts = message.Split("_");
+                    if(messageParts.Length>0)
+                    {
+                        string answer=ParsePlayerAction(message);
+                        Console.WriteLine($"GUID: {messageParts[0]}");
+                        SendToPlayer(answer, messageParts[0]);
+                        //SendToGUI("0_1");
+                    }
                 }
             });
             StartGUIAsync();
             StartPlayer();
 
-            TestMesssageToGui(); // Only to test communication with GUI
+            TestMessageToGui(); // Only to test communication with GUI
         }
 
         public void EndGame()
@@ -384,8 +401,7 @@ namespace GameMaster
 
 
         }
-
-        private void ReceiveFromPlayer()   
+        private string ReceiveFromPlayer()   
         {
             using (NamedPipeServerStream pipeServer =
             new NamedPipeServerStream("GM_Player_Server", PipeDirection.In))
@@ -397,14 +413,19 @@ namespace GameMaster
                     string temp;
                     while ((temp = sr.ReadLine()) != null)
                     {
-                        Console.WriteLine("Received from server: {0}", temp);
+                        Console.WriteLine("Received from player: {0}", temp);
+                        return temp;
                     }
+                    Console.WriteLine("Received null");
+                    return null;
                 }
             }
         }
 
         public void SendToPlayer(string message, string guid)
         {
+            Console.WriteLine("GM SENDING");
+            Console.WriteLine("Player_Pipe_Server" + guid);
             using (NamedPipeClientStream pipeClient =
             new NamedPipeClientStream(".", "Player_Pipe_Server"+guid, PipeDirection.Out))
             {
@@ -491,7 +512,7 @@ namespace GameMaster
         }
 
         // for testing
-        private void TestMesssageToGui()
+        private void TestMessageToGui()
         {
             Thread.Sleep(5000);
             teamRedGuids.Add("1");
