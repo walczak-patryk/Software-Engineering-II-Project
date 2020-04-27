@@ -58,6 +58,7 @@ namespace GameMaster.Boards
         public void CheckWinCondition(TeamColor teamColor) { }
         public List<Field> Discover(Position position) { return new List<Field>(); }
         public List<int> ManhattanDistance(Position playerPosition) {
+            Console.WriteLine("DEBUG: player position - {0} , {1}", playerPosition.x, playerPosition.y);
             List<int> list = new List<int>();
             for (int j = -1; j <= 1; j++)
             {
@@ -69,6 +70,7 @@ namespace GameMaster.Boards
                     {
                         int distance = Math.Max(boardWidth, boardHeight);
                         foreach (var piece in piecesPositions) {
+                            Console.WriteLine("DEBUG: piece position - {0} , {1}", piece.x, piece.y);
                             if (distance > Math.Abs(playerPosition.x + i - piece.x) + Math.Abs(playerPosition.y + j - piece.y))
                                 distance = Math.Abs(playerPosition.x + i - piece.x) + Math.Abs(playerPosition.y + j - piece.y);
                         }
