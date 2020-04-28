@@ -50,6 +50,7 @@ namespace GameMaster
                 Console.WriteLine("Player sent");
                 string response = p.ReceiveFromGM();
                 Console.WriteLine("I received from GM: " + response);
+                Console.WriteLine("DEBUG: {0}", p.turnsSinceDiscover);
                 if (response.Split("_").Length < 3)
                     Console.WriteLine("Error while receiveing response from GM");
                 else
@@ -57,35 +58,35 @@ namespace GameMaster
                     string[] responses = response.Split("_");
                     if (responses[1] == "4")
                     {
-                        p.Discover(p.ParseDiscover(responses[2]));
                         p.turnsSinceDiscover = 0;
+                        p.Discover(p.ParseDiscover(responses[2]));
                     }
                     else if(responses[1] == "0")
                     {
-                        if (responses[2] == "OK")
+                        p.turnsSinceDiscover++;
+                        if (responses[3] == "OK")
                         {
                             p.Move((Direction)int.Parse(action.Split("_")[1]));
-                            p.turnsSinceDiscover++;
                         }
                     }
                     else if(responses[1] == "1")
                     {
+                        p.turnsSinceDiscover++;
                         if (responses[2] == "T")
                             p.board.cellsGrid[p.position.x, p.position.y].SetCellState(CellState.Piece);
                         else
                             p.board.cellsGrid[p.position.x, p.position.y].SetCellState(CellState.Sham);
                         p.TakePiece();
-                        p.turnsSinceDiscover++;
                     }
                     else if(responses[1] == "2")
                     {
-                        p.TestPiece();
                         p.turnsSinceDiscover++;
+                        p.TestPiece();
                     }
                     else if(responses[1] == "3")
                     {
-                        p.PlacePiece();
                         p.turnsSinceDiscover++;
+                        p.PlacePiece();
                     }
                 }
             }
@@ -210,20 +211,24 @@ namespace GameMaster
         {
             List<int> distances = new List<int>();
             string[] distancesString = response.Split(",");
-            foreach (string s in distancesString)
+            if (distancesString.Length == 10)
             {
-                distances.Add(int.Parse(s));
+                foreach (string s in distancesString)
+                {
+                    if(s != "")
+                        distances.Add(int.Parse(s));
+                }
             }
             return distances;
         }
 
         private void Discover(List<int> distances)
         {
-            for (int index = 0, j = -1; j <= 1; j++, index++)
+            for (int index = 0, j = -1; j <= 1; j++)
             {
                 for (int i = -1; i <= 1; i++, index++)
                 {
-                    if (!(position.x + i < 0 || position.y + j < 0 || position.x + i > board.boardWidth || position.y + j > board.boardHeight))
+                    if (!(position.x + i < 0 || position.y + j < 0 || position.x + i >= board.boardWidth || position.y + j >= board.boardHeight))
                         board.cellsGrid[position.x + i, position.y + j].SetDistance(distances[index]);
                 }
             }

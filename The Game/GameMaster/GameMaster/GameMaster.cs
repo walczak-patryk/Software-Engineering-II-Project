@@ -32,29 +32,44 @@ namespace GameMaster
             this.configuration = new GameMasterConfiguration();
             this.board = new GameMasterBoard(this.configuration.boardGoalHeight, this.configuration.boardGoalHeight, this.configuration.boardTaskHeight);
             this.status = GameMasterStatus.Active;
+            bool color = false;
             teamBlueGuids = new List<string>();
             teamRedGuids = new List<string>();
 
             isGuiWorking = false;
 
-            Task t=Task.Run(() =>
+            Task t = Task.Run(() =>
             {
+                board.generatePiece(0.2, 5); // to dodaje z jakiegoś powodu 4 piece'y
                 while (true)
                 {
-                    this.ReceiveFromGUI();
 
-                    string message=ReceiveFromPlayer();
-                    if(message==null)
+                    //this.ReceiveFromGUI();
+                    string message = ReceiveFromPlayer();
+                    if (message == null)
                     {
                         continue;
                     }
-                    Console.WriteLine($"GM received from player: {message}");
+                    //Console.WriteLine($"GM received from player: {message}");
                     string[] messageParts = message.Split("_");
-                    if(messageParts.Length>0)
+                    if (messageParts.Length > 0)
                     {
-                        string answer=ParsePlayerAction(message);
+                        if (FindPlayer(messageParts[0]) == null)
+                        {
+                            Console.WriteLine("Creating new player with guid: {0}", messageParts[0]);
+                            Random r = new Random();
+                            board.cellsGrid[r.Next(0, board.boardWidth), r.Next(board.goalAreaHeight, board.goalAreaHeight + board.taskAreaHeight)].SetPlayerGuid(messageParts[0]);
+                            if (color)
+                                teamBlueGuids.Add(messageParts[0]);
+                            else
+                                teamRedGuids.Add(messageParts[0]);
+                            color = !color;
+
+                        }
+                        string answer= message + "_" + ParsePlayerAction(message);
                         Console.WriteLine($"GUID: {messageParts[0]}");
                         SendToPlayer(answer, messageParts[0]);
+                        Console.WriteLine();
                         //SendToGUI("0_1");
                     }
                 }
@@ -62,7 +77,11 @@ namespace GameMaster
             StartGUIAsync();
             StartPlayer();
 
-            TestMessageToGui(); // Only to test communication with GUI
+            while (true) //to nie działa bo nie jest w osobnym wątku
+            {
+                System.Threading.Thread.Sleep(5000);
+                board.generatePiece(0.2, 5);
+            }
         }
 
         public void EndGame()
@@ -157,6 +176,7 @@ namespace GameMaster
             }
             else if (messages[1] == "4")
             {
+                Console.WriteLine("Player wants to move");
                 return DecideDiscover(messages[0]);
             }
             else
@@ -185,16 +205,20 @@ namespace GameMaster
         {
             Position playerPosition = FindPlayer(guid);
             if (playerPosition == null)
+            {
+                Console.WriteLine("Player with guid {0} not found", guid);
                 return "NO";
+            }
             else
             {
                 List<int> list = board.ManhattanDistance(playerPosition);
+                
                 string distances = "";
-                foreach(int elem in list)
+                foreach (int elem in list)
                 {
                     distances += (elem.ToString() + ",");
                 }
-                if (distances.Split(",").Length != 9)
+                if (distances.Split(",").Length != 10)
                     return "NO";
                 else
                     return distances;
@@ -424,7 +448,7 @@ namespace GameMaster
 
         public void SendToPlayer(string message, string guid)
         {
-            Console.WriteLine("GM SENDING");
+            Console.WriteLine("GM SENDING: {0}", message);
             Console.WriteLine("Player_Pipe_Server" + guid);
             using (NamedPipeClientStream pipeClient =
             new NamedPipeClientStream(".", "Player_Pipe_Server"+guid, PipeDirection.Out))
