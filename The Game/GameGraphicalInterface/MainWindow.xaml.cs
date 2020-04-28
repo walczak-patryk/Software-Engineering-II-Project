@@ -53,7 +53,7 @@ namespace GameGraphicalInterface
                 }
             });
 
-            this.SendToGM("1_1");
+            StartSendingFromGM();
 
             //test
             //this.GMboard = new GameMasterBoard(10, 3, 12);
@@ -104,8 +104,6 @@ namespace GameGraphicalInterface
             }
         }
 
-
-
         #region GM Communication
         public string ReturnPath()
         {
@@ -155,6 +153,16 @@ namespace GameGraphicalInterface
             return;
         }
         #endregion
+
+        private void StartSendingFromGM()
+        {
+            this.SendToGM("1_1");
+        }
+
+        private void StopSendingFromGM()
+        {
+            this.SendToGM("1_0");
+        }
 
         private void PrintBoard()
         {
@@ -255,7 +263,7 @@ namespace GameGraphicalInterface
             string[] parts = GMmsg.Split(";");
             if ("o" == parts[0])
             {
-                int width = -1, height = -1, goalHeight = -1, taskHeight = -1, red, blue;
+                int width = -1, goalHeight = -1, taskHeight = -1;
                 
                 for(int i = 1; i < parts.Length; i++) {
                     string[] option = parts[i].Split(",");
@@ -264,20 +272,11 @@ namespace GameGraphicalInterface
                         case "w":
                             width = int.Parse(option[1]);
                             break;
-                        case "h":
-                            height = int.Parse(option[1]); //wysokosc jest brana z  goal i task
-                            break;
                         case "g":
                             goalHeight = int.Parse(option[1]);
                             break;
                         case "t":
                             taskHeight = int.Parse(option[1]);
-                            break;
-                        case "r":
-                            red = int.Parse(option[1]); //ilośc graczy jest chyba zbedna, i tak mamy liste ich guidów wiec wiemy ile ich jest
-                            break;
-                        case "b":
-                            blue = int.Parse(option[1]);//ilośc graczy jest chyba zbedna, i tak mamy liste ich guidów wiec wiemy ile ich jest
                             break;
                         default:
                             break;

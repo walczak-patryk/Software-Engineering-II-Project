@@ -29,15 +29,7 @@ namespace Tests
             GameMasterBoard gmb = new GameMasterBoard(2, 1, 2);
             gm.board = gmb;
 
-            gm.teamRedGuids = new List<string>();
-            gm.teamBlueGuids = new List<string>();
-
-            gm.teamRedGuids.Add("1");
-            gm.teamRedGuids.Add("2");
-
-            gm.teamBlueGuids.Add("3");
-
-            string expected = "o;w,2;h,4;g,1;t,2;r,2;b,1;";
+            string expected = "o;w,2;g,1;t,2;";
             string result = gm.MessageOptionsForGUI();
 
             Assert.AreEqual(expected, result);

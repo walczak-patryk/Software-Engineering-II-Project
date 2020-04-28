@@ -70,12 +70,20 @@ namespace GameMaster
                         Console.WriteLine($"GUID: {messageParts[0]}");
                         SendToPlayer(answer, messageParts[0]);
                         Console.WriteLine();
-                        //SendToGUI("0_1");
                     }
                 }
             });
             StartGUIAsync();
             StartPlayer();
+
+            Task g = Task.Run(() =>
+            {
+                this.ReceiveFromGUI();
+                if (isGuiWorking)
+                {
+                    TestMessageToGui();
+                }
+            });
 
             while (true) //to nie działa bo nie jest w osobnym wątku
             {
@@ -474,19 +482,8 @@ namespace GameMaster
             string message = "o;";
 
             message += "w," + board.boardWidth.ToString() + ";";
-            message += "h," + board.boardHeight.ToString() + ";";
             message += "g," + board.goalAreaHeight.ToString() + ";";
             message += "t," + board.taskAreaHeight.ToString() + ";";
-
-            if(teamRedGuids != null)
-                message += "r," + teamRedGuids.Count.ToString() + ";";
-            else
-                message += "r,0;";
-
-            if (teamBlueGuids != null)
-                message += "b," + teamBlueGuids.Count.ToString() + ";";
-            else
-                message += "b,0;";
 
             return message;
         }
