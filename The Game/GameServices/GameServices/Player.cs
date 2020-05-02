@@ -1,11 +1,13 @@
-﻿using GameMaster.Boards;
+﻿using CommunicationServerLibrary.Interfaces;
+using CommunicationServerLibrary.Messages;
+using GameMaster.Boards;
 using GameMaster.Cells;
 using GameMaster.Positions;
-using GameMaster.Fields;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
+using System.Net;
 
 namespace GameMaster
 {
@@ -22,6 +24,9 @@ namespace GameMaster
         public Board board;
         public ActionType lastAction;
         public string guid;
+        private int serverPort;
+        private IPAddress serverAddress;
+        private IConnectionClient connection;
         //tak to ma chyba ostatecznie wyglądać
         public Guid playerGuid;
         private PlayerState state;
@@ -42,6 +47,11 @@ namespace GameMaster
             //Console.WriteLine("I'm sending to GM: " + p.id.ToString());
             //p.SendToGM(p.id.ToString());
             Console.WriteLine("I'm playing");
+
+            //Console.ReadLine();
+            Console.WriteLine("Starting agent launcher");
+            p.ClientLauncher("127.0.0.1", 13000);
+
             while (true)
             {
                 string message = p.id.ToString() +  "_";
@@ -93,6 +103,12 @@ namespace GameMaster
                     }
                 }
             }
+        }
+
+        private void ClientLauncher(string serverAddress, int serverPort)
+        {
+            this.serverPort = serverPort;
+            this.serverAddress = IPAddress.Parse(serverAddress);
         }
 
         public Player(int Id, Team Team, bool IsLeader)
@@ -225,13 +241,15 @@ namespace GameMaster
             return distances;
         }
 
-        private void Discover(List<Field> fields)
+        private void Discover(List<int> distances)
         {
-            foreach(Field f in fields)
+            for (int index = 0, j = -1; j <= 1; j++)
             {
-                board.GetCell(f.position).SetCellState(f.cell.GetCellState());
-                board.GetCell(f.position).SetDistance(f.cell.GetDistance());
-                board.GetCell(f.position).SetPlayerGuid(f.cell.GetPlayerGuid());
+                for (int i = -1; i <= 1; i++, index++)
+                {
+                    if (!(position.x + i < 0 || position.y + j < 0 || position.x + i >= board.boardWidth || position.y + j >= board.boardHeight))
+                        board.cellsGrid[position.x + i, position.y + j].SetDistance(distances[index]);
+                }
             }
         }
 
@@ -453,6 +471,19 @@ namespace GameMaster
                         }
                     }
                 }
+            }
+        }
+        private Message GetMessageFromServer()
+        {
+            Message msg = connection.GetMessage();
+            return msg;
+        }
+
+        private void SendMessageToServer(Message m)
+        {
+            if (!connection.SendMessage(m))
+            {
+                throw new Exception("Connection lost, can't send message");
             }
         }
     }
