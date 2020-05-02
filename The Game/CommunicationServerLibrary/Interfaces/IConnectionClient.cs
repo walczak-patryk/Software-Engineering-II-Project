@@ -1,7 +1,7 @@
 ﻿using CommunicationServerLibrary.Messages;
 using System;
 
-namespace CommunicationLibraryProj
+namespace CommunicationServerLibrary.Interfaces
 {
     public interface IConnectionClient
     {

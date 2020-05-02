@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Net.Sockets;
-using CommunicationLibraryProj;
 using CommunicationServerLibrary.Messages;
 using System.Net;
+using CommunicationServerLibrary.Interfaces;
 
-namespace CommunicationServerProj
+namespace CommunicationServer
 {
     public class CommunicationServer
     {
@@ -26,11 +26,11 @@ namespace CommunicationServerProj
         private readonly object gmRegisteringLocker;
         private int nextId;
 
-        public CommunicationServer(IConnectionListener listener, IPAddress ipAddress, int portNumber)
+        public CommunicationServer(IConnectionListener listener, string ipAddress, int portNumber)
         {
             this.server = listener ?? throw new ArgumentNullException(nameof(listener));
             this.portNumber = portNumber;
-            this.ipAddress = ipAddress;
+            this.ipAddress = IPAddress.Parse(ipAddress);
 
             this.state = new ThreadSafeVariable<CSState>();
             this.gmId = new ThreadSafeVariable<int> { Value = -1 };

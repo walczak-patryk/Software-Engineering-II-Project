@@ -1,7 +1,7 @@
-﻿using CommunicationLibraryProj;
+﻿using CommunicationServerLibrary.Interfaces;
 using CommunicationServerLibrary.Messages;
 
-namespace CommunicationServerProj
+namespace CommunicationServer
 {
     internal class ManagedClient
     {

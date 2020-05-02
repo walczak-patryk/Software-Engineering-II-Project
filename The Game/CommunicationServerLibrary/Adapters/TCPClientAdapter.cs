@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Net.Sockets;
+using CommunicationServerLibrary.Interfaces;
 using CommunicationServerLibrary.Messages;
 
-namespace CommunicationLibraryProj.Adapters
+namespace CommunicationServerLibrary.Adapters
+
 {
     public class TCPClientAdapter: IConnectionClient
     {

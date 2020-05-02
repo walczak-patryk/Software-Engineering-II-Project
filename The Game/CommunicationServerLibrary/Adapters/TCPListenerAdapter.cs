@@ -1,6 +1,7 @@
-﻿using System.Net.Sockets;
+﻿using CommunicationServerLibrary.Interfaces;
+using System.Net.Sockets;
 
-namespace CommunicationLibraryProj.Adapters
+namespace CommunicationServerLibrary.Adapters
 {
     public class TCPListenerAdapter : IConnectionListener
     {
