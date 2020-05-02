@@ -41,6 +41,7 @@ namespace GameMaster
             Task t = Task.Run(() =>
             {
                 board.generatePiece(0.2, 5); // to dodaje z jakiegoś powodu 4 piece'y
+                //powinno dawać 1 xD
                 while (true)
                 {
 

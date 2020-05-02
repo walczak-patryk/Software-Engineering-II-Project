@@ -12,12 +12,13 @@ namespace GameMaster
         public int boardWidth = 7;
         public int boardTaskHeight = 7;
         public int boardGoalHeight = 3;
-        public int delayDestroyPiece = 0;
-        public int delayNextPiecePlace = 0;
-        public int delayMove = 0;
-        public int delayDiscover = 0;
-        public int delayTest = 0;
-        public int delayPick = 0;
-        public int delayPlace = 0;
+        public int delayDestroyPiece = 2950;
+        public int delayNextPiecePlace = 3000;
+        public int delayMove = 100;
+        public int delayDiscover = 500;
+        public int delayTest = 1000;
+        public int delayPick = 100;
+        public int delayPlace = 100;
+        //public int delayFail = 1000;
     }
 }
