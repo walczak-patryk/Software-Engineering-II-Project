@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
     class ConnectPlayerResMsg : Message
     {
         public string portNumber;
-        public string playerGuid;
+        public PlayerGuid playerGuid;
         public string status;
-        public ConnectPlayerResMsg(string portNumber, string playerGuid, string status) : base("connect")
+        public ConnectPlayerResMsg(string portNumber, PlayerGuid playerGuid, string status) : base("connect")
         {
             this.portNumber = portNumber;
             this.playerGuid = playerGuid;

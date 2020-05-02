@@ -123,17 +123,17 @@ namespace CommunicationServer
         {
             try
             {
+                server.StartListening(this.ipAddress, this.portNumber);
                 state.Value = CSState.Listening;
-                Console.WriteLine($"CS started listening for clients on {ipAddress}:{portNumber}\n");
                 return true;
             }
-            catch (ArgumentOutOfRangeException)
+            catch (ArgumentOutOfRangeException e)
             {
-                Console.WriteLine("Given port is out of range.\n");
+                Console.WriteLine("TryStartListening: " + e.Message);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Console.WriteLine("Some error occured while tried to start listening.\n");
+                Console.WriteLine("TryStartListening: "+e.Message);
             }
             return false;
         }
