@@ -22,6 +22,8 @@ namespace GameGraphicalInterface
         string GMmsg;
         bool newMsg;
 
+        private bool isPlaying;
+
         public int redScore;
         public int blueScore;
 
@@ -35,29 +37,35 @@ namespace GameGraphicalInterface
         ////=======
         //bool generated;
 
-
         public MainWindow()
         {
             InitializeComponent();
             GMboard = null;
             GMmsg = "";
+            isPlaying = false;
             var t1 = Task.Run(() =>
             {
                 while (true)
+                {
                     this.ReceiveFromGM();
+                    if (null == GMboard)
+                        ParseMessageFromGM();
+                }
             });
 
+            StartSendingFromGM();
+
             //test
-            this.GMboard = new GameMasterBoard(10, 3, 12);
-            for (int j = 0; j < this.GMboard.boardHeight; j++)
-            {
-                for (int i = 0; i < this.GMboard.boardWidth; i++)
-                {
-                    this.GMboard.cellsGrid[i, j] = new Cell(0);
-                }
-            }
-            this.GMboard.cellsGrid[3, 3].SetPlayerGuid("r1");
-            this.GMboard.cellsGrid[3, 7].SetPlayerGuid("b2");
+            //this.GMboard = new GameMasterBoard(10, 3, 12);
+            //for (int j = 0; j < this.GMboard.boardHeight; j++)
+            //{
+            //    for (int i = 0; i < this.GMboard.boardWidth; i++)
+            //    {
+            //        this.GMboard.cellsGrid[i, j] = new Cell(0);
+            //    }
+            //}
+            //this.GMboard.cellsGrid[3, 3].SetPlayerGuid("r1");
+            //this.GMboard.cellsGrid[3, 7].SetPlayerGuid("b2");
 
             //shamChance = 0.5;
             //maxPieces = 2;
@@ -72,6 +80,8 @@ namespace GameGraphicalInterface
 
         private void StartPrinting(object sender, RoutedEventArgs e)
         {
+            if (!isPlaying)
+                return;
             Welcome.Width = new GridLength(0, GridUnitType.Pixel);
             Board.Width = new GridLength(1, GridUnitType.Star);
             this.PrintBoard();
@@ -86,15 +96,13 @@ namespace GameGraphicalInterface
 
         private void Printing(object sender, EventArgs e)
         {
-            if (newMsg)
+            if (isPlaying && newMsg)
             {
                 this.ParseMessageFromGM();
                 this.PrintBoard();
                 newMsg = false;
             }
         }
-
-
 
         #region GM Communication
         public string ReturnPath()
@@ -136,7 +144,7 @@ namespace GameGraphicalInterface
                     while ((temp = sr.ReadLine()) != null)
                     {
                         res = temp;
-                        MessageBox.Show("Received from server: {0}", temp);
+                        MessageBox.Show("Received from server: " + temp, "Message");
                     }
                 }
             }
@@ -146,13 +154,23 @@ namespace GameGraphicalInterface
         }
         #endregion
 
+        private void StartSendingFromGM()
+        {
+            this.SendToGM("1_1");
+        }
+
+        private void StopSendingFromGM()
+        {
+            this.SendToGM("1_0");
+        }
+
         private void PrintBoard()
         {
             if (GMboard == null) return;
 
             if(panel.Children.Count == 0)
             {
-                panel.Children.Clear();
+                panel.Children.Clear(); 
 
                 for (int i = 0; i < GMboard.boardHeight; i++)
                 {
@@ -234,12 +252,18 @@ namespace GameGraphicalInterface
 
         }
 
+        //private void ParseMessageFromGM()
+        //{
+        //    foreach (var i in playerWs)
+        //        i.Close();
+        //}
+
         private void ParseMessageFromGM()
         {
             string[] parts = GMmsg.Split(";");
             if ("o" == parts[0])
             {
-                int width = -1, height = -1, goalHeight = -1, taskHeight = -1, red, blue;
+                int width = -1, goalHeight = -1, taskHeight = -1;
                 
                 for(int i = 1; i < parts.Length; i++) {
                     string[] option = parts[i].Split(",");
@@ -248,20 +272,11 @@ namespace GameGraphicalInterface
                         case "w":
                             width = int.Parse(option[1]);
                             break;
-                        case "h":
-                            height = int.Parse(option[1]); //wysokosc jest brana z  goal i task
-                            break;
                         case "g":
                             goalHeight = int.Parse(option[1]);
                             break;
                         case "t":
                             taskHeight = int.Parse(option[1]);
-                            break;
-                        case "r":
-                            red = int.Parse(option[1]); //ilośc graczy jest chyba zbedna, i tak mamy liste ich guidów wiec wiemy ile ich jest
-                            break;
-                        case "b":
-                            blue = int.Parse(option[1]);//ilośc graczy jest chyba zbedna, i tak mamy liste ich guidów wiec wiemy ile ich jest
                             break;
                         default:
                             break;
@@ -278,13 +293,11 @@ namespace GameGraphicalInterface
                         }
                     }
                 }
-                    
+                isPlaying = true;                  
             }
-            else if ("s" == parts[0])
+            else if (isPlaying && "s" == parts[0])
             {
                 string[] update = parts[1].Split(",");
-
-                List<string> players = new List<string>();
 
                 int indx = 0;
 
@@ -294,6 +307,7 @@ namespace GameGraphicalInterface
                     {
                         for (int i = 0; i < this.GMboard.boardWidth; i++)
                         {
+                            this.GMboard.cellsGrid[i, j].SetPlayerGuid(null);
                             switch (update[indx])
                             {
                                 case "0":
@@ -319,25 +333,22 @@ namespace GameGraphicalInterface
                                     break;
                                 case "7":
                                     this.GMboard.cellsGrid[i, j].SetCellState(CellState.Empty);
-                                    this.GMboard.cellsGrid[i, j].SetPlayerGuid("rguid");//dodaj tu guid playera naljepiej z 'b' lub 'r' na poczatku
+                                    this.GMboard.cellsGrid[i, j].SetPlayerGuid(update[indx + 1] + update[indx + 2]);
+                                    indx += 2;
                                     break;
-                                    
-                                    //wtedy to jest nie potrzebne
-                                    //string p = i.ToString() + "," + j.ToString() + "," + update[++indx] + "," + update[++indx];
-                                    //players.Add(p); 
-
                             }
                             indx++;
                         }
                     }
                 }
             }
-            else if ("e" == parts[0])
+            else if (isPlaying && "e" == parts[0])
             {
                 // Message with final stats, end game.
+                isPlaying = false;
             }
             else
-                throw new Exception("No option symbol in the message.");
+                throw new Exception("Wrong message.");
         }
     }
 

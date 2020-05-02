@@ -9,6 +9,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GameMaster
@@ -24,7 +25,7 @@ namespace GameMaster
         public List<string> teamBlueGuids;
 
         private Process GuiWindow;
-
+        private bool isGuiWorking;
 
         public void StartGame()
         {
@@ -34,11 +35,15 @@ namespace GameMaster
             bool color = false;
             teamBlueGuids = new List<string>();
             teamRedGuids = new List<string>();
+
+            isGuiWorking = false;
+
             Task t = Task.Run(() =>
             {
                 board.generatePiece(0.2, 5); // to dodaje z jakiegoś powodu 4 piece'y
                 while (true)
                 {
+
                     //this.ReceiveFromGUI();
                     string message = ReceiveFromPlayer();
                     if (message == null)
@@ -65,12 +70,21 @@ namespace GameMaster
                         Console.WriteLine($"GUID: {messageParts[0]}");
                         SendToPlayer(answer, messageParts[0]);
                         Console.WriteLine();
-                        //SendToGUI("0_1");
                     }
                 }
             });
             StartGUIAsync();
             StartPlayer();
+
+            Task g = Task.Run(() =>
+            {
+                this.ReceiveFromGUI();
+                if (isGuiWorking)
+                {
+                    TestMessageToGui();
+                }
+            });
+
             while (true) //to nie działa bo nie jest w osobnym wątku
             {
                 System.Threading.Thread.Sleep(5000);
@@ -107,6 +121,13 @@ namespace GameMaster
                     while ((temp = sr.ReadLine()) != null)
                     {
                         Console.WriteLine("Received from server: {0}", temp);
+                        if ("1_1" == temp)
+                        {
+                            isGuiWorking = true;
+                            this.SendToGUI(this.MessageOptionsForGUI());
+                        }
+                        if ("1_0" == temp)
+                            isGuiWorking = false;
                     }
                 }
             }
@@ -388,7 +409,6 @@ namespace GameMaster
             return false;
         }
 
-
         public void processMessage(string message)
         {
             string[] messageSplit = message.Split("_");
@@ -413,9 +433,7 @@ namespace GameMaster
 
 
         }
-
-
-              private string ReceiveFromPlayer()   
+        private string ReceiveFromPlayer()   
         {
             using (NamedPipeServerStream pipeServer =
             new NamedPipeServerStream("GM_Player_Server", PipeDirection.In))
@@ -459,27 +477,13 @@ namespace GameMaster
             }
         }
 
-
-        public void SendToGUI() { }
-
         public string MessageOptionsForGUI()
         {
             string message = "o;";
 
             message += "w," + board.boardWidth.ToString() + ";";
-            message += "h," + board.boardHeight.ToString() + ";";
             message += "g," + board.goalAreaHeight.ToString() + ";";
             message += "t," + board.taskAreaHeight.ToString() + ";";
-
-            if(teamRedGuids != null)
-                message += "r," + teamRedGuids.Count.ToString() + ";";
-            else
-                message += "r,0;";
-
-            if (teamBlueGuids != null)
-                message += "b," + teamBlueGuids.Count.ToString() + ";";
-            else
-                message += "b,0;";
 
             return message;
         }
@@ -526,6 +530,38 @@ namespace GameMaster
             message += "End;";
 
             return message;
+        }
+
+        // for testing
+        private void TestMessageToGui()
+        {
+            Thread.Sleep(5000);
+            teamRedGuids.Add("1");
+            this.board.cellsGrid[1, 1].SetPlayerGuid("1");
+            teamBlueGuids.Add("2");
+            this.board.cellsGrid[0, 1].SetPlayerGuid("2");
+            this.board.cellsGrid[0, 0].SetCellState(CellState.Valid);
+            this.board.cellsGrid[0, 4].SetCellState(CellState.Piece);
+            this.SendToGUI(MessageStateForGUI());
+
+            Thread.Sleep(5000);
+            this.board.cellsGrid[1, 1].SetPlayerGuid("");
+            this.board.cellsGrid[0, 1].SetPlayerGuid("");
+            this.board.cellsGrid[2, 1].SetPlayerGuid("1");
+            this.board.cellsGrid[1, 2].SetPlayerGuid("2");
+            this.SendToGUI(MessageStateForGUI());
+
+            Thread.Sleep(5000);
+            this.SendToGUI(MessageEndForGUI());
+
+            Thread.Sleep(5000);
+            this.board.cellsGrid[1, 1].SetPlayerGuid("1");
+            this.board.cellsGrid[0, 1].SetPlayerGuid("2");
+            this.board.cellsGrid[2, 1].SetPlayerGuid("");
+            this.board.cellsGrid[1, 2].SetPlayerGuid("");
+            this.board.cellsGrid[0, 0].SetCellState(CellState.Valid);
+            this.board.cellsGrid[0, 4].SetCellState(CellState.Piece);
+            this.SendToGUI(MessageStateForGUI());
         }
 
     }
