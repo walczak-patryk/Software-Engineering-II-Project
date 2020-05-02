@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
     class PickUpResMsg : Message
     {
-        public string playerGuid;
+        public PlayerGuid playerGuid;
         public string status;
-        public PickUpResMsg(string playerGuid, string status) : base("pickup")
+        public PickUpResMsg(PlayerGuid playerGuid, string status) : base("pickup")
         {
             this.playerGuid = playerGuid;
             this.status = status;
