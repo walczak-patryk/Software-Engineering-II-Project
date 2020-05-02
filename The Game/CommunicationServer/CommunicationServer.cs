@@ -96,6 +96,20 @@ namespace CommunicationServer
 
         private bool TryStartListening()
         {
+            try
+            {
+                server.StartListening(this.ipAddress, this.portNumber);
+                state.Value = CSState.Listening;
+                return true;
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                Console.WriteLine("TryStartListening: " + e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("TryStartListening: "+e.Message);
+            }
             return false;
         }
 

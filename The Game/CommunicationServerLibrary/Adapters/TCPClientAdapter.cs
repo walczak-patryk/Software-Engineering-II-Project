@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using CommunicationServerLibrary.Interfaces;
 using CommunicationServerLibrary.Messages;
+using System.Net;
 
 namespace CommunicationServerLibrary.Adapters
 
@@ -21,17 +22,40 @@ namespace CommunicationServerLibrary.Adapters
         }     
 
         public event EventHandler ConnectionError;
-        public bool Connect(string IP, int port)
+        public bool Connect(IPAddress IP, int port)
         {
-            return false;
+            try
+            {
+                client = new TcpClient();
+                IPEndPoint ipEndPoint = new IPEndPoint(IP, port);
+                client.Connect(ipEndPoint);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(" Client Connect: "+e.Message);
+                return false;
+            }
+            return true;
         }
 
         public void Disconnect()
         {
+            try
+            {
+                client.Client.Shutdown(SocketShutdown.Send);
+                if (client.Client.Available != 0)
+                    client.Client.Receive(new byte[client.Client.Available]);
+                client.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Client Disconnect: " + e.Message); ;
+            }
         }
 
         public void SafeDisconnect()
         {          
+
         }
 
         public bool SendMessage(Message message)
@@ -45,6 +69,22 @@ namespace CommunicationServerLibrary.Adapters
         private byte[] ReadBytesFromStream(TcpClient client, int size)
         {
             byte[] content = new byte[size];
+            int remainingSize = size;
+            try
+            {
+                while (remainingSize > 0)
+                {
+                    int offset = (size - remainingSize);
+                    int receivedBytes = client.Client.Receive(content, offset, size - offset, SocketFlags.None);
+                    if (receivedBytes == 0)
+                        return null;
+                    remainingSize -= receivedBytes;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Client ReadBytesFromStream: "+e.Message);
+            }
             return content;
         }
 
