@@ -1,4 +1,4 @@
-﻿namespace CommunicationLibraryProj
+﻿namespace CommunicationServerLibrary.Interfaces
 {
     public interface IConnectionListener
     { 

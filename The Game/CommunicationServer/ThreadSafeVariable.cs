@@ -1,5 +1,5 @@
 ﻿
-namespace CommunicationServerProj
+namespace CommunicationServer
 {
     internal class ThreadSafeVariable<T>
     {
