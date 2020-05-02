@@ -267,7 +267,7 @@ namespace GameMaster
 
         private void PutNewPiece()
         {
-
+            board.generatePiece(configuration.shamProbability, configuration.maxPieces);
         }
 
         private void PrintBoard()
@@ -282,7 +282,6 @@ namespace GameMaster
 
         public bool TakePiece(string playerGUID)
         {
-
             foreach (var elem in board.cellsGrid)
             {
                 if(elem.GetPlayerGuid()==playerGUID)
@@ -317,7 +316,7 @@ namespace GameMaster
             return null;
         }
 
-        public bool Move(string playerGUID,Direction direction)
+        public bool Move(string playerGUID, Direction direction)
         {
             Position playerPosition = FindPlayer(playerGUID);
             int destinationX = playerPosition.x;

@@ -458,7 +458,7 @@ namespace GameMaster
 
     public class PlayerDTO
     {
-        public Guid playerGiud;
+        public Guid playerGuid;
         public Position playerPosition;
         public TeamRole playerTeamRole;
         public TeamColor playerTeamColor;

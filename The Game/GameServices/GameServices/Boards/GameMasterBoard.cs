@@ -17,8 +17,75 @@ namespace GameMaster.Boards
             piecesPositions = new List<Position>();
         }
 
-        public Position PlayerMove(PlayerDTO player, Direction direction) { return new Position(); }
-        public CellState TakePiece(Position position) { return new CellState(); }
+        public Position PlayerMove(PlayerDTO player, Direction direction) 
+        {
+            Position playerPosition = player.playerPosition;
+            int destinationX = playerPosition.x;
+            int destinationY = playerPosition.y;
+            if (direction == Direction.Right)
+            {
+                destinationX++;
+            }
+            else if (direction == Direction.Left)
+            {
+                destinationX--;
+            }
+            else if (direction == Direction.Down)
+            {
+                destinationY++;
+            }
+            else if (direction == Direction.Up)
+            {
+                destinationY--;
+            }
+            TeamColor teamColor = player.playerTeamColor;
+
+            Position destinationPosition = new Position(destinationX, destinationY);
+            switch (teamColor)
+            {
+                case TeamColor.Red:
+                    if (0 <= destinationX && destinationX < boardWidth
+                        && 0 <= destinationY && destinationY < boardHeight - goalAreaHeight)
+                    {
+                        if (GetCell(destinationPosition).GetPlayerGuid() == null)
+                        {
+                            GetCell(playerPosition).SetPlayerGuid(null);
+                            GetCell(destinationPosition).SetPlayerGuid(player.playerGuid.ToString());
+                            return destinationPosition;
+                        }
+
+                    }
+                    break;
+                case TeamColor.Blue:
+                    if (0 <= destinationX && destinationX < boardWidth && goalAreaHeight <= destinationY && destinationY < boardHeight)
+                    {
+                        if (GetCell(destinationPosition).GetPlayerGuid() == null)
+                        {
+                            GetCell(playerPosition).SetPlayerGuid(null);
+                            GetCell(destinationPosition).SetPlayerGuid(player.playerGuid.ToString());
+                            return destinationPosition;
+                        }
+
+                    }
+                    break;
+            }
+            return new Position(); 
+        }
+        public CellState TakePiece(Position position) 
+        {
+            Cell elem = GetCell(position);
+            if (elem.GetCellState() == CellState.Piece)
+            {
+                elem.SetCellState(CellState.Empty);
+                return CellState.Piece;
+            }
+            else if (elem.GetCellState() == CellState.Sham)
+            {
+                elem.SetCellState(CellState.Empty);
+                return CellState.Sham;
+            }
+            return CellState.Empty;
+        }
         public Position generatePiece(double chance, int maxPieces) {
             if (piecesPositions.Count >= maxPieces)
             {
@@ -53,10 +120,75 @@ namespace GameMaster.Boards
         public void SetGoal(Position position) {
             GetCell(position).SetCellState(CellState.Valid);
         }
-        public PlacementResult PlacePiece(Position position) { return PlacementResult.Correct; }
-        public Position PlacePlayer(PlayerDTO playerDTO) { return new Position(); }
-        public void CheckWinCondition(TeamColor teamColor) { }
-        public List<Field> Discover(Position position) { return new List<Field>(); }
+        public PlacementResult PlacePiece(Position position) 
+        {
+            if (GetCell(position).GetCellState() == CellState.Valid)
+            {
+                Cell cell = GetCell(position);
+                cell.SetCellState(CellState.Goal);
+                return PlacementResult.Correct;
+            }
+            else
+                return PlacementResult.Pointless; 
+        }
+        public Position PlacePlayer(PlayerDTO playerDTO) 
+        {
+            Position pos = playerDTO.playerPosition;
+            Cell cell = GetCell(pos);
+            cell.SetPlayerGuid(playerDTO.playerGuid.ToString());
+            return pos; 
+        }
+        public void CheckWinCondition(TeamColor teamColor) 
+        {
+            bool win;
+            if(teamColor == TeamColor.Red)
+            {
+                for(int i = 0; i < goalAreaHeight; i++)
+                {
+                    for(int j = 0; j < boardWidth; j++)
+                    {
+                        if(GetCell(new Position(j,i)).GetCellState() == CellState.Valid)
+                        {
+                            win = false;
+                            break;
+                        }
+                    }
+                }
+                win = true;
+            }
+            if (teamColor == TeamColor.Blue)
+            {
+                for (int i = goalAreaHeight + taskAreaHeight; i < goalAreaHeight + 2 * taskAreaHeight; i++)
+                {
+                    for (int j = 0; j < boardWidth; j++)
+                    {
+                        if (GetCell(new Position(j, i)).GetCellState() == CellState.Valid)
+                        {
+                            win = false;
+                            break;
+                        }
+                    }
+                }
+                win = true;
+            }
+        }
+        public List<Field> Discover(Position position)
+        {
+            int posX = position.x;
+            int posY = position.y;
+            List<int> distances = ManhattanDistance(position);
+            List<Field> fields = new List<Field>();
+            int iter = 0;
+            for(int i = -1; i < 2; i++)
+            {
+                for(int j = -1; j < 2; j++)
+                {
+                    Field f = new Field() { position = new Position(posX + j, posY + i), cell = new Cell(distances[iter++]) };
+                    fields.Add(f);
+                }
+            }
+            return fields; 
+        }
         public List<int> ManhattanDistance(Position playerPosition) {
             Console.WriteLine("DEBUG: player position - {0} , {1}", playerPosition.x, playerPosition.y);
             List<int> list = new List<int>();

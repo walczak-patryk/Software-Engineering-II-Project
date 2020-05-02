@@ -5,8 +5,8 @@ namespace GameMaster.Fields
 {
     public class Field
     {
-        private Position position;
-        private Cell cell;
+        public Position position;
+        public Cell cell;
         private FieldColor fieldColor;
     }
 }
