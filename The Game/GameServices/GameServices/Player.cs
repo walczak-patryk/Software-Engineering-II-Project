@@ -3,6 +3,7 @@ using CommunicationServerLibrary.Messages;
 using GameMaster.Boards;
 using GameMaster.Cells;
 using GameMaster.Positions;
+using GameMaster.Fields;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -241,15 +242,13 @@ namespace GameMaster
             return distances;
         }
 
-        private void Discover(List<int> distances)
+        private void Discover(List<Field> fields)
         {
-            for (int index = 0, j = -1; j <= 1; j++)
+            foreach (Field f in fields)
             {
-                for (int i = -1; i <= 1; i++, index++)
-                {
-                    if (!(position.x + i < 0 || position.y + j < 0 || position.x + i >= board.boardWidth || position.y + j >= board.boardHeight))
-                        board.cellsGrid[position.x + i, position.y + j].SetDistance(distances[index]);
-                }
+                board.GetCell(f.position).SetCellState(f.cell.GetCellState());
+                board.GetCell(f.position).SetDistance(f.cell.GetDistance());
+                board.GetCell(f.position).SetPlayerGuid(f.cell.GetPlayerGuid());
             }
         }
 
