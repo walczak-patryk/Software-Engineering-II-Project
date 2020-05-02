@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GameMaster.Positions;
 
 namespace CommunicationServerLibrary.Messages
 {
-    class TestMsg : Message
+    class DiscoverMsg : Message
     {
         public string playerGuid;
-        public TestMsg(string playerGuid) : base("test")
+        public Position position;
+        public DiscoverMsg(string playerGuid, Position position) : base("discover")
         {
             this.playerGuid = playerGuid;
+            this.position = position;
         }
     }
 }
