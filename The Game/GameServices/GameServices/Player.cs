@@ -21,6 +21,8 @@ namespace GameMaster
         public Board board;
         public ActionType lastAction;
         public string guid;
+        //tak to ma chyba ostatecznie wyglądać
+        public Guid playerGuid;
         private PlayerState state;
 
         public int turnsSinceDiscover;
