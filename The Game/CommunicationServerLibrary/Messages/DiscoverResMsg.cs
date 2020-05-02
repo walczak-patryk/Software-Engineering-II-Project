@@ -3,16 +3,17 @@ using GameMaster.Positions;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
     class DiscoverResMsg : Message
     {
-        public string playerGuid;
+        public PlayerGuid playerGuid;
         public Position position;
         public Field[] fields;
         public string status;
-        public DiscoverResMsg(string playerGuid, Position position, Field[] fields, string status) : base("discover")
+        public DiscoverResMsg(PlayerGuid playerGuid, Position position, Field[] fields, string status) : base("discover")
         {
             this.playerGuid = playerGuid;
             this.position = position;

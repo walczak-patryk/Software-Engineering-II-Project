@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
     class TestResMsg : Message
     {
-        public string playerGuid;
+        public PlayerGuid playerGuid;
         public string test;
         public string status;
         
-        public TestResMsg(string playerGuid, string test, string status) : base("test")
+        public TestResMsg(PlayerGuid playerGuid, string test, string status) : base("test")
         {
             this.playerGuid = playerGuid;
             this.test = test;
