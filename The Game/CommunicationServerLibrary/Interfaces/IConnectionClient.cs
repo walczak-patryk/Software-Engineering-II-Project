@@ -1,11 +1,12 @@
 ﻿using CommunicationServerLibrary.Messages;
 using System;
+using System.Net;
 
 namespace CommunicationLibraryProj
 {
     public interface IConnectionClient
     {
-        bool Connect(string IP, int port);
+        bool Connect(IPAddress IP, int port);
 
         void Disconnect();
 

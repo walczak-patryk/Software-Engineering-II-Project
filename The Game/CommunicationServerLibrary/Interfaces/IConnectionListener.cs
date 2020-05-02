@@ -1,8 +1,9 @@
-﻿namespace CommunicationLibraryProj
+﻿using System.Net;
+namespace CommunicationLibraryProj
 {
     public interface IConnectionListener
     { 
-        void StartListening(string IP, int port);
+        void StartListening(IPAddress IP, int port);
         void StopListening();     
         IConnectionClient Accept();
     }
