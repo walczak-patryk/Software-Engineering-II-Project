@@ -1,5 +1,5 @@
-﻿using System.Net;
-namespace CommunicationLibraryProj
+using System.Net;
+﻿namespace CommunicationServerLibrary.Interfaces
 {
     public interface IConnectionListener
     { 

@@ -21,6 +21,8 @@ namespace GameMaster
         public Board board;
         public ActionType lastAction;
         public string guid;
+        //tak to ma chyba ostatecznie wyglądać
+        public Guid playerGuid;
         private PlayerState state;
 
         public int turnsSinceDiscover;
@@ -458,7 +460,7 @@ namespace GameMaster
 
     public class PlayerDTO
     {
-        public Guid playerGiud;
+        public Guid playerGuid;
         public Position playerPosition;
         public TeamRole playerTeamRole;
         public TeamColor playerTeamColor;
