@@ -4,10 +4,10 @@ using System.Text;
 
 namespace CommunicationServerLibrary.Messages
 {
-    class TestMsg : Message
+    class PlaceMsg : Message
     {
         public string playerGuid;
-        public TestMsg(string playerGuid) : base("test")
+        public PlaceMsg(string playerGuid) : base("place")
         {
             this.playerGuid = playerGuid;
         }
