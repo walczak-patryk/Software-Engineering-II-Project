@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameGraphicalInterface", "G
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GamePlayer", "GameServices\GameServices\GamePlayer.csproj", "{342E768A-4701-4A4D-8F20-47810DF16A54}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationServerLibrary", "CommunicationServerLibrary\CommunicationServerLibrary.csproj", "{178E2133-1DF9-4053-80CF-28EEFEFE8D92}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{342E768A-4701-4A4D-8F20-47810DF16A54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{342E768A-4701-4A4D-8F20-47810DF16A54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{342E768A-4701-4A4D-8F20-47810DF16A54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{178E2133-1DF9-4053-80CF-28EEFEFE8D92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{178E2133-1DF9-4053-80CF-28EEFEFE8D92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{178E2133-1DF9-4053-80CF-28EEFEFE8D92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{178E2133-1DF9-4053-80CF-28EEFEFE8D92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
