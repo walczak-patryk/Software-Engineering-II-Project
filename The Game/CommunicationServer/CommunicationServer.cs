@@ -46,7 +46,32 @@ namespace CommunicationServer
 
         public void Run()
         {
-            
+            if (!TryStartListening())
+                return;
+            while (true)
+            {
+                try
+                {
+                    IConnectionClient client = server.Accept();
+                    if (client == null) break;
+                    ManagedClient managedClient = new ManagedClient(client, nextId++);
+                    lock (clientsLocker)
+                    {
+                        if (state.Value == CSState.Listening || state.Value == CSState.AgentsAccepting)
+                        {
+                            clients.Add(managedClient);
+                            tasks.Add(Task.Run(() => HandleCommunication(managedClient)));
+                        }
+                    }
+                }
+                catch (SocketException)
+                {
+                    Console.WriteLine("Some error with TCPListener occured.\n");
+                    Kill();
+                }
+            }
+            Console.WriteLine($"Communication Server stopped listening for clients.\n");
+            Task.WaitAll(tasks.ToArray());
         }
 
 
