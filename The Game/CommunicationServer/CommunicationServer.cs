@@ -145,27 +145,72 @@ namespace CommunicationServer
 
         private void StartGame()
         {
-          
+            state.Value = CSState.GameInProgress;
+            server.StopListening();
+            Console.WriteLine("Start of the game");
+
+            lock (clientsLocker)
+            {
+                clients.ForEach(c =>
+                {
+                    if (!c.IsInGame && c.Id != gmId.Value)
+                    {
+                        c.Disconnect();
+                    }
+                });
+            }
         }
 
         private void ForwardMessageFromGM(Message msg)
         {
-           
+            int id = 0; // Player ID has to be retrieved from the message
+
+            if (id < 0 || id >= clients.Count || id == gmId.Value)
+            {
+                Console.WriteLine("CS ForwardMessageFromGM: "+msg.ToString());
+                Kill();
+            }
+
+            clients[id].SendMessage(msg);
         }
 
-        private void HandleAgentDisconnected(ManagedClient client)
+        private void HandlePlayerDisconnected(ManagedClient client)
         {
-            
+            client.Disconnect();
         }
 
         private void HandleGMDisconnected()
         {
-           
+            clients[gmId.Value].Disconnect();
+            state.Value = CSState.GameFinished;
+            server.StopListening();
+
+            lock (clientsLocker)
+            {
+                clients.ForEach(c =>
+                {
+                    if (c.IsInGame)
+                    {
+                        c.IsInGame = false;
+                    }
+                });
+            }
         }
 
         public void Kill()
         {
-            
+            gmId.Value = -1;
+            state.Value = CSState.GameFinished;
+            server.StopListening();
+
+            lock (clientsLocker)
+            {
+                clients.ForEach(c =>
+                {
+                    c.IsInGame = false;
+                    c.Disconnect();
+                });
+            }
         }
     }
 }
