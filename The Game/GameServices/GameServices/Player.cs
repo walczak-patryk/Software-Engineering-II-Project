@@ -73,7 +73,7 @@ namespace GameMaster
                     if (responses[1] == "4")
                     {
                         p.turnsSinceDiscover = 0;
-                        p.Discover(p.ParseDiscover(responses[2]));
+                        //p.Discover(p.ParseDiscover(responses[2]));
                     }
                     else if(responses[1] == "0")
                     {
@@ -487,14 +487,7 @@ namespace GameMaster
         }
     }
 
-    public class PlayerDTO
-    {
-        public Guid playerGuid;
-        public Position playerPosition;
-        public TeamRole playerTeamRole;
-        public TeamColor playerTeamColor;
-        public ActionType playerAction;
-    }
+    
 
     public enum PlayerState
     {
@@ -503,14 +496,5 @@ namespace GameMaster
         Completed
     }
 
-    public enum ActionType
-    {
-        Move,
-        Pickup,
-        Test,
-        Place,
-        Discover,
-        Destroy,
-        Send
-    }
+    
 }

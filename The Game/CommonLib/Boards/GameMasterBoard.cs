@@ -4,6 +4,7 @@ using System.Drawing;
 using GameMaster.Cells;
 using GameMaster.Fields;
 using GameMaster.Positions;
+using GameMaster;
 
 namespace GameMaster.Boards
 {
