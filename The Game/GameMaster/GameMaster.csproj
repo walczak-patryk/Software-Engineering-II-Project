@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CommonLib\CommonLib.csproj" />
     <ProjectReference Include="..\GameGraphicalInterface\GameGraphicalInterface.csproj" />
-    <ProjectReference Include="..\GameServices\GameServices\GamePlayer.csproj" />
   </ItemGroup>
 
 </Project>

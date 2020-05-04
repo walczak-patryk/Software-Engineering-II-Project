@@ -37,15 +37,5 @@
         }   
     }
 
-    public enum TeamRole
-    {
-        Leader,
-        Member
-    }
-
-    public enum TeamColor
-    {
-        Red,
-        Blue
-    }
+    
 }
