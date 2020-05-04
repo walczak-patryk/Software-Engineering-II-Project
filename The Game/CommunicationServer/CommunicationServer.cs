@@ -77,19 +77,63 @@ namespace CommunicationServer
 
         private void HandleCommunication(ManagedClient client)
         {
-           
+            Console.WriteLine($"Client {client.Id} connected ");
+
+            while (client.IsConnected())
+            {
+                Message message = client.GetMessage();
+
+
+                switch (state.Value)
+                {
+                    case CSState.Listening:
+                        ProcessClientMessageDuringListening(message, client);
+                        break;
+                    case CSState.AgentsAccepting:
+                        ProcessAgentMessageDuringAgentsAccepting(message, client);
+                        break;
+                    case CSState.GameInProgress:
+                        ProcessAgentMessageDuringGameInProgress(message, client);
+                        break;
+                }
+            }
+
+            if (client.IsInGame)
+                HandlePlayerDisconnected(client);
+
+            Console.WriteLine($"Client {client.Id} disconnected ");
         }
 
         private void HandleGmCommunication(ManagedClient client)
         {
-           
+            while (client.IsConnected())
+            {
+                Message message = client.GetMessage();
+
+
+                switch (state.Value)
+                {
+                    case CSState.AgentsAccepting:
+                        ProcessGmMessageDuringAgentsAccepting(message, client);
+                        break;
+                    case CSState.GameInProgress:
+                        ProcessGmMessageDuringGameInProgress(message, client);
+                        break;
+                    case CSState.GameFinished:
+                        ProcessGmMessageDuringGameFinished(message, client);
+                        break;
+                }
+            }
+
+            if (client.Id == gmId.Value)
+                HandleGMDisconnected();
         }
 
 
         #region MessagesProcessing
         private void ProcessClientMessageDuringListening(Message message, ManagedClient client)
         {
-            
+
         }
 
 
