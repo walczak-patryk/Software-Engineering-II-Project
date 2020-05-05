@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CommonLib\CommonLib.csproj" />
+    <ProjectReference Include="..\CommonLib\CommonLibrary.csproj" />
     <ProjectReference Include="..\GameGraphicalInterface\GameGraphicalInterface.csproj" />
   </ItemGroup>
 
