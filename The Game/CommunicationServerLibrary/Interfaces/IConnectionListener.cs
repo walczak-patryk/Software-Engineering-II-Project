@@ -1,5 +1,5 @@
 using System.Net;
-﻿namespace CommunicationServerLibrary.Interfaces
+namespace CommunicationServerLibrary.Interfaces
 {
     public interface IConnectionListener
     { 

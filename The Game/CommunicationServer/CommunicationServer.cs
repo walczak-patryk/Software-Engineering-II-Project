@@ -129,37 +129,123 @@ namespace CommunicationServer
                 HandleGMDisconnected();
         }
 
-
         #region MessagesProcessing
         private void ProcessClientMessageDuringListening(Message message, ManagedClient client)
         {
+            switch (message)
+            {
+                case ConnectPlayerMsg msg:
+                    //client.SendMessage(new GmNotConnectedYet());
+                    break;
 
+                //case ConnectGmMsg msg:
+                //    if (RegisterGM(client))
+                //        HandleGmCommunication(client);
+                //    break;
+
+                default:
+                    Console.WriteLine(message.ToString(), state.Value);
+                    Kill();
+                    break;
+            }
         }
-
 
         private void ProcessAgentMessageDuringAgentsAccepting(Message message, ManagedClient client)
         {
+            switch (message)
+            {
+                case ConnectPlayerMsg msg:
+                    client.SendMessage(msg);
+                    break;
 
+                default:
+                    Console.WriteLine(message.ToString(), state.Value);
+                    Kill(); 
+                    break;
+            }
         }
 
         private void ProcessAgentMessageDuringGameInProgress(Message message, ManagedClient client)
         {
-         
+            switch (message)
+            {
+                case ConnectPlayerMsg _:
+                case DiscoverMsg _:
+                case GameStartMsg _:
+                case MoveMsg _:
+                case PickUpMsg _:
+                case PlaceMsg _:
+                case ReadyMsg _:
+                case SetupMsg _:
+                case TestMsg _:
+                    client.SendMessage(message);
+                    break;
+
+                default:
+                    Console.WriteLine(message.ToString(), state.Value);
+                    Kill();
+                    break;
+            }
         }
 
         private void ProcessGmMessageDuringAgentsAccepting(Message message, ManagedClient client)
         {
-           
+            switch (message)
+            {
+                case ConnectPlayerMsg msg:
+                    ForwardMessageFromGM(msg);
+                    break;
+
+                case GameStartMsg msg:
+                    StartGame();
+                    ForwardMessageFromGM(msg);
+                    break;
+
+                default:
+                    Console.WriteLine(message.ToString(), state.Value);
+                    Kill();
+                    break;
+            }
         }
 
         private void ProcessGmMessageDuringGameInProgress(Message message, ManagedClient client)
         {
-            
+            switch (message)
+            {
+                case ConnectPlayerResMsg _:
+                case DiscoverResMsg _:
+                case GameStartMsg _:
+                case MoveResMsg _:
+                case PickUpResMsg _:
+                case PlaceResMsg _:
+                case ReadyResMsg _:
+                case SetupResMsg _:
+                case TestResMsg _:
+                    ForwardMessageFromGM(message);
+                    break;
+
+                //case GameOver msg:
+                //    break;
+
+                default:
+                    Console.WriteLine(message.ToString(), state.Value);
+                    Kill();
+                    break;
+            }
         }
 
         private void ProcessGmMessageDuringGameFinished(Message message, ManagedClient client)
         {
-            
+            switch (message)
+            {
+                //case GameOver msg:
+                //    break;
+
+                default:
+                    Console.WriteLine(message.ToString(), state.Value);
+                    Kill();
+                    break;
+            }
         }
         #endregion
 

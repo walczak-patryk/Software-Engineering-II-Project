@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GamePlayer", "GameServices\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunicationServerLibrary", "CommunicationServerLibrary\CommunicationServerLibrary.csproj", "{178E2133-1DF9-4053-80CF-28EEFEFE8D92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLib", "CommonLib\CommonLib.csproj", "{370CC297-B080-46C4-ADE1-D684276E249F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonLibrary", "CommonLib\CommonLibrary.csproj", "{370CC297-B080-46C4-ADE1-D684276E249F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
