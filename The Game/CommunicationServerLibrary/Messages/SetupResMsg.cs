@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CommunicationServerLibrary.Messages
 {
-    class SetupResMsg : Message
+    public class SetupResMsg : Message
     {
         public string status;
         public SetupResMsg(string status) : base("setup")

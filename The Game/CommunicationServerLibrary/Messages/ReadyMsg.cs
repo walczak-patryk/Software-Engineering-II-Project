@@ -5,7 +5,7 @@ using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
-    class ReadyMsg : Message
+    public class ReadyMsg : Message
     {
         public PlayerGuid playerGuid;
         public ReadyMsg(PlayerGuid playerGuid) : base("ready")
