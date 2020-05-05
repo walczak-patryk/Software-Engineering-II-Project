@@ -5,7 +5,7 @@ using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
-    class TestResMsg : Message
+    public class TestResMsg : Message
     {
         public PlayerGuid playerGuid;
         public string test;

@@ -5,7 +5,7 @@ using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
-    class MoveResMsg : Message
+    public class MoveResMsg : Message
     {
         public PlayerGuid playerGuid;
         public GameMaster.Positions.Direction direction;

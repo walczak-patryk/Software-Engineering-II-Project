@@ -6,7 +6,7 @@ using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
-    class DiscoverMsg : Message
+    public class DiscoverMsg : Message
     {
         public PlayerGuid playerGuid;
         public Position position;

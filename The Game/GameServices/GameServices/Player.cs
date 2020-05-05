@@ -29,7 +29,7 @@ namespace GameMaster
         private IPAddress serverAddress;
         private IConnectionClient connection;
         //tak to ma chyba ostatecznie wyglądać
-        public Guid playerGuid;
+        public PlayerGuid playerGuid;
         private PlayerState state;
 
         public int turnsSinceDiscover;
@@ -308,14 +308,14 @@ namespace GameMaster
         }
 
 
-        string AIMove() //simple AI for player
+        Message AIMove() //simple AI for player
         {
             Random rand = new Random();
             if (piece == false)
             {
                 if (turnsSinceDiscover > 0)
                 {
-                    return "4";
+                    return new DiscoverMsg(playerGuid, position);
                 }
                 else
                 {

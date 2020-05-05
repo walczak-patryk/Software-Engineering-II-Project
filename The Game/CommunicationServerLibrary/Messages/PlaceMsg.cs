@@ -5,7 +5,7 @@ using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
-    class PlaceMsg : Message
+    public class PlaceMsg : Message
     {
         public PlayerGuid playerGuid;
         public PlaceMsg(PlayerGuid playerGuid) : base("place")

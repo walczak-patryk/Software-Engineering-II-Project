@@ -2,7 +2,7 @@
 
 namespace CommunicationServerLibrary.Messages
 {
-    class GameStartMsg : Message
+    public class GameStartMsg : Message
     {
         public PlayerGuid playerGuid;
         public TeamColor team;
