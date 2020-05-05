@@ -34,37 +34,25 @@ namespace GameMaster
 
         public int turnsSinceDiscover;
 
-        public static void Main()
+        public void Start()
         {
-            Console.WriteLine("Player");
-            string start = "";
-            while (start != "start")
-            {
-                Console.Write("type \"start\" to connect to the game\n# ");
-                start = Console.ReadLine();
-            }
-            Random randomizeID = new Random();
-            var p = new Player(randomizeID.Next(), new Team(), false);
-            //Console.WriteLine("I'm sending to GM: " + p.id.ToString());
-            //p.SendToGM(p.id.ToString());
-            Console.WriteLine("I'm playing");
+            
 
-            //Console.ReadLine();
             Console.WriteLine("Starting agent launcher");
-            p.ClientLauncher("127.0.0.1", 13000);
+            ClientLauncher("127.0.0.1", 13000);
 
             while (true)
             {
-                string message = p.id.ToString() +  "_";
-                string action = p.AIMove();
+                string message = id.ToString() +  "_";
+                string action = AIMove();
                 message += action;
                 Console.WriteLine("I'm sending to GM: " + message);
 
-                p.SendToGM(message);
+                SendToGM(message);
                 Console.WriteLine("Player sent");
-                string response = p.ReceiveFromGM();
+                string response = ReceiveFromGM();
                 Console.WriteLine("I received from GM: " + response);
-                Console.WriteLine("DEBUG: {0}", p.turnsSinceDiscover);
+                Console.WriteLine("DEBUG: {0}", turnsSinceDiscover);
                 if (response.Split("_").Length < 3)
                     Console.WriteLine("Error while receiveing response from GM");
                 else
@@ -72,35 +60,35 @@ namespace GameMaster
                     string[] responses = response.Split("_");
                     if (responses[1] == "4")
                     {
-                        p.turnsSinceDiscover = 0;
-                        //p.Discover(p.ParseDiscover(responses[2]));
+                        turnsSinceDiscover = 0;
+                        //Discover(ParseDiscover(responses[2]));
                     }
                     else if(responses[1] == "0")
                     {
-                        p.turnsSinceDiscover++;
+                        turnsSinceDiscover++;
                         if (responses[3] == "OK")
                         {
-                            p.Move((Direction)int.Parse(action.Split("_")[1]));
+                            Move((Direction)int.Parse(action.Split("_")[1]));
                         }
                     }
                     else if(responses[1] == "1")
                     {
-                        p.turnsSinceDiscover++;
+                        turnsSinceDiscover++;
                         if (responses[2] == "T")
-                            p.board.cellsGrid[p.position.x, p.position.y].SetCellState(CellState.Piece);
+                            board.cellsGrid[position.x, position.y].SetCellState(CellState.Piece);
                         else
-                            p.board.cellsGrid[p.position.x, p.position.y].SetCellState(CellState.Sham);
-                        p.TakePiece();
+                            board.cellsGrid[position.x, position.y].SetCellState(CellState.Sham);
+                        TakePiece();
                     }
                     else if(responses[1] == "2")
                     {
-                        p.turnsSinceDiscover++;
-                        p.TestPiece();
+                        turnsSinceDiscover++;
+                        TestPiece();
                     }
                     else if(responses[1] == "3")
                     {
-                        p.turnsSinceDiscover++;
-                        p.PlacePiece();
+                        turnsSinceDiscover++;
+                        PlacePiece();
                     }
                 }
             }
