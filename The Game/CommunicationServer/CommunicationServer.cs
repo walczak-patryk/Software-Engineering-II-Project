@@ -66,18 +66,18 @@ namespace CommunicationServer
                 }
                 catch (SocketException)
                 {
-                    Console.WriteLine("Some error with TCPListener occured.\n");
+                    CSLogger.LogError("Some error with TCPListener occured.\n");
                     Kill();
                 }
             }
-            Console.WriteLine($"Communication Server stopped listening for clients.\n");
+            CSLogger.Log($"Communication Server stopped listening for clients.\n");
             Task.WaitAll(tasks.ToArray());
         }
 
 
         private void HandleCommunication(ManagedClient client)
         {
-            Console.WriteLine($"Client {client.Id} connected ");
+            CSLogger.Log($"Client {client.Id} connected ");
 
             while (client.IsConnected())
             {
@@ -101,7 +101,7 @@ namespace CommunicationServer
             if (client.IsInGame)
                 HandlePlayerDisconnected(client);
 
-            Console.WriteLine($"Client {client.Id} disconnected ");
+            CSLogger.Log($"Client {client.Id} disconnected ");
         }
 
         private void HandleGmCommunication(ManagedClient client)
@@ -144,7 +144,7 @@ namespace CommunicationServer
                 //    break;
 
                 default:
-                    Console.WriteLine(message.ToString(), state.Value);
+                    CSLogger.LogMessage(message, state.Value);
                     Kill();
                     break;
             }
@@ -159,7 +159,7 @@ namespace CommunicationServer
                     break;
 
                 default:
-                    Console.WriteLine(message.ToString(), state.Value);
+                    CSLogger.LogMessage(message, state.Value);
                     Kill(); 
                     break;
             }
@@ -182,7 +182,7 @@ namespace CommunicationServer
                     break;
 
                 default:
-                    Console.WriteLine(message.ToString(), state.Value);
+                    CSLogger.LogMessage(message, state.Value);
                     Kill();
                     break;
             }
@@ -202,7 +202,7 @@ namespace CommunicationServer
                     break;
 
                 default:
-                    Console.WriteLine(message.ToString(), state.Value);
+                    CSLogger.LogMessage(message, state.Value);
                     Kill();
                     break;
             }
@@ -228,7 +228,7 @@ namespace CommunicationServer
                 //    break;
 
                 default:
-                    Console.WriteLine(message.ToString(), state.Value);
+                    CSLogger.LogMessage(message, state.Value);
                     Kill();
                     break;
             }
@@ -242,7 +242,7 @@ namespace CommunicationServer
                 //    break;
 
                 default:
-                    Console.WriteLine(message.ToString(), state.Value);
+                    CSLogger.LogMessage(message, state.Value);
                     Kill();
                     break;
             }
@@ -255,15 +255,12 @@ namespace CommunicationServer
             {
                 server.StartListening(this.ipAddress, this.portNumber);
                 state.Value = CSState.Listening;
+                CSLogger.Log($"CommunicationServer started listening for clients on {ipAddress}:{portNumber}\n");
                 return true;
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Console.WriteLine("TryStartListening: " + e.Message);
             }
             catch (Exception e)
             {
-                Console.WriteLine("TryStartListening: "+e.Message);
+                CSLogger.LogError("TryStartListening: " +e.Message);
             }
             return false;
         }
@@ -277,7 +274,7 @@ namespace CommunicationServer
         {
             state.Value = CSState.GameInProgress;
             server.StopListening();
-            Console.WriteLine("Start of the game");
+            CSLogger.Log($"Game started.");
 
             lock (clientsLocker)
             {
@@ -297,7 +294,7 @@ namespace CommunicationServer
 
             if (id < 0 || id >= clients.Count || id == gmId.Value)
             {
-                Console.WriteLine("CS ForwardMessageFromGM: "+msg.ToString());
+                CSLogger.LogError("CS ForwardMessageFromGM: "+msg.ToString());
                 Kill();
             }
 
