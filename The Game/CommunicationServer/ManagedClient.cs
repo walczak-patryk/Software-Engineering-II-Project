@@ -26,25 +26,56 @@ namespace CommunicationServer
 
         public bool IsConnected()
         {
-            return false;
+            lock (locker)
+            {
+                return client.IsConnected();
+            }
         }
 
         public void Disconnect()
         {
+            lock (locker)
+            {
+                if (client.IsConnected())
+                {
+                    client.Disconnect();
+                    System.Console.WriteLine($" client {Id} marked to be disconnected ");
+                }
+            }
         }
 
         public void SafeDisconnect()
         {
+            lock (locker)
+            {
+                if (client.IsConnected())
+                {
+                    client.SafeDisconnect();
+                    System.Console.WriteLine($"### client {Id} marked to be safe disconnected");
+                }
+            }
         }
 
         public bool SendMessage(Message msg)
         {
-            return false;
+            lock (locker)
+            {
+                bool sent = client.SendMessage(msg);
+
+                if (sent)
+                    System.Console.WriteLine($"[client {Id}] sent message {msg.GetType().Name}");
+
+                return sent;
+            }
         }
 
         public Message GetMessage()
         {
-            return new Message("action");
+            Message msg = client.GetMessage();
+
+            System.Console.WriteLine($"[client {Id}] received message {msg.GetType().Name}");
+
+            return msg;
         }
     }
 }
