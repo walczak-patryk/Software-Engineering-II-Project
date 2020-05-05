@@ -8,10 +8,10 @@ namespace CommunicationServerLibrary.Messages
     public class TestResMsg : Message
     {
         public PlayerGuid playerGuid;
-        public string test;
+        public bool? test;
         public string status;
         
-        public TestResMsg(PlayerGuid playerGuid, string test, string status) : base("test")
+        public TestResMsg(PlayerGuid playerGuid, bool? test, string status) : base("test")
         {
             this.playerGuid = playerGuid;
             this.test = test;

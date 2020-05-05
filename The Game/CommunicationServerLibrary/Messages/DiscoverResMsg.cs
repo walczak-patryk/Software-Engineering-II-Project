@@ -11,9 +11,9 @@ namespace CommunicationServerLibrary.Messages
     {
         public PlayerGuid playerGuid;
         public Position position;
-        public Field[] fields;
+        public List<Field> fields;
         public string status;
-        public DiscoverResMsg(PlayerGuid playerGuid, Position position, Field[] fields, string status) : base("discover")
+        public DiscoverResMsg(PlayerGuid playerGuid, Position position, List<Field> fields, string status) : base("discover")
         {
             this.playerGuid = playerGuid;
             this.position = position;

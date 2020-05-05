@@ -43,16 +43,14 @@ namespace GameMaster
 
             while (true)
             {
-                string message = id.ToString() +  "_";
-                string action = AIMove();
-                message += action;
-                Console.WriteLine("I'm sending to GM: " + message);
+                Message action = AIMove();
+                Console.WriteLine("I'm sending to GM: " + action.ToString());
 
-                SendToGM(message);
+                SendMessageToServer(action);
                 Console.WriteLine("Player sent");
-                string response = ReceiveFromGM();
-                Console.WriteLine("I received from GM: " + response);
-                Console.WriteLine("DEBUG: {0}", turnsSinceDiscover);
+                Message response = GetMessageFromServer();
+                Console.WriteLine("I received from GM: " + response.ToString());
+
                 if (response.Split("_").Length < 3)
                     Console.WriteLine("Error while receiveing response from GM");
                 else
@@ -121,47 +119,47 @@ namespace GameMaster
         {
             return Environment.CurrentDirectory;
         }
-        private string ReceiveFromGM()
-        {
-            Console.WriteLine("PLAYER RECEIVE");
-            Console.WriteLine("Player_Pipe_Server" + id.ToString());
-                using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("Player_Pipe_Server" + id.ToString(), PipeDirection.In))
-                {
-                    pipeServer.WaitForConnection();
+        //private string ReceiveFromGM()
+        //{
+        //    Console.WriteLine("PLAYER RECEIVE");
+        //    Console.WriteLine("Player_Pipe_Server" + id.ToString());
+        //        using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("Player_Pipe_Server" + id.ToString(), PipeDirection.In))
+        //        {
+        //            pipeServer.WaitForConnection();
 
-                    using (StreamReader sr = new StreamReader(pipeServer))
-                    {
-                        return sr.ReadLine();
-                        //string temp;
-                        //while ((temp = sr.ReadLine()) != null)
-                        //{
-                        //    Console.WriteLine("Received from server: {0}", temp);
-                        //}
-                    }
-                }
+        //            using (StreamReader sr = new StreamReader(pipeServer))
+        //            {
+        //                return sr.ReadLine();
+        //                //string temp;
+        //                //while ((temp = sr.ReadLine()) != null)
+        //                //{
+        //                //    Console.WriteLine("Received from server: {0}", temp);
+        //                //}
+        //            }
+        //        }
 
-        }
+        //}
 
-        public void SendToGM(string message)
-        {
-            using (NamedPipeClientStream pipeClient =
-            new NamedPipeClientStream(".", "GM_Player_Server", PipeDirection.Out))
-            {
-                pipeClient.Connect();
-                try
-                {
-                    using (StreamWriter sw = new StreamWriter(pipeClient))
-                    {
-                        sw.AutoFlush = true;
-                        sw.WriteLine(message);
-                    }
-                }
-                catch (IOException e)
-                {
-                    Console.WriteLine("ERROR: {0}", e.Message);
-                }
-            }
-        }
+        //public void SendToGM(string message)
+        //{
+        //    using (NamedPipeClientStream pipeClient =
+        //    new NamedPipeClientStream(".", "GM_Player_Server", PipeDirection.Out))
+        //    {
+        //        pipeClient.Connect();
+        //        try
+        //        {
+        //            using (StreamWriter sw = new StreamWriter(pipeClient))
+        //            {
+        //                sw.AutoFlush = true;
+        //                sw.WriteLine(message);
+        //            }
+        //        }
+        //        catch (IOException e)
+        //        {
+        //            Console.WriteLine("ERROR: {0}", e.Message);
+        //        }
+        //    }
+        //}
         #endregion
 
         public void Move(Direction x)
@@ -281,16 +279,22 @@ namespace GameMaster
 
         }
 
-        private void TestPiece()
+        private void TestPiece(bool? status)
         {
-            if(this.piece==true)
+            if (this.piece)
             {
-                this.isDiscovered = true;
-                return;
-            }
-            if(this.pieceIsSham==false)
-            {
-                this.piece = false;
+                if (status == true)
+                {
+                    this.pieceIsSham = false;
+                    this.isDiscovered = true;
+                    return;
+                }
+                else if (status == false)
+                {
+                    this.piece = false;
+                    this.pieceIsSham = true;
+                    this.isDiscovered = false;
+                }
             }
         }
 
@@ -346,68 +350,68 @@ namespace GameMaster
                             {
                                 if (rand.Next() % 2 == 0)
                                 {
-                                    return "0_2";
+                                    return new MoveMsg(playerGuid, Direction.Left);
                                 }
 
                                 else
                                 {
-                                    return "0_0";
+                                    return new MoveMsg(playerGuid, Direction.Up);
                                 }
                             }
                         case 1:
                             {
-                                return "0_0";
+                                return new MoveMsg(playerGuid, Direction.Up);
                             }
                         case 2:
                             {
                                 if (rand.Next() % 2 == 0)
                                 {
-                                    return "0_3";
+                                    return new MoveMsg(playerGuid, Direction.Right);
                                 }
                                 else
                                 {
-                                    return "0_0";
+                                    return new MoveMsg(playerGuid, Direction.Up);
                                 }
                             }
                         case 3:
                             {
-                                return "0_2";
+                                return new MoveMsg(playerGuid, Direction.Left);
                             }
                         case 4:
                             {
-                                return "1";
+                                return new PickUpMsg(playerGuid);
                             }
                         case 5:
                             {
-                                return "0_3";
+                                return new MoveMsg(playerGuid, Direction.Right);
                             }
                         case 6:
                             {
                                 if (rand.Next() % 2 == 0)
                                 {
-                                    return "0_2";
+                                    return new MoveMsg(playerGuid, Direction.Left);
                                 }
                                 else
                                 {
-                                    return "0_1";
+                                    return new MoveMsg(playerGuid, Direction.Down);
                                 }
                             }
                         case 7:
                             {
-                                return "0_1";
+                                return new MoveMsg(playerGuid, Direction.Down);
                             }
                         case 8:
                             {
                                 if (rand.Next() % 2 == 0)
                                 {
-                                    return "0_3";
+                                    return new MoveMsg(playerGuid, Direction.Right);
                                 }
                                 else
                                 {
-                                    return "0_1";
+                                    return new MoveMsg(playerGuid, Direction.Down);
                                 }
                             }
-                        default: return "";
+                        default: return new Message("Unknown");
                     }
                 }
             }
@@ -415,7 +419,7 @@ namespace GameMaster
             {
                 if (!isDiscovered)
                 {
-                    return "2";
+                    return new TestMsg(playerGuid);
                 }
                 else
                 {
@@ -423,18 +427,18 @@ namespace GameMaster
                     {
                         if (position.y < board.taskAreaHeight + board.goalAreaHeight)
                         {
-                            return "0_0";
+                            return new MoveMsg(playerGuid, Direction.Up);
                         }
                         else
                         {
                             if (board.GetCell(position).GetCellState() == CellState.Goal)
                             {
                                 int dir = rand.Next() % 3;
-                                return "0_" + dir.ToString();
+                                return new MoveMsg(playerGuid, Direction.Up + dir);
                             }
                             else
                             {
-                                return "3";
+                                return new PlaceMsg(playerGuid);
                             }
                         }
                     }
@@ -442,18 +446,18 @@ namespace GameMaster
                     {
                         if (position.y > board.goalAreaHeight)
                         {
-                            return "0_1";
+                            return new MoveMsg(playerGuid, Direction.Down);
                         }
                         else
                         {
                             if (board.GetCell(position).GetCellState() == CellState.Goal)
                             {
                                 int dir = rand.Next() % 3;
-                                return "0_" + dir.ToString();
+                                return new MoveMsg(playerGuid, Direction.Up + dir);
                             }
                             else
                             {
-                                return "3";
+                                return new PlaceMsg(playerGuid);
                             }
                         }
                     }
@@ -471,6 +475,51 @@ namespace GameMaster
             if (!connection.SendMessage(m))
             {
                 throw new Exception("Connection lost, can't send message");
+            }
+        }
+
+        private void ProcessMessage(Message m)
+        {
+            switch(m)
+            {
+                case MoveResMsg _:
+                    MoveResMsg resMove = (MoveResMsg)m;
+                    if (resMove.status == "OK")
+                        Move(resMove.direction);
+                    break;
+                case PickUpResMsg _:
+                    //DO POPRAWY LOGIKA
+                    PickUpResMsg resPick = (PickUpResMsg)m;
+                    if (resPick.status == "OK")
+                        TakePiece();
+                    break;
+                case TestResMsg _:
+                    //DO POPRAWY LOGIKA
+                    TestResMsg resTest = (TestResMsg)m;
+                    if (resTest.status == "OK")
+                        TestPiece(resTest.test);
+                    break;
+                case PlaceResMsg _:
+                    //DO POPRAWY LOGIKA
+                    PlaceResMsg resPlace = (PlaceResMsg)m;
+                    if (resPlace.status == "OK")
+                        PlacePiece();
+                    break;
+                case DiscoverResMsg _:
+                    DiscoverResMsg resDiscover = (DiscoverResMsg)m;
+                    if (resDiscover.status == "OK")
+                        Discover(resDiscover.fields);
+                    break;
+                case ConnectPlayerResMsg _:
+                    break;
+                case ReadyResMsg _:
+                    break;
+                case SetupResMsg _:
+                    break;
+                case GameStartMsg _:
+                    break;
+                default:
+                    break;
             }
         }
     }
