@@ -11,7 +11,7 @@ namespace CommunicationServerLibrary.Messages
         public string placementResult;
         public string status;
 
-        public PlaceResMsg(PlayerGuid playerGuid, string placementResult, string status) : base("place")
+        public PlaceResMsg(PlayerGuid playerGuid, string placementResult, string status) : base("place status")
         {
             this.playerGuid = playerGuid;
             this.placementResult = placementResult;

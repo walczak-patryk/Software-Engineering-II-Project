@@ -11,7 +11,7 @@ namespace CommunicationServerLibrary.Messages
         public bool? test;
         public string status;
         
-        public TestResMsg(PlayerGuid playerGuid, bool? test, string status) : base("test")
+        public TestResMsg(PlayerGuid playerGuid, bool? test, string status) : base("test status")
         {
             this.playerGuid = playerGuid;
             this.test = test;
