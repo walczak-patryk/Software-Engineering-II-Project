@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using CommunicationServerLibrary.Interfaces;
 using CommunicationServerLibrary.Messages;
 using System.Net;
+using System.Text;
 
 namespace CommunicationServerLibrary.Adapters
 
@@ -10,7 +11,6 @@ namespace CommunicationServerLibrary.Adapters
     public class TCPClientAdapter: IConnectionClient
     {
         private readonly int messageSizeBitLength = 4;
-        private readonly int messageIdBitLength = 4;
 
         TcpClient client = null;
 
@@ -54,17 +54,78 @@ namespace CommunicationServerLibrary.Adapters
         }
 
         public void SafeDisconnect()
-        {          
+        {
+            try
+            {
+                client.Client.Shutdown(SocketShutdown.Send);
+                // Error-prone part 
+                client.Close();
 
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         public bool SendMessage(Message message)
         {
-            return false;
+            try
+            {
+                string serializedMessage = MessageSerializer.Serialize(message);
+
+                byte[] jsonbytes = Encoding.UTF8.GetBytes(serializedMessage);
+                int size = IPAddress.HostToNetworkOrder(jsonbytes.Length);
+                byte[] sizeByte = BitConverter.GetBytes(size);
+
+                byte[] bytes = new byte[jsonbytes.Length + messageSizeBitLength];
+
+                sizeByte.CopyTo(bytes, 0);
+                jsonbytes.CopyTo(bytes, messageSizeBitLength);
+
+                client.Client.Send(bytes);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
+
+            return true;
         }
         public Message GetMessage()
         {
-            return new Message("action");
+            byte[] sizeBytes = null;
+            byte[] idBytes = null;
+            byte[] contentBytes = null;
+
+            try
+            {
+                sizeBytes = ReadBytesFromStream(client, messageSizeBitLength);
+                if (sizeBytes == null)
+                    return null; // To handle
+
+                int size = IPAddress.NetworkToHostOrder(
+                    BitConverter.ToInt32(sizeBytes, 0));
+
+                contentBytes = ReadBytesFromStream(client, size);
+                if (contentBytes == null)
+                    return null; // To handle
+
+                string content = Encoding.UTF8.GetString(contentBytes);
+
+                return MessageSerializer.Deserialize(content);
+            }
+            catch (SocketException e)
+            {
+                Console.WriteLine("Socket Exception \n"+e.Message);
+                return null;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
+            }
         }
         private byte[] ReadBytesFromStream(TcpClient client, int size)
         {
