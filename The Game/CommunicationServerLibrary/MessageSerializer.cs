@@ -20,45 +20,46 @@ namespace CommunicationServerLibrary
             }
         }
 
-        public static Message Deserialize(string message, string header)
+        public static Message Deserialize(string message)
         {
+            Message msg= System.Text.Json.JsonSerializer.Deserialize<Message>(message);
             try
             {
-                switch (header)
+                switch (msg.action)
                 {
-                    case "GameSetup message":
+                    case "GameSetup":
                         return System.Text.Json.JsonSerializer.Deserialize<SetupMsg>(message);
-                    case "GameSetup status message":
+                    case "GameSetup status":
                         return System.Text.Json.JsonSerializer.Deserialize<SetupResMsg>(message);
-                    case "Connect player message":
+                    case "Connect player":
                         return System.Text.Json.JsonSerializer.Deserialize<ConnectPlayerMsg>(message);
-                    case "Connect player status message":
+                    case "Connect player status":
                         return System.Text.Json.JsonSerializer.Deserialize<ConnectPlayerResMsg>(message);
-                    case "Ready message":
+                    case "Ready":
                         return System.Text.Json.JsonSerializer.Deserialize<ReadyMsg>(message);
-                    case "Ready status message":
+                    case "Ready status":
                         return System.Text.Json.JsonSerializer.Deserialize<ReadyResMsg>(message);
-                    case "Game start message":
+                    case "Game start":
                         return System.Text.Json.JsonSerializer.Deserialize<GameStartMsg>(message);
-                    case "Move message":
+                    case "Move":
                         return System.Text.Json.JsonSerializer.Deserialize<MoveMsg>(message);
-                    case "MoveStatus message":
+                    case "MoveStatus":
                         return System.Text.Json.JsonSerializer.Deserialize<MoveResMsg>(message);
-                    case "PickUp message":
+                    case "PickUp":
                         return System.Text.Json.JsonSerializer.Deserialize<PickUpMsg>(message);
-                    case "PickUpStatus message":
+                    case "PickUpStatus":
                         return System.Text.Json.JsonSerializer.Deserialize<PickUpResMsg>(message);
-                    case "Test message":
+                    case "Test":
                         return System.Text.Json.JsonSerializer.Deserialize<TestMsg>(message);
-                    case "TestStatus message":
+                    case "TestStatus":
                         return System.Text.Json.JsonSerializer.Deserialize<TestResMsg>(message);
-                    case "Place message":
+                    case "Place":
                         return System.Text.Json.JsonSerializer.Deserialize<PlaceMsg>(message);
-                    case "PlaceStatus message":
+                    case "PlaceStatus":
                         return System.Text.Json.JsonSerializer.Deserialize<PlaceResMsg>(message);
-                    case "Discover messages":
+                    case "Discover":
                         return System.Text.Json.JsonSerializer.Deserialize<DiscoverMsg>(message);
-                    case "DiscoverStatus messages":
+                    case "DiscoverStatus":
                         return System.Text.Json.JsonSerializer.Deserialize<DiscoverResMsg>(message);
                     default: 
                         return new Message("Unknown");
