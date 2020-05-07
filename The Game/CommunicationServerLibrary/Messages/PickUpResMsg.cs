@@ -9,7 +9,7 @@ namespace CommunicationServerLibrary.Messages
     {
         public PlayerGuid playerGuid;
         public string status;
-        public PickUpResMsg(PlayerGuid playerGuid, string status) : base("pickup")
+        public PickUpResMsg(PlayerGuid playerGuid, string status) : base("pickup status")
         {
             this.playerGuid = playerGuid;
             this.status = status;

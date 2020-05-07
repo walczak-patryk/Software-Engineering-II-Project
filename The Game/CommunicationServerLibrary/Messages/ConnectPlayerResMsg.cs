@@ -10,7 +10,7 @@ namespace CommunicationServerLibrary.Messages
         public string portNumber;
         public PlayerGuid playerGuid;
         public string status;
-        public ConnectPlayerResMsg(string portNumber, PlayerGuid playerGuid, string status) : base("connect")
+        public ConnectPlayerResMsg(string portNumber, PlayerGuid playerGuid, string status) : base("connect status")
         {
             this.portNumber = portNumber;
             this.playerGuid = playerGuid;

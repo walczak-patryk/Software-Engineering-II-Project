@@ -9,7 +9,7 @@ namespace CommunicationServerLibrary.Messages
     {
         public PlayerGuid playerGuid;
         public string status;
-        public ReadyResMsg(PlayerGuid playerGuid, string status) : base("ready")
+        public ReadyResMsg(PlayerGuid playerGuid, string status) : base("ready status")
         {
             this.playerGuid = playerGuid;
             this.status = status;

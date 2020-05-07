@@ -7,7 +7,7 @@ namespace CommunicationServerLibrary.Messages
     public class SetupResMsg : Message
     {
         public string status;
-        public SetupResMsg(string status) : base("setup")
+        public SetupResMsg(string status) : base("setup status")
         {
             this.status = status;
         }
