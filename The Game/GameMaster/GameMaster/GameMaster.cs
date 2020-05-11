@@ -364,9 +364,19 @@ namespace GameMaster
                 Logger.Log($"GameStart message sent to player {player.g.ToString()}");
             }
         }
+
+        private bool IsEnd()
+        {
+            return false;
+        }
         private void HandleActions()
         {         
-
+            while (IsEnd())
+            {
+                Message msg = GetMessage();
+                var response = ParsePlayerAction(msg);
+                SendMessage(msg);
+            }
         }
         private void SendGameOverMsg()
         {
