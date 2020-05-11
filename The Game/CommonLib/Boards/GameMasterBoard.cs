@@ -80,11 +80,11 @@ namespace GameMaster.Boards
                 elem.SetCellState(CellState.Empty);
                 return CellState.Piece;
             }
-            else if (elem.GetCellState() == CellState.Sham)
+            /*else if (elem.GetCellState() == CellState.Sham)
             {
                 elem.SetCellState(CellState.Empty);
                 return CellState.Sham;
-            }
+            }*/
             return CellState.Empty;
         }
         public Position generatePiece(double chance, int maxPieces) {
@@ -93,7 +93,7 @@ namespace GameMaster.Boards
                 piecesPositions.Clear();
                 foreach(var i in cellsGrid)
                 {
-                    if (i.GetCellState() == CellState.Piece || i.GetCellState() == CellState.Sham)
+                    if (i.GetCellState() == CellState.Piece /*|| i.GetCellState() == CellState.Sham*/)
                         i.SetCellState(CellState.Empty);
                 }
             }
@@ -111,9 +111,9 @@ namespace GameMaster.Boards
             }
             piecesPositions.Add(pos);
 
-            if (random.NextDouble() < chance)
-                cellsGrid[pos.x, pos.y].SetCellState(CellState.Sham);
-            else
+            //if (random.NextDouble() < chance)
+                //cellsGrid[pos.x, pos.y].SetCellState(CellState.Sham);
+            //else
                 cellsGrid[pos.x, pos.y].SetCellState(CellState.Piece);
 
             return pos; 
@@ -184,7 +184,11 @@ namespace GameMaster.Boards
             {
                 for(int j = -1; j < 2; j++)
                 {
-                    Field f = new Field() { position = new Position(posX + j, posY + i), cell = new Cell(distances[iter++]) };
+                    Position pos = new Position(posX + j, posY + i);
+                    Cell cel = new Cell(distances[iter++]);
+                    if (cel.GetDistance() == 0)
+                        cel.SetCellState(CellState.Piece);
+                    Field f = new Field() { position = pos, cell = cel };
                     fields.Add(f);
                 }
             }

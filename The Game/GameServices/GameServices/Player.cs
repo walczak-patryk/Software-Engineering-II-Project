@@ -107,6 +107,7 @@ namespace GameMaster
             this.pieceIsSham = false;
             this.board = new Board(0,0,0);
             this.guid = Team.getColor().ToString()[0] + Id.ToString();
+            this.playerGuid = new PlayerGuid();
             this.turnsSinceDiscover = 100;
             this.isDiscovered = false;
         }
@@ -257,22 +258,22 @@ namespace GameMaster
 
                 cell = board.GetCell(position);
                 this.piece = true;
-                this.pieceIsSham = false;
+                //this.pieceIsSham = false;
                 cell.SetCellState(CellState.Empty);
                 board.UpdateCell(cell, position);
             }
-            else if (cellState == CellState.Sham)
+            /*else if (cellState == CellState.Sham)
             {
                 cell = board.GetCell(position);
                 this.piece = true;
                 this.pieceIsSham = true;
                 cell.SetCellState(CellState.Empty);
                 board.UpdateCell(cell, position);
-            }
+            }*/
             else
             {
                 this.piece = false;
-                this.pieceIsSham = false;
+                //this.pieceIsSham = false;
             }
             this.isDiscovered = false;
 
@@ -295,21 +296,20 @@ namespace GameMaster
                     this.isDiscovered = false;
                 }
             }
-            this.piece = false;
-            this.pieceIsSham = false;
-            this.isDiscovered = false;
         }
 
-        public void PlacePiece()
+        public void PlacePiece(PlacementResult res)
         {
             if((team.color==TeamColor.Red && position.y<board.goalAreaHeight)||
                 (team.color == TeamColor.Blue && position.y >= board.boardHeight-board.goalAreaHeight))
             {
-                if(board.GetCell(position).GetCellState()==CellState.Valid&&piece&&!pieceIsSham)
-                {
-                    Cell cell = board.GetCell(position);
+                Cell cell = board.GetCell(position);
+                if (res == PlacementResult.Correct)
                     cell.SetCellState(CellState.Goal);
-                }
+                else
+                    cell.SetCellState(CellState.NoGoal);
+                piece = false;
+                pieceIsSham = false;
             }
         }
 
@@ -505,7 +505,12 @@ namespace GameMaster
                     //DO POPRAWY LOGIKA
                     PlaceResMsg resPlace = (PlaceResMsg)m;
                     if (resPlace.status == "OK")
-                        PlacePiece();
+                    {
+                        if(resPlace.placementResult == "Correct")
+                            PlacePiece(PlacementResult.Correct);
+                        else
+                            PlacePiece(PlacementResult.Pointless);
+                    }
                     break;
                 case DiscoverResMsg _:
                     DiscoverResMsg resDiscover = (DiscoverResMsg)m;
@@ -519,6 +524,14 @@ namespace GameMaster
                 case SetupResMsg _:
                     break;
                 case GameStartMsg _:
+                    GameStartMsg gameStart = (GameStartMsg)m;
+                    position = gameStart.position;
+                    board = gameStart.board;
+                    team.color = gameStart.team;
+                    if (gameStart.teamRole == TeamRole.Leader)
+                        isLeader = true;
+                    else
+                        isLeader = false;
                     break;
                 default:
                     break;
