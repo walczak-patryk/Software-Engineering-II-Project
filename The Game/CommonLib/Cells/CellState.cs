@@ -5,7 +5,7 @@
         Empty,
         Goal,
         Piece,
-        Sham,
+        //Sham,
         Valid,
         Unknown,
         NoGoal
