@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
 using System.Net;
+using CommunicationServerLibrary.Adapters;
 
 namespace GameMaster
 {
@@ -95,6 +96,8 @@ namespace GameMaster
         {
             this.serverPort = serverPort;
             this.serverAddress = IPAddress.Parse(serverAddress);
+            this.connection = new TCPClientAdapter();
+            this.connection.Connect(this.serverAddress, serverPort);
         }
 
         public Player(int Id, Team Team, bool IsLeader)
