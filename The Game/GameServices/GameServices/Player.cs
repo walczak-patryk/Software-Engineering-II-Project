@@ -35,9 +35,7 @@ namespace GameMaster
         public int turnsSinceDiscover;
 
         public void Start()
-        {
-            
-
+        {          
             Console.WriteLine("Starting agent launcher");
             ClientLauncher("127.0.0.1", 13000);
 
@@ -50,8 +48,9 @@ namespace GameMaster
                 Console.WriteLine("Player sent");
                 Message response = GetMessageFromServer();
                 Console.WriteLine("I received from GM: " + response.ToString());
+                ProcessMessage(response);
 
-                if (response.Split("_").Length < 3)
+                /*if (response.Split("_").Length < 3)
                     Console.WriteLine("Error while receiveing response from GM");
                 else
                 {
@@ -88,7 +87,7 @@ namespace GameMaster
                         turnsSinceDiscover++;
                         PlacePiece();
                     }
-                }
+                }*/
             }
         }
 
@@ -296,6 +295,9 @@ namespace GameMaster
                     this.isDiscovered = false;
                 }
             }
+            this.piece = false;
+            this.pieceIsSham = false;
+            this.isDiscovered = false;
         }
 
         public void PlacePiece()
