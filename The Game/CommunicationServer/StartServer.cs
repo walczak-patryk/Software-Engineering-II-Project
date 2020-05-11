@@ -1,4 +1,5 @@
 ﻿using CommunicationServerLibrary.Adapters;
+using System;
 
 namespace CommunicationServer
 {
