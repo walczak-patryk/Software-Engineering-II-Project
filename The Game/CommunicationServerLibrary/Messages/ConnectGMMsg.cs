@@ -5,7 +5,7 @@ using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
-    class ConnectGMMsg : Message
+    public class ConnectGMMsg : Message
     {
         public string portNumber;
 
