@@ -277,6 +277,8 @@ namespace GameMaster
 
         private bool ConnectToCommunicationServer()
         {
+            IPAddress = IPAddress.Parse("127.0.0.1");
+            portNumber = 13000;
             Logger.Log($"Connecting to communication server at {IPAddress}:{portNumber}");
             if (!connectionClient.Connect(IPAddress, portNumber))
             {
