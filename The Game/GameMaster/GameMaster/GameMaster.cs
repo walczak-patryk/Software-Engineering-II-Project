@@ -82,17 +82,6 @@ namespace GameMaster
                     }
                 }
             });
-            StartGUIAsync();
-            StartPlayer();
-
-            Task g = Task.Run(() =>
-            {
-                this.ReceiveFromGUI();
-                if (isGuiWorking)
-                {
-                    TestMessageToGui();
-                }
-            });
 
             while (true) //to nie działa bo nie jest w osobnym wątku
             {
@@ -103,6 +92,16 @@ namespace GameMaster
 
         public void Run()
         {
+            StartGUIAsync();
+            Task g = Task.Run(() =>
+            {
+                this.ReceiveFromGUI();
+                if (isGuiWorking)
+                {
+                    TestMessageToGui();
+                }
+            });
+
             try
             {
                 if (!ConnectToCommunicationServer())
@@ -352,13 +351,13 @@ namespace GameMaster
             var redGuids = teamRedGuids.Select(item => item.g.ToString()).ToArray();
             foreach(var player in teamBlueGuids)
             {
-                var msgBlue = new GameStartMsg(new PlayerGuid(), TeamColor.Blue, TeamRole.Member, configuration.maxTeamSize, blueGuids, FindPlayer(player.g.ToString()), board);
+                var msgBlue = new GameStartMsg(player, TeamColor.Blue, TeamRole.Member, configuration.maxTeamSize, blueGuids, FindPlayer(player.g.ToString()), board);
                 SendMessage(msgBlue);
                 Logger.Log($"GameStart message sent to player {player.g.ToString()}");
             }            
             foreach(var player in teamRedGuids)
             {
-                var msgRed = new GameStartMsg(new PlayerGuid(), TeamColor.Red, TeamRole.Member, configuration.maxTeamSize, redGuids, FindPlayer(player.g.ToString()), board);
+                var msgRed = new GameStartMsg(player, TeamColor.Red, TeamRole.Member, configuration.maxTeamSize, redGuids, FindPlayer(player.g.ToString()), board);
                 SendMessage(msgRed);
                 Logger.Log($"GameStart message sent to player {player.g.ToString()}");
             }
