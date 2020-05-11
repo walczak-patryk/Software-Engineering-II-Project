@@ -38,7 +38,7 @@ namespace GameMaster
         public void Start()
         {          
             Console.WriteLine("Starting agent launcher");
-            ClientLauncher("127.0.0.1", 13000);
+            ClientLauncher("127.0.0.1", 13001);
 
             while (true)
             {

@@ -330,7 +330,7 @@ namespace GameMaster
             Message msg;
             Message response;
 
-            while (IsTeamsReady())
+            while (!IsTeamsReady())
             {
                 msg = GetMessage();
                 if (!(msg is ConnectPlayerMsg connectPlayerMsg))

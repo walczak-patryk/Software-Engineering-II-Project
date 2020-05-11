@@ -62,6 +62,10 @@ namespace CommunicationServerLibrary
                         return JsonConvert.DeserializeObject<DiscoverMsg>(message);
                     case "discover status":
                         return JsonConvert.DeserializeObject<DiscoverResMsg>(message);
+                    case "connect GM":
+                        return JsonConvert.DeserializeObject<ConnectGMMsg>(message);
+                    case "connect GM result":
+                        return JsonConvert.DeserializeObject<ConnectGMResMsg>(message);
                     default: 
                         return new Message("unknown");
                 }

@@ -138,10 +138,10 @@ namespace CommunicationServer
                     //client.SendMessage(new GmNotConnectedYet());
                     break;
 
-                //case ConnectGmMsg msg:
-                //    if (RegisterGM(client))
-                //        HandleGmCommunication(client);
-                //    break;
+                case ConnectGMMsg msg:
+                    if (RegisterGM(client))
+                        HandleGmCommunication(client);
+                    break;
 
                 default:
                     CSLogger.LogMessage(message, state.Value);
@@ -267,7 +267,23 @@ namespace CommunicationServer
 
         private bool RegisterGM(ManagedClient client)
         {
-            return false;
+            //return false;
+            lock (gmRegisteringLocker)
+            {
+                if (state.Value == CSState.Listening)
+                {
+                    gmId.Value = client.Id;
+                    state.Value = CSState.AgentsAccepting;
+                    CSLogger.Log($"GM registered and agents accepting started.");
+                    client.SendMessage(new ConnectGMResMsg("127.0.0.1", "OK"));
+                    return true;
+                }
+                else
+                {
+                    client.SendMessage(new ConnectGMResMsg("127.0.0.1", "DENIED"));
+                    return false;
+                }
+            }
         }
 
         private void StartGame()
