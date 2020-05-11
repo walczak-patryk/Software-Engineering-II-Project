@@ -44,7 +44,8 @@ namespace GameMaster
         }
 
         public void StartGame()
-        {      
+        {
+            bool color = false;
             Task t = Task.Run(() =>
             {
                 board.generatePiece(0.2, 5); // to dodaje z jakiegoś powodu 4 piece'y
@@ -285,8 +286,14 @@ namespace GameMaster
             }
             Logger.Log("Connection established");
 
-            //SendMessage(new GmJoinToGameRequest()); ??
-            //Message msg = GetMessage();
+            SendMessage(new ConnectGMMsg(portNumber.ToString()));
+            Message msg = GetMessage();
+
+            if (!(msg is ConnectGMResMsg response))
+            {
+                Logger.Error($"Unexpected message received from CS: '{msg}'");
+                return false;
+            }
             return true;
         }
         public bool IsTeamsReady()
@@ -355,7 +362,6 @@ namespace GameMaster
                 SendMessage(msgRed);
                 Logger.Log($"GameStart message sent to player {player.g.ToString()}");
             }
-
         }
         private void HandleActions()
         {         
