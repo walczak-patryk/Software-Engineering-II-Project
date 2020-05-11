@@ -8,6 +8,10 @@ namespace CommunicationServerLibrary.Messages
     {
         public string action;
 
+        public Message()
+        {
+
+        }
         public Message(string action)
         {
             this.action = action;
