@@ -35,10 +35,10 @@ namespace GameMaster
 
         public int turnsSinceDiscover;
 
-        public void Start()
+        public void Start(string ip, string port)
         {          
             Console.WriteLine("Starting agent launcher");
-            ClientLauncher("127.0.0.1", 13000);
+            ClientLauncher(ip, Int32.Parse(port));
 
             while (true)
             {

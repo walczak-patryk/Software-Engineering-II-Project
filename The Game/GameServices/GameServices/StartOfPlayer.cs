@@ -17,6 +17,10 @@ namespace GameMaster
         {
             Console.WriteLine("Player");
             string start = "";
+            Console.Write("Please type Ip address of server\n# ");
+            string ip = Console.ReadLine();
+            Console.Write("Please type port number of server\n# ");
+            string port = Console.ReadLine();
             while (start != "start")
             {
                 Console.Write("type \"start\" to connect to the game\n# ");
@@ -24,7 +28,7 @@ namespace GameMaster
             }
             Console.WriteLine("I'm playing");
 
-            Pl.p.Start();
+            Pl.p.Start(ip,port);
             string testString = "";
             while (testString != "exit")
             {
