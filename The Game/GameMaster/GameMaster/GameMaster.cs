@@ -24,8 +24,8 @@ namespace GameMaster
         public GameMasterBoard board;
         private GameMasterStatus status;
         private GameMasterConfiguration configuration;
-        public List<string> teamRedGuids;
-        public List<string> teamBlueGuids;
+        public List<PlayerGuid> teamRedGuids;
+        public List<PlayerGuid> teamBlueGuids;
         public IConnectionClient connectionClient;
 
         private Process GuiWindow;
@@ -277,22 +277,107 @@ namespace GameMaster
 
         private bool ConnectToCommunicationServer()
         {
+            Logger.Log($"Connecting to communication server at {IPAddress}:{portNumber}");
+            if (!connectionClient.Connect(IPAddress, portNumber))
+            {
+                Logger.Error("TCP error");
+                return false;
+            }
+            Logger.Log("Connection established");
+
+            //SendMessage(new GmJoinToGameRequest()); ??
+            //Message msg = GetMessage();
+            return true;
+        }
+        public bool IsTeamsReady()
+        {
+            if (teamBlueGuids.Count() == configuration.maxTeamSize && teamRedGuids.Count() == configuration.maxTeamSize)
+                return true;
             return false;
         }
+
+        private void AddPlayer(PlayerGuid playerGuid)
+        {
+            Random random = new Random();
+            var n = random.Next(0, 2);
+            if(n == 0)
+            {
+                if (teamBlueGuids.Count() < configuration.maxTeamSize)
+                    teamBlueGuids.Add(playerGuid);
+                else
+                    teamRedGuids.Add(playerGuid);
+            }
+            else
+            {
+                if (teamRedGuids.Count() < configuration.maxTeamSize)
+                    teamRedGuids.Add(playerGuid);
+                else
+                    teamBlueGuids.Add(playerGuid);
+            }
+        }
+
         private void WaitForPlayersToConnect()
         {
+            Logger.Log("Waiting for players");
+            Message msg;
+            Message response;
+
+            while (IsTeamsReady())
+            {
+                msg = GetMessage();
+                if (!(msg is ConnectPlayerMsg connectPlayerMsg))
+                {
+                    Logger.Error($"Unexpected message received: '{msg}'");
+                    continue;
+                }
+                AddPlayer(connectPlayerMsg.playerGuid);
+                Logger.Log($"Connect request: {connectPlayerMsg.playerGuid}\tStatus -> OK");
+                SendMessage(new ConnectPlayerResMsg(connectPlayerMsg.portNumber, connectPlayerMsg.playerGuid, "OK"));
+            }
+
+            Logger.Log("All players connected");
+            PrepareGame();
+            Logger.Log("Game prepared");
         }
         private void SendGameStartMsg()
         {
+            var blueGuids = teamBlueGuids.Select(item => item.g.ToString()).ToArray();
+            var redGuids = teamRedGuids.Select(item => item.g.ToString()).ToArray();
+            foreach(var player in teamBlueGuids)
+            {
+                var msgBlue = new GameStartMsg(new PlayerGuid(), TeamColor.Blue, TeamRole.Member, configuration.maxTeamSize, blueGuids, FindPlayer(player.g.ToString()), board);
+                SendMessage(msgBlue);
+                Logger.Log($"GameStart message sent to player {player.g.ToString()}");
+            }            
+            foreach(var player in teamRedGuids)
+            {
+                var msgRed = new GameStartMsg(new PlayerGuid(), TeamColor.Red, TeamRole.Member, configuration.maxTeamSize, redGuids, FindPlayer(player.g.ToString()), board);
+                SendMessage(msgRed);
+                Logger.Log($"GameStart message sent to player {player.g.ToString()}");
+            }
+
         }
         private void HandleActions()
         {         
         }
-        private void SendGameOverMsg()
-        {         
+        private void SendGameOverMsg(string winTeam)
+        {
+            var msg = new GameEndMsg(winTeam);
+            foreach (var player in teamBlueGuids)
+            {
+                SendMessage(msg);
+                Logger.Log($"GameEnd message sent to player {player.g.ToString()}");
+            }
+            foreach (var player in teamRedGuids)
+            {
+                SendMessage(msg);
+                Logger.Log($"GameEnd message sent to player {player.g.ToString()}");
+            }
         }
         private void DisconnectCommunicationServer()
-        {        
+        {
+            if (connectionClient.IsConnected())
+                connectionClient.SafeDisconnect();
         }
         #endregion
         private void listen()
@@ -383,7 +468,7 @@ namespace GameMaster
                 destinationY--;
             }
             TeamColor teamColor;
-            if(teamRedGuids.Contains(playerGUID))
+            if(teamRedGuids.Contains(playerGUID.))
             {
                 teamColor = TeamColor.Red;
             }
