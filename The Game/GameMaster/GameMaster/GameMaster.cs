@@ -43,56 +43,56 @@ namespace GameMaster
             isGuiWorking = false;
         }
 
-        public void StartGame()
-        {
-            bool color = false;
-            Task t = Task.Run(() =>
-            {
-                board.generatePiece(0.2, 5); // to dodaje z jakiegoś powodu 4 piece'y
-                //powinno dawać 1 xD
-                while (true)
-                {
+        //public void StartGame()
+        //{
+        //    bool color = false;
+        //    Task t = Task.Run(() =>
+        //    {
+        //        board.generatePiece(0.2, 5); // to dodaje z jakiegoś powodu 4 piece'y
+        //        //powinno dawać 1 xD
+        //        while (true)
+        //        {
 
-                    //this.ReceiveFromGUI();
-                    string message = ReceiveFromPlayer();
-                    if (message == null)
-                    {
-                        continue;
-                    }
-                    //Console.WriteLine($"GM received from player: {message}");
-                    string[] messageParts = message.Split("_");
-                    if (messageParts.Length > 0)
-                    {
-                        if (FindPlayer(messageParts[0]) == null)
-                        {
-                            Console.WriteLine("Creating new player with guid: {0}", messageParts[0]);
-                            Random r = new Random();
-                            board.cellsGrid[r.Next(0, board.boardWidth), r.Next(board.goalAreaHeight, board.goalAreaHeight + board.taskAreaHeight)].SetPlayerGuid(messageParts[0]);
-                            if (color)
-                                teamBlueGuids.Add(messageParts[0]);
-                            else
-                                teamRedGuids.Add(messageParts[0]);
-                            color = !color;
+        //            //this.ReceiveFromGUI();
+        //            string message = ReceiveFromPlayer();
+        //            if (message == null)
+        //            {
+        //                continue;
+        //            }
+        //            //Console.WriteLine($"GM received from player: {message}");
+        //            string[] messageParts = message.Split("_");
+        //            if (messageParts.Length > 0)
+        //            {
+        //                if (FindPlayer(messageParts[0]) == null)
+        //                {
+        //                    Console.WriteLine("Creating new player with guid: {0}", messageParts[0]);
+        //                    Random r = new Random();
+        //                    board.cellsGrid[r.Next(0, board.boardWidth), r.Next(board.goalAreaHeight, board.goalAreaHeight + board.taskAreaHeight)].SetPlayerGuid(messageParts[0]);
+        //                    if (color)
+        //                        teamBlueGuids.Add(messageParts[0]);
+        //                    else
+        //                        teamRedGuids.Add(messageParts[0]);
+        //                    color = !color;
 
-                        }
-                        string answer= message + "_" + ParsePlayerAction(message);
-                        Console.WriteLine($"GUID: {messageParts[0]}");
-                        SendToPlayer(answer, messageParts[0]);
-                        Console.WriteLine();
-                    }
-                }
-            });
+        //                }
+        //                string answer= message + "_" + ParsePlayerAction(message);
+        //                Console.WriteLine($"GUID: {messageParts[0]}");
+        //                SendToPlayer(answer, messageParts[0]);
+        //                Console.WriteLine();
+        //            }
+        //        }
+        //    });
 
-            while (true) //to nie działa bo nie jest w osobnym wątku
-            {
-                System.Threading.Thread.Sleep(5000);
-                board.generatePiece(0.2, 5);
-            }
-        }
+        //    while (true) //to nie działa bo nie jest w osobnym wątku
+        //    {
+        //        System.Threading.Thread.Sleep(5000);
+        //        board.generatePiece(0.2, 5);
+        //    }
+        //}
 
         public void Run()
         {
-            StartGUIAsync();
+            //StartGUIAsync();
             Task g = Task.Run(() =>
             {
                 this.ReceiveFromGUI();
@@ -367,7 +367,7 @@ namespace GameMaster
         }
         private void SendGameOverMsg()
         {
-            var msg = new GameEndMsg(winTeam);
+            var msg = new GameEndMsg(TeamColor.Blue);
             foreach (var player in teamBlueGuids)
             {
                 SendMessage(msg);

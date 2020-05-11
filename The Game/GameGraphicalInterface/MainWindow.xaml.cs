@@ -230,7 +230,7 @@ namespace GameGraphicalInterface
                         txtb.Background = Brushes.White;
                     }
 
-                    if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Piece || GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Sham)
+                    if (GMboard.cellsGrid[j, i].GetCellState() == GameMaster.Cells.CellState.Piece)
                     {
                         txtb.Text = "P";
                         txtb.Background = Brushes.Black;
@@ -318,9 +318,6 @@ namespace GameGraphicalInterface
                                     break;
                                 case "2":
                                     this.GMboard.cellsGrid[i, j].SetCellState(CellState.Piece);
-                                    break;
-                                case "3":
-                                    this.GMboard.cellsGrid[i, j].SetCellState(CellState.Sham);
                                     break;
                                 case "4":
                                     this.GMboard.cellsGrid[i, j].SetCellState(CellState.Valid);
