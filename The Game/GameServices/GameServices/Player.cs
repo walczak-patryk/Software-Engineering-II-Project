@@ -40,6 +40,31 @@ namespace GameMaster
             Console.WriteLine("Starting agent launcher");
             ClientLauncher(ip, Int32.Parse(port));
 
+            Message join = new ConnectPlayerMsg("13000", playerGuid);
+            Console.WriteLine("I'm sending to GM: " + join.ToString());
+            SendMessageToServer(join);
+            Console.WriteLine("Join sent");
+            Message resp = GetMessageFromServer();
+            Console.WriteLine("I received from GM: " + resp.ToString());
+
+            Message ready = new ReadyMsg(playerGuid);
+            Console.WriteLine("I'm sending to GM: " + ready.ToString());
+            SendMessageToServer(ready);
+            Console.WriteLine("Ready sent");
+            resp = GetMessageFromServer();
+            Console.WriteLine("I received from GM: " + resp.ToString());
+
+            while (true)
+            {
+                Console.WriteLine("Waiting for start of game...");
+                resp = GetMessageFromServer();
+                if (resp.GetType() == typeof(GameStartMsg))
+                {
+                    ProcessMessage(resp);
+                    break;
+                }
+            }
+
             while (true)
             {
                 Message action = AIMove();
