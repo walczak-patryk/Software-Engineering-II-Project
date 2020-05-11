@@ -38,8 +38,8 @@ namespace GameMaster
             this.configuration = new GameMasterConfiguration();
             this.connectionClient = new TCPClientAdapter();
             this.status = GameMasterStatus.Active;
-            teamBlueGuids = new List<string>();
-            teamRedGuids = new List<string>();
+            teamBlueGuids = new List<PlayerGuid>();
+            teamRedGuids = new List<PlayerGuid>();
             isGuiWorking = false;
         }
 
@@ -242,7 +242,7 @@ namespace GameMaster
 
         Message DecidePlace(PlaceMsg m)
         {
-            if (PlacePiece(m.playerGuid.ToString()))
+            if (PlacePiece(m.playerGuid))
                 return new PlaceResMsg(m.playerGuid, "Correct", "OK");
             else
                 return new PlaceResMsg(m.playerGuid, "Pointless", "OK");
@@ -422,7 +422,7 @@ namespace GameMaster
             {
                 if(elem.GetPlayerGuid()==playerGUID)
                 {
-                    if(elem.GetCellState() == CellState.Piece || elem.GetCellState() == CellState.Sham)
+                    if(elem.GetCellState() == CellState.Piece)
                     {
                         elem.SetCellState(CellState.Empty);
                         return true;
@@ -519,9 +519,9 @@ namespace GameMaster
             return false;
         }
 
-        public bool PlacePiece(string playerGUID)
+        public bool PlacePiece(PlayerGuid playerGUID)
         {
-            Position playerPosition = FindPlayer(playerGUID);
+            Position playerPosition = FindPlayer(playerGUID.g.ToString());
 
             TeamColor teamColor;
             if (teamRedGuids.Contains(playerGUID))
@@ -612,7 +612,7 @@ namespace GameMaster
                     bool flag = false;
                     for (int k = 0; teamRedGuids != null && k < teamRedGuids.Count && !flag; k++)
                     {
-                        if (board.cellsGrid[i, j].GetPlayerGuid() == teamRedGuids[k])
+                        if (board.cellsGrid[i, j].GetPlayerGuid() == teamRedGuids[k].ToString())
                         {
                             message += "7,r," + board.cellsGrid[i, j].GetPlayerGuid() + ",";
                             flag = true;
@@ -620,7 +620,7 @@ namespace GameMaster
                     }
                     for (int k = 0; teamBlueGuids != null && k < teamBlueGuids.Count && !flag; k++)
                     {
-                        if (board.cellsGrid[i, j].GetPlayerGuid() == teamBlueGuids[k])
+                        if (board.cellsGrid[i, j].GetPlayerGuid() == teamBlueGuids[k].ToString())
                         {
                             message += "7,b," + board.cellsGrid[i, j].GetPlayerGuid() + ",";
                             flag = true;
@@ -650,9 +650,9 @@ namespace GameMaster
         private void TestMessageToGui()
         {
             Thread.Sleep(5000);
-            teamRedGuids.Add("1");
+            teamRedGuids.Add(new PlayerGuid());
             this.board.cellsGrid[1, 1].SetPlayerGuid("1");
-            teamBlueGuids.Add("2");
+            teamBlueGuids.Add(new PlayerGuid());
             this.board.cellsGrid[0, 1].SetPlayerGuid("2");
             this.board.cellsGrid[0, 0].SetCellState(CellState.Valid);
             this.board.cellsGrid[0, 4].SetCellState(CellState.Piece);
