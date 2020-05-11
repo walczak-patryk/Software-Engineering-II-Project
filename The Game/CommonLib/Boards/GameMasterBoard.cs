@@ -13,9 +13,10 @@ namespace GameMaster.Boards
 
         public List<Position> piecesPositions;
 
-        public GameMasterBoard(int boardWidth, int goalAreaHeight, int taksAreaHeight) : base(boardWidth, goalAreaHeight, taksAreaHeight)
+        public GameMasterBoard(int boardWidth, int goalAreaHeight, int taksAreaHeight, Position[] predefinedGoalPositions = null) : base(boardWidth, goalAreaHeight, taksAreaHeight)
         {
             piecesPositions = new List<Position>();
+            SetGoalsInGoalArea(predefinedGoalPositions);
         }
 
         public Position PlayerMove(PlayerDTO player, Direction direction) 
@@ -151,7 +152,7 @@ namespace GameMaster.Boards
                         if(GetCell(new Position(j,i)).GetCellState() == CellState.Valid)
                         {
                             win = false;
-                            break;
+                            return win;
                         }
                     }
                 }
@@ -166,7 +167,7 @@ namespace GameMaster.Boards
                         if (GetCell(new Position(j, i)).GetCellState() == CellState.Valid)
                         {
                             win = false;
-                            break;
+                            return win;
                         }
                     }
                 }
@@ -217,6 +218,21 @@ namespace GameMaster.Boards
                 }
             }
             return list;
+        }
+
+        private void SetGoalsInGoalArea(Position[] predefinedGoalPositions)
+        {
+            if (null == predefinedGoalPositions)
+                return;
+
+            int downY = taskAreaHeight + 2 * goalAreaHeight - 1;
+
+            for (int i = 0; i < predefinedGoalPositions.Length; i++)
+            {
+                SetGoal(predefinedGoalPositions[i]);
+                Position secondTeamGoal = new Position(predefinedGoalPositions[i].x, downY - predefinedGoalPositions[i].y);
+                SetGoal(secondTeamGoal);
+            }
         }
     }
 

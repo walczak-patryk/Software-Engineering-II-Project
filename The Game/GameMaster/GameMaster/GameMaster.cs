@@ -266,13 +266,21 @@ namespace GameMaster
         }
         private Message GetMessage()
         {
-            Message msg = connectionClient.GetMessage();
-            if (msg is null)
+            try
             {
-                Logger.Error("Unexpected exception on receiving a message");
-                throw new Exception("Get message failed in an unexpected way");
+                Message msg = connectionClient.GetMessage();
+                if (msg is null)
+                {
+                    Logger.Warning("No mesagge");
+                    throw new Exception("Message is null");
+                }
+                return msg;
             }
-            return msg;
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
+            }
         }
 
         private bool ConnectToCommunicationServer()
@@ -344,9 +352,10 @@ namespace GameMaster
             }
 
             Logger.Log("All players connected");
-            this.board = new GameMasterBoard(this.configuration.boardGoalHeight, this.configuration.boardGoalHeight, this.configuration.boardTaskHeight);
+            this.board = new GameMasterBoard(this.configuration.boardGoalHeight, this.configuration.boardGoalHeight, this.configuration.boardTaskHeight, this.configuration.predefinedGoalPositions);
             Logger.Log("Game prepared");
         }
+
         private void SendGameStartMsg()
         {
             var blueGuids = teamBlueGuids.Select(item => item.g.ToString()).ToArray();
@@ -369,23 +378,32 @@ namespace GameMaster
         {
             if (board.CheckWinCondition(TeamColor.Red))
             {
+                Logger.Log("Red team wins.");
                 winTeam = "red";
                 return true;
             }
             else if (board.CheckWinCondition(TeamColor.Blue))
             {
+                Logger.Log("Blue team wins.");
                 winTeam = "blue";
                 return true;
             }
             return false;     
         }
         private void HandleActions()
-        {         
+        {
+            Logger.Log("Handling actions (entering loop).");
             while (!IsEnd())
             {
+                Logger.Log("Handling actions. " + DateTime.Now);
                 Message msg = GetMessage();
-                var response = ParsePlayerAction(msg);
-                SendMessage(msg);
+                if (msg != null)
+                {
+                    var response = ParsePlayerAction(msg);
+                    SendMessage(msg);
+                }
+                else
+                    Thread.Sleep(300);
             }
         }
         private void SendGameOverMsg()
