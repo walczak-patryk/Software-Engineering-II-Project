@@ -1,3 +1,0 @@
-cp '.\The Game\GameGraphicalInterface\bin\Debug\netcoreapp3.1\GameGraphicalInterface.deps.json'				'.\The Game\GameMaster\bin\Debug\netcoreapp3.1\GameGraphicalInterface.deps.json'
-cp '.\The Game\GameGraphicalInterface\bin\Debug\netcoreapp3.1\GameGraphicalInterface.runtimeconfig.dev.json' '.\The Game\GameMaster\bin\Debug\netcoreapp3.1\GameGraphicalInterface.runtimeconfig.dev.json'
-cp '.\The Game\GameGraphicalInterface\bin\Debug\netcoreapp3.1\GameGraphicalInterface.runtimeconfig.json' 		'.\The Game\GameMaster\bin\Debug\netcoreapp3.1\GameGraphicalInterface.runtimeconfig.json'
