@@ -28,6 +28,7 @@ namespace GameMaster
         public List<PlayerGuid> teamRedGuids;
         public List<PlayerGuid> teamBlueGuids;
         public IConnectionClient connectionClient;
+        private string winTeam;
 
         private Process GuiWindow;
         private bool isGuiWorking;
@@ -99,6 +100,23 @@ namespace GameMaster
             }
         }
 
+        public void Run()
+        {
+            try
+            {
+                if (!ConnectToCommunicationServer())
+                    return;
+                WaitForPlayersToConnect();
+                SendGameStartMsg();
+                HandleActions();
+                SendGameOverMsg();
+                DisconnectCommunicationServer();
+            }
+            catch (Exception e)
+            {
+                System.Console.Out.WriteLine($"{DateTime.Now}:{e.GetType().ToString()} was thrown.\nValue: {e.HResult}\nMessage: {e.Message}\nSource: {e.StackTrace}\n\nGM stopped working");
+            }
+        }
         public void EndGame()
         {
             if (this.GuiWindow != null)
@@ -342,7 +360,7 @@ namespace GameMaster
         private void HandleActions()
         {         
         }
-        private void SendGameOverMsg(string winTeam)
+        private void SendGameOverMsg()
         {
             var msg = new GameEndMsg(winTeam);
             foreach (var player in teamBlueGuids)
