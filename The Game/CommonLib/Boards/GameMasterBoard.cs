@@ -139,9 +139,9 @@ namespace GameMaster.Boards
             cell.SetPlayerGuid(playerDTO.playerGuid.ToString());
             return pos; 
         }
-        public void CheckWinCondition(TeamColor teamColor) 
+        public bool CheckWinCondition(TeamColor teamColor) 
         {
-            bool win;
+            bool win = false;
             if(teamColor == TeamColor.Red)
             {
                 for(int i = 0; i < goalAreaHeight; i++)
@@ -172,6 +172,7 @@ namespace GameMaster.Boards
                 }
                 win = true;
             }
+            return win;
         }
         public List<Field> Discover(Position position)
         {
