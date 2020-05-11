@@ -26,6 +26,8 @@ namespace CommunicationServer
         private readonly object gmRegisteringLocker;
         private int nextId;
 
+        private List<Guid> playerGuids;
+
         public CommunicationServer(IConnectionListener listener, string ipAddress, int portNumber)
         {
             this.server = listener ?? throw new ArgumentNullException(nameof(listener));
@@ -41,6 +43,8 @@ namespace CommunicationServer
 
             this.gmRegisteringLocker = new object();
             this.nextId = 0;
+
+            playerGuids = new List<Guid>();
         }
 
 
@@ -155,7 +159,13 @@ namespace CommunicationServer
             switch (message)
             {
                 case ConnectPlayerMsg msg:
-                    client.SendMessage(msg);
+                    playerGuids.Add(msg.playerGuid.g);
+                    clients[0].SendMessage(message);
+                    //client.SendMessage(new ConnectPlayerResMsg(msg.portNumber, msg.playerGuid, "OK"));
+                    break;
+
+                case ReadyMsg msg:
+                    client.SendMessage(new ReadyResMsg(msg.playerGuid, "YES"));
                     break;
 
                 default:
@@ -192,7 +202,7 @@ namespace CommunicationServer
         {
             switch (message)
             {
-                case ConnectPlayerMsg msg:
+                case ConnectPlayerResMsg msg:
                     ForwardMessageFromGM(msg);
                     break;
 
@@ -308,6 +318,11 @@ namespace CommunicationServer
         {
             int id = 0; // Player ID has to be retrieved from the message
 
+            if (msg.GetType() == typeof(ConnectPlayerResMsg))
+            {
+                id = playerGuids.FindIndex(x => x == (msg as ConnectPlayerResMsg).playerGuid.g) + 1;
+            }
+           
             if (id < 0 || id >= clients.Count || id == gmId.Value)
             {
                 CSLogger.LogError("CS ForwardMessageFromGM: "+msg.ToString());

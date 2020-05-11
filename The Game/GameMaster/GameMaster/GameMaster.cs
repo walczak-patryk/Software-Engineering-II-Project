@@ -339,7 +339,7 @@ namespace GameMaster
                     continue;
                 }
                 AddPlayer(connectPlayerMsg.playerGuid);
-                Logger.Log($"Connect request: {connectPlayerMsg.playerGuid}\tStatus -> OK");
+                Logger.Log($"Connect request: {connectPlayerMsg.playerGuid.g}\tStatus -> OK");
                 SendMessage(new ConnectPlayerResMsg(connectPlayerMsg.portNumber, connectPlayerMsg.playerGuid, "OK"));
             }
 
