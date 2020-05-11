@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CommunicationServerLibrary.Messages;
+using Newtonsoft.Json;
 
 namespace CommunicationServerLibrary
 {
@@ -11,7 +12,7 @@ namespace CommunicationServerLibrary
         {
             try
             {
-                return System.Text.Json.JsonSerializer.Serialize(message);
+                return JsonConvert.SerializeObject(message);
             }
             catch (Exception e)
             {
@@ -22,45 +23,45 @@ namespace CommunicationServerLibrary
 
         public static Message Deserialize(string message)
         {
-            Message msg= System.Text.Json.JsonSerializer.Deserialize<Message>(message);
+            Message msg= JsonConvert.DeserializeObject<Message>(message);
             try
             {
                 switch (msg.action)
                 {
                     case "setup":
-                        return System.Text.Json.JsonSerializer.Deserialize<SetupMsg>(message);
+                        return JsonConvert.DeserializeObject<SetupMsg>(message);
                     case "setup status":
-                        return System.Text.Json.JsonSerializer.Deserialize<SetupResMsg>(message);
+                        return JsonConvert.DeserializeObject<SetupResMsg>(message);
                     case "connect":
-                        return System.Text.Json.JsonSerializer.Deserialize<ConnectPlayerMsg>(message);
+                        return JsonConvert.DeserializeObject<ConnectPlayerMsg>(message);
                     case "connect status":
-                        return System.Text.Json.JsonSerializer.Deserialize<ConnectPlayerResMsg>(message);
+                        return JsonConvert.DeserializeObject<ConnectPlayerResMsg>(message);
                     case "ready":
-                        return System.Text.Json.JsonSerializer.Deserialize<ReadyMsg>(message);
+                        return JsonConvert.DeserializeObject<ReadyMsg>(message);
                     case "ready status":
-                        return System.Text.Json.JsonSerializer.Deserialize<ReadyResMsg>(message);
+                        return JsonConvert.DeserializeObject<ReadyResMsg>(message);
                     case "start":
-                        return System.Text.Json.JsonSerializer.Deserialize<GameStartMsg>(message);
+                        return JsonConvert.DeserializeObject<GameStartMsg>(message);
                     case "move":
-                        return System.Text.Json.JsonSerializer.Deserialize<MoveMsg>(message);
+                        return JsonConvert.DeserializeObject<MoveMsg>(message);
                     case "move status":
-                        return System.Text.Json.JsonSerializer.Deserialize<MoveResMsg>(message);
+                        return JsonConvert.DeserializeObject<MoveResMsg>(message);
                     case "pickup":
-                        return System.Text.Json.JsonSerializer.Deserialize<PickUpMsg>(message);
+                        return JsonConvert.DeserializeObject<PickUpMsg>(message);
                     case "pickup status":
-                        return System.Text.Json.JsonSerializer.Deserialize<PickUpResMsg>(message);
+                        return JsonConvert.DeserializeObject<PickUpResMsg>(message);
                     case "test":
-                        return System.Text.Json.JsonSerializer.Deserialize<TestMsg>(message);
+                        return JsonConvert.DeserializeObject<TestMsg>(message);
                     case "test status":
-                        return System.Text.Json.JsonSerializer.Deserialize<TestResMsg>(message);
+                        return JsonConvert.DeserializeObject<TestResMsg>(message);
                     case "place":
-                        return System.Text.Json.JsonSerializer.Deserialize<PlaceMsg>(message);
+                        return JsonConvert.DeserializeObject<PlaceMsg>(message);
                     case "place status":
-                        return System.Text.Json.JsonSerializer.Deserialize<PlaceResMsg>(message);
+                        return JsonConvert.DeserializeObject<PlaceResMsg>(message);
                     case "discover":
-                        return System.Text.Json.JsonSerializer.Deserialize<DiscoverMsg>(message);
+                        return JsonConvert.DeserializeObject<DiscoverMsg>(message);
                     case "discover status":
-                        return System.Text.Json.JsonSerializer.Deserialize<DiscoverResMsg>(message);
+                        return JsonConvert.DeserializeObject<DiscoverResMsg>(message);
                     default: 
                         return new Message("unknown");
                 }
