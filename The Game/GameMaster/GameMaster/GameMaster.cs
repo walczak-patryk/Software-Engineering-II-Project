@@ -1,4 +1,7 @@
-﻿using GameGraphicalInterface;
+﻿using CommunicationServerLibrary.Adapters;
+using CommunicationServerLibrary.Interfaces;
+using CommunicationServerLibrary.Messages;
+using GameGraphicalInterface;
 using GameMaster.Boards;
 using GameMaster.Cells;
 using GameMaster.Positions;
@@ -23,6 +26,7 @@ namespace GameMaster
         private GameMasterConfiguration configuration;
         public List<string> teamRedGuids;
         public List<string> teamBlueGuids;
+        public IConnectionClient connectionClient;
 
         private Process GuiWindow;
         private bool isGuiWorking;
@@ -30,6 +34,7 @@ namespace GameMaster
         public void StartGame()
         {
             this.configuration = new GameMasterConfiguration();
+            this.connectionClient = new TCPClientAdapter();
             this.board = new GameMasterBoard(this.configuration.boardGoalHeight, this.configuration.boardGoalHeight, this.configuration.boardTaskHeight);
             this.status = GameMasterStatus.Active;
             bool color = false;
@@ -251,6 +256,45 @@ namespace GameMaster
             Process.Start(psi);
         }
         #endregion
+        #region Server Communication
+        private bool SendMessage(Message msg)
+        {
+            bool isStatusOk = connectionClient.SendMessage(msg);
+            if (!isStatusOk)
+                Logger.Error($"Problem occurred when sending message {msg.GetType().Name} to player");
+            return isStatusOk;
+        }
+        private Message GetMessage()
+        {
+            Message msg = connectionClient.GetMessage();
+            if (msg is null)
+            {
+                Logger.Error("Unexpected exception on receiving a message");
+                throw new Exception("Get message failed in an unexpected way");
+            }
+            return msg;
+        }
+
+        private bool ConnectToCommunicationServer()
+        {
+            return false;
+        }
+        private void WaitForPlayersToConnect()
+        {
+        }
+        private void SendGameStartMsg()
+        {
+        }
+        private void HandleActions()
+        {         
+        }
+        private void SendGameOverMsg()
+        {         
+        }
+        private void DisconnectCommunicationServer()
+        {        
+        }
+        #endregion
         private void listen()
         {
 
@@ -429,9 +473,6 @@ namespace GameMaster
                     break;
 
             }
-
-
-
         }
         private string ReceiveFromPlayer()   
         {
