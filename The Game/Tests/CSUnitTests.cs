@@ -108,8 +108,5 @@ namespace Tests
 
             StopClientsAndCommunicationServer();
         }
-
-
-
     }
 }
