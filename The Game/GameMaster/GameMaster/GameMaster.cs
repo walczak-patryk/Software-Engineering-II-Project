@@ -367,11 +367,21 @@ namespace GameMaster
 
         private bool IsEnd()
         {
-            return false;
+            if (board.CheckWinCondition(TeamColor.Red))
+            {
+                winTeam = "red";
+                return true;
+            }
+            else if (board.CheckWinCondition(TeamColor.Blue))
+            {
+                winTeam = "blue";
+                return true;
+            }
+            return false;     
         }
         private void HandleActions()
         {         
-            while (IsEnd())
+            while (!IsEnd())
             {
                 Message msg = GetMessage();
                 var response = ParsePlayerAction(msg);
