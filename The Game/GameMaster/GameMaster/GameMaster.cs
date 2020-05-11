@@ -33,18 +33,18 @@ namespace GameMaster
         private Process GuiWindow;
         private bool isGuiWorking;
 
-        public void StartGame()
+        public GameMaster()
         {
             this.configuration = new GameMasterConfiguration();
             this.connectionClient = new TCPClientAdapter();
-            this.board = new GameMasterBoard(this.configuration.boardGoalHeight, this.configuration.boardGoalHeight, this.configuration.boardTaskHeight);
             this.status = GameMasterStatus.Active;
-            bool color = false;
             teamBlueGuids = new List<string>();
             teamRedGuids = new List<string>();
-
             isGuiWorking = false;
+        }
 
+        public void StartGame()
+        {      
             Task t = Task.Run(() =>
             {
                 board.generatePiece(0.2, 5); // to dodaje z jakiegoś powodu 4 piece'y
@@ -336,7 +336,7 @@ namespace GameMaster
             }
 
             Logger.Log("All players connected");
-            PrepareGame();
+            this.board = new GameMasterBoard(this.configuration.boardGoalHeight, this.configuration.boardGoalHeight, this.configuration.boardTaskHeight);
             Logger.Log("Game prepared");
         }
         private void SendGameStartMsg()
