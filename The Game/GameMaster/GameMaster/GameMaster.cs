@@ -4,6 +4,7 @@ using CommunicationServerLibrary.Messages;
 using GameGraphicalInterface;
 using GameMaster.Boards;
 using GameMaster.Cells;
+using GameMaster.Fields;
 using GameMaster.Positions;
 using System;
 using System.Collections.Generic;
@@ -162,89 +163,70 @@ namespace GameMaster
         #endregion
         #region Players Managment
 
-        string ParsePlayerAction(string message)
+        Message ParsePlayerAction(Message m)
         {
-            string[] messages = message.Split("_");
-            if (messages.Length < 2)
-                Console.WriteLine("Error");
-            if (messages[1] == "0")
+            switch (m)
             {
-                if (messages.Length < 3)
-                {
-                    Console.WriteLine("Error Move");
-                    return "NO";
-                }
-                return DecideMove(messages[0], messages[2]);
+                case MoveMsg _:
+                    return DecideMove((MoveMsg)m);
+                case PickUpMsg _:
+                    return DecideTake((PickUpMsg)m);
+                case TestMsg _:
+                    return DecideTest((TestMsg)m);
+                case PlaceMsg _:
+                    return DecidePlace((PlaceMsg)m);
+                case DiscoverMsg _:
+                    return DecideDiscover((DiscoverMsg)m);
+                default:
+                    return new Message("Unknown");
             }
-            else if (messages[1] == "1")
-            {
-                return DecideTake(messages[0]);
-            }
-            else if (messages[1] == "2")
-            {
-                return "OK";
-            }
-            else if (messages[1] == "3")
-            {
-                return DecidePlace(messages[0]);
-            }
-            else if (messages[1] == "4")
-            {
-                Console.WriteLine("Player wants to move");
-                return DecideDiscover(messages[0]);
-            }
-            else
-                return "NO";
         }
 
-        string DecideMove(string guid, string dir)
+        Message DecideMove(MoveMsg m)
         {
-            if (dir != "0" && dir != "1" && dir != "2" && dir != "3")
-                return "NO";
-            if (Move(guid, Direction.Up + int.Parse(dir)))
-                return "OK";
+            if (Move(m.playerGuid, m.direction))
+                return new MoveResMsg(m.playerGuid, m.direction, "OK", FindPlayer(m.playerGuid.g.ToString()));
             else
-                return "NO";
+                return new MoveResMsg(m.playerGuid, m.direction, "DENIED", FindPlayer(m.playerGuid.g.ToString()));
         }
 
-        string DecideTake(string guid)
+        Message DecideTake(PickUpMsg m)
         {
-            if (TakePiece(guid))
-                return "T";
+            if (TakePiece(m.playerGuid.g.ToString()))
+                return new PickUpResMsg(m.playerGuid, "OK");
             else
-                return "F";
+                return new PickUpResMsg(m.playerGuid, "DENIED");
         }
 
-        string DecideDiscover(string guid)
+        Message DecideTest(TestMsg m)
         {
-            Position playerPosition = FindPlayer(guid);
+            if(TestPiece())
+                return new TestResMsg(m.playerGuid, true, "OK");
+            else
+                return new TestResMsg(m.playerGuid, false, "OK");
+        }
+
+        Message DecideDiscover(DiscoverMsg m)
+        {
+            Position playerPosition = FindPlayer(m.playerGuid.ToString());
             if (playerPosition == null)
             {
-                Console.WriteLine("Player with guid {0} not found", guid);
-                return "NO";
+                Console.WriteLine("Player with guid {0} not found", m.playerGuid.ToString());
+                return new DiscoverResMsg(m.playerGuid, FindPlayer(m.playerGuid.ToString()), new List<Fields.Field>(), "DENIED");
             }
             else
             {
-                List<int> list = board.ManhattanDistance(playerPosition);
-                
-                string distances = "";
-                foreach (int elem in list)
-                {
-                    distances += (elem.ToString() + ",");
-                }
-                if (distances.Split(",").Length != 10)
-                    return "NO";
-                else
-                    return distances;
+                List<Field> list = board.Discover(playerPosition);
+                return new DiscoverResMsg(m.playerGuid, FindPlayer(m.playerGuid.ToString()), list, "OK");
             }
         }
 
-        string DecidePlace(string guid)
+        Message DecidePlace(PlaceMsg m)
         {
-            if (PlacePiece(guid))
-                return "T";
+            if (PlacePiece(m.playerGuid.ToString()))
+                return new PlaceResMsg(m.playerGuid, "Correct", "OK");
             else
-                return "F";
+                return new PlaceResMsg(m.playerGuid, "Pointless", "OK");
         }
 
         void StartPlayer()
@@ -331,19 +313,22 @@ namespace GameMaster
             {
                 if(elem.GetPlayerGuid()==playerGUID)
                 {
-                    if(elem.GetCellState() == CellState.Piece)
+                    if(elem.GetCellState() == CellState.Piece || elem.GetCellState() == CellState.Sham)
                     {
                         elem.SetCellState(CellState.Empty);
                         return true;
                     }
-                    else
-                    {
-                        elem.SetCellState(CellState.Empty);
-                        return false;
-                    }
                 }
             }
             return false;
+        }
+
+        public bool TestPiece()
+        {
+            Random rand = new Random();
+            if (rand.NextDouble() < configuration.shamProbability)
+                return false;
+            return true;
         }
 
         private Position FindPlayer(string playerGUID)
@@ -361,9 +346,9 @@ namespace GameMaster
             return null;
         }
 
-        public bool Move(string playerGUID, Direction direction)
+        public bool Move(PlayerGuid playerGUID, Direction direction)
         {
-            Position playerPosition = FindPlayer(playerGUID);
+            Position playerPosition = FindPlayer(playerGUID.g.ToString());
             int destinationX = playerPosition.x;
             int destinationY = playerPosition.y;
             if (direction == Direction.Right)
@@ -383,7 +368,7 @@ namespace GameMaster
                 destinationY--;
             }
             TeamColor teamColor;
-            if(teamRedGuids.Contains(playerGUID))
+            if(teamRedGuids.Contains(playerGUID.g.ToString()))
             {
                 teamColor = TeamColor.Red;
             }
@@ -402,7 +387,7 @@ namespace GameMaster
                         if (board.GetCell(destinationPosition).GetPlayerGuid() == null)
                         {
                             board.GetCell(playerPosition).SetPlayerGuid(null);
-                            board.GetCell(destinationPosition).SetPlayerGuid(playerGUID);
+                            board.GetCell(destinationPosition).SetPlayerGuid(playerGUID.g.ToString());
                             return true;
                         }
 
@@ -414,14 +399,13 @@ namespace GameMaster
                         if (board.GetCell(destinationPosition).GetPlayerGuid() == null)
                         {
                             board.GetCell(playerPosition).SetPlayerGuid(null);
-                            board.GetCell(destinationPosition).SetPlayerGuid(playerGUID);
+                            board.GetCell(destinationPosition).SetPlayerGuid(playerGUID.g.ToString());
                             return true;
                         }
 
                     }
                     break;
             }
-
             return false;
         }
 
@@ -453,27 +437,6 @@ namespace GameMaster
             return false;
         }
 
-        public void processMessage(string message)
-        {
-            string[] messageSplit = message.Split("_");
-            string playerGUID = messageSplit[0];
-            ActionType action = (ActionType)int.Parse(messageSplit[1]);
-
-            switch(action)
-            {
-                case ActionType.Move:
-                        Direction direction= (Direction)int.Parse(messageSplit[2]);
-                        Move(playerGUID, direction);
-                        break;
-                case ActionType.Pickup:
-                    TakePiece(playerGUID);
-                    break;
-                case ActionType.Place:
-                    PlacePiece(playerGUID);
-                    break;
-
-            }
-        }
         private string ReceiveFromPlayer()   
         {
             using (NamedPipeServerStream pipeServer =
