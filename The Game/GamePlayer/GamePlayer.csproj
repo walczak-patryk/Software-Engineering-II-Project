@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CommonLib\CommonLibrary.csproj" />
-    <ProjectReference Include="..\..\CommunicationServerLibrary\CommunicationServerLibrary.csproj" />
+    <ProjectReference Include="..\CommonLibrary\CommonLibrary.csproj" />
+    <ProjectReference Include="..\CommunicationServerLibrary\CommunicationServerLibrary.csproj" />
   </ItemGroup>
 
 </Project>

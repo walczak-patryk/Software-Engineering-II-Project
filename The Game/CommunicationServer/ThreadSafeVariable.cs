@@ -5,7 +5,7 @@ namespace CommunicationServer
     {
         private readonly object locker = new object();
 
-        private T variable = default(T);
+        private T variable = default;
 
         // Thread-safe access to Property using locking 
         public T Value

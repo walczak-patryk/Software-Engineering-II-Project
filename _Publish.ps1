@@ -1,5 +1,7 @@
 $folderName = "_Release"
 $local = Get-Location
+
+Remove-Item $folderName -Recurse -ErrorAction Ignore
 New-Item -ItemType Directory -Force -Path "$local\$folderName"
 
 cd -Path "$local\The Game\CommunicationServer"
@@ -18,3 +20,5 @@ foreach($file in Get-ChildItem "$local\$folderName")
 		Remove-item $file.FullName
     }
 }
+
+Read-Host "Done"

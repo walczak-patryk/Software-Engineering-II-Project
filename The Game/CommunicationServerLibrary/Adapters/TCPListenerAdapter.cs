@@ -10,8 +10,7 @@ namespace CommunicationServerLibrary.Adapters
         TcpListener listener;
         public IConnectionClient Accept()
         {
-            TcpClient acceptedClient = null;
-
+            TcpClient acceptedClient;
             try
             {
                 acceptedClient = listener.AcceptTcpClient();

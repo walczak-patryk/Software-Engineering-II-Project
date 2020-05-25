@@ -1,8 +1,20 @@
-05/25/2020 17:25:31: CommunicationServer started listening for clients on 127.0.0.1:13000
+05/25/2020 18:08:44: CommunicationServer started listening for clients on 127.0.0.1:13000
 
-05/25/2020 17:25:31: Client 0 connected 
-05/25/2020 17:25:32: GM registered and agents accepting started.
-05/25/2020 17:25:59: CommunicationServer started listening for clients on 127.0.0.1:13000
+05/25/2020 18:08:44: Client 0 connected 
+05/25/2020 18:08:44: GM registered and agents accepting started.
+05/25/2020 18:09:47: CommunicationServer started listening for clients on 127.0.0.1:13000
 
-05/25/2020 17:25:59: Client 0 connected 
-05/25/2020 17:25:59: GM registered and agents accepting started.
+05/25/2020 18:09:47: Client 0 connected 
+05/25/2020 18:09:48: GM registered and agents accepting started.
+05/25/2020 18:11:41: CommunicationServer started listening for clients on 127.0.0.1:13000
+
+05/25/2020 18:11:41: Client 0 connected 
+05/25/2020 18:11:41: GM registered and agents accepting started.
+05/25/2020 18:15:21: CommunicationServer started listening for clients on 127.0.0.1:13000
+
+05/25/2020 18:15:21: Client 0 connected 
+05/25/2020 18:15:22: GM registered and agents accepting started.
+05/25/2020 18:33:57: CommunicationServer started listening for clients on 127.0.0.1:13000
+
+05/25/2020 18:33:57: Client 0 connected 
+05/25/2020 18:33:58: GM registered and agents accepting started.
