@@ -43,17 +43,6 @@ namespace GameGraphicalInterface
             GMboard = null;
             GMmsg = "";
             isPlaying = false;
-            var t1 = Task.Run(() =>
-            {
-                while (true)
-                {
-                    this.ReceiveFromGM();
-                    if (null == GMboard)
-                        ParseMessageFromGM();
-                }
-            });
-
-            StartSendingFromGM();
 
             //test
             //this.GMboard = new GameMasterBoard(10, 3, 12);
@@ -80,6 +69,16 @@ namespace GameGraphicalInterface
 
         private void StartPrinting(object sender, RoutedEventArgs e)
         {
+            var t1 = Task.Run(() =>
+            {
+                while (true)
+                {
+                    this.ReceiveFromGM();
+                    if (null == GMboard)
+                        ParseMessageFromGM();
+                }
+            });
+            StartSendingFromGM();
             if (!isPlaying)
                 return;
             Welcome.Width = new GridLength(0, GridUnitType.Pixel);
