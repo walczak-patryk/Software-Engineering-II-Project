@@ -5,13 +5,11 @@ using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
-    public class MoveMsg : Message
+    public class MoveMsg : PlayerMsg
     {
-        public PlayerGuid playerGuid;
         public GameMaster.Positions.Direction direction;
-        public MoveMsg(PlayerGuid playerGuid, GameMaster.Positions.Direction direction) : base("move")
+        public MoveMsg(PlayerGuid playerGuid, GameMaster.Positions.Direction direction) : base(playerGuid, "move")
         {
-            this.playerGuid = playerGuid;
             this.direction = direction;
         }
     }
