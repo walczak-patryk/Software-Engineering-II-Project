@@ -62,14 +62,14 @@ namespace Tests
             Position goal = new Position(1, 0);
             Position piece = new Position(1, 1);
 
-            gm.teamRedGuids = new List<string>();
-            gm.teamBlueGuids = new List<string>();
+            gm.teamRedGuids = new List<GameMaster.PlayerGuid>();
+            gm.teamBlueGuids = new List<GameMaster.PlayerGuid>();
 
-            gm.teamRedGuids.Add("8");
-            gm.teamBlueGuids.Add("9");
+            //gm.teamRedGuids.Add("8");
+            //gm.teamBlueGuids.Add("9");
 
-            gmb.cellsGrid[0, 0].SetPlayerGuid(gm.teamRedGuids[0]);
-            gmb.cellsGrid[0, 2].SetPlayerGuid(gm.teamBlueGuids[0]);
+            //gmb.cellsGrid[0, 0].SetPlayerGuid(gm.teamRedGuids[0]);
+            //gmb.cellsGrid[0, 2].SetPlayerGuid(gm.teamBlueGuids[0]);
 
             gmb.SetGoal(goal);
             gmb.GetCell(piece).SetCellState(CellState.Piece);

@@ -22,8 +22,8 @@ namespace GameMaster
         private int portNumber;
         private IPAddress IPAddress;
         public GameMasterBoard board;
-        private GameMasterStatus status;
-        private GameMasterConfiguration configuration;
+        private readonly GameMasterStatus status;
+        private readonly GameMasterConfiguration configuration;
         public List<PlayerGuid> teamRedGuids;
         public List<PlayerGuid> teamBlueGuids;
         public IConnectionClient connectionClient;
@@ -77,56 +77,52 @@ namespace GameMaster
         #region GUI Managment
         private void StartGUIAsync()
         {
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.FileName = "GameGraphicalInterface.exe";
-            //psi.Arguments = new MainWindow(board, configuration.shamProbability, configuration.maxPieces, configuration.initialPieces, configuration.predefinedGoalPositions).ReturnPath();
-            psi.UseShellExecute = true;
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = "GameGraphicalInterface.exe",
+                //psi.Arguments = new MainWindow(board, configuration.shamProbability, configuration.maxPieces, configuration.initialPieces, configuration.predefinedGoalPositions).ReturnPath();
+                UseShellExecute = true
+            };
             this.GuiWindow = Process.Start(psi);
         }
 
         private void ReceiveFromGUI()   
         {
-            using (NamedPipeServerStream pipeServer =
-            new NamedPipeServerStream("GM_Pipe_Server", PipeDirection.In))
-            {
-                pipeServer.WaitForConnection();
+            using NamedPipeServerStream pipeServer =
+            new NamedPipeServerStream("GM_Pipe_Server", PipeDirection.In);
+            pipeServer.WaitForConnection();
 
-                using (StreamReader sr = new StreamReader(pipeServer))
+            using StreamReader sr = new StreamReader(pipeServer);
+            string temp;
+            while ((temp = sr.ReadLine()) != null)
+            {
+                Console.WriteLine("Received from server: {0}", temp);
+                if ("1_1" == temp)
                 {
-                    string temp;
-                    while ((temp = sr.ReadLine()) != null)
-                    {
-                        Console.WriteLine("Received from server: {0}", temp);
-                        if ("1_1" == temp)
-                        {
-                            isGuiWorking = true;
-                            this.SendToGUI(this.MessageOptionsForGUI());
-                        }
-                        if ("1_0" == temp)
-                            isGuiWorking = false;
-                    }
+                    isGuiWorking = true;
+                    this.SendToGUI(this.MessageOptionsForGUI());
                 }
+                if ("1_0" == temp)
+                    isGuiWorking = false;
             }
         }
 
         public void SendToGUI(string message)
         {
-            using (NamedPipeClientStream pipeClient =
-            new NamedPipeClientStream(".", "GUI_Pipe_Server", PipeDirection.Out))
+            using NamedPipeClientStream pipeClient =
+            new NamedPipeClientStream(".", "GUI_Pipe_Server", PipeDirection.Out);
+            pipeClient.Connect();
+            try
             {
-                pipeClient.Connect();
-                try
+                using StreamWriter sw = new StreamWriter(pipeClient)
                 {
-                    using (StreamWriter sw = new StreamWriter(pipeClient))
-                    {
-                        sw.AutoFlush = true;
-                        sw.WriteLine(message);
-                    }
-                }
-                catch (IOException e)
-                {
-                    Console.WriteLine("ERROR: {0}", e.Message);
-                }
+                    AutoFlush = true
+                };
+                sw.WriteLine(message);
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine("ERROR: {0}", e.Message);
             }
         }
         #endregion
@@ -134,21 +130,15 @@ namespace GameMaster
 
         Message ParsePlayerAction(Message m)
         {
-            switch (m)
+            return m switch
             {
-                case MoveMsg _:
-                    return DecideMove((MoveMsg)m);
-                case PickUpMsg _:
-                    return DecideTake((PickUpMsg)m);
-                case TestMsg _:
-                    return DecideTest((TestMsg)m);
-                case PlaceMsg _:
-                    return DecidePlace((PlaceMsg)m);
-                case DiscoverMsg _:
-                    return DecideDiscover((DiscoverMsg)m);
-                default:
-                    return new Message("Unknown");
-            }
+                MoveMsg _ => DecideMove((MoveMsg)m),
+                PickUpMsg _ => DecideTake((PickUpMsg)m),
+                TestMsg _ => DecideTest((TestMsg)m),
+                PlaceMsg _ => DecidePlace((PlaceMsg)m),
+                DiscoverMsg _ => DecideDiscover((DiscoverMsg)m),
+                _ => new Message("Unknown"),
+            };
         }
 
         Message DecideMove(MoveMsg m)
@@ -240,8 +230,7 @@ namespace GameMaster
 
             SendMessage(new ConnectGMMsg(portNumber.ToString()));
             Message msg = GetMessage();
-
-            if (!(msg is ConnectGMResMsg response))
+            if (!(msg is ConnectGMResMsg))
             {
                 Logger.Error($"Unexpected message received from CS: '{msg}'");
                 return false;
@@ -345,7 +334,7 @@ namespace GameMaster
                 if (msg != null)
                 {
                     var response = ParsePlayerAction(msg);
-                    SendMessage(msg);
+                    SendMessage(response);
                 }
                 else
                     Thread.Sleep(300);
@@ -550,7 +539,7 @@ namespace GameMaster
                 }
             }
 
-            message = message.Substring(0, message.Length - 1);
+            message = message[0..^1];
             message += ";";
 
             return message;

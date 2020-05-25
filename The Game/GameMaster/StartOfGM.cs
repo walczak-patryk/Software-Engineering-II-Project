@@ -13,7 +13,7 @@ namespace GameMaster
         }
 
         [STAThread]
-        static void Main(string[] args)
+        static void Main()
         {
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
             Console.WriteLine("Start Game");

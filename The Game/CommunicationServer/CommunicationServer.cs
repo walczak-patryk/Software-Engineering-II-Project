@@ -10,23 +10,21 @@ namespace CommunicationServer
 {
     public class CommunicationServer
     {
-        private IConnectionListener server;
-        private int portNumber;
-        private IPAddress ipAddress;
+        private readonly IConnectionListener server;
+        private readonly int portNumber;
+        private readonly IPAddress ipAddress;
 
-        private void Listen() { }
+        private readonly ThreadSafeVariable<CSState> state;
+        private readonly ThreadSafeVariable<int> gmId;
 
-        private ThreadSafeVariable<CSState> state;
-        private ThreadSafeVariable<int> gmId;
-
-        private List<Task> tasks;
-        private List<ManagedClient> clients;
+        private readonly List<Task> tasks;
+        private readonly List<ManagedClient> clients;
         private readonly object clientsLocker;
 
         private readonly object gmRegisteringLocker;
         private int nextId;
 
-        private List<Guid> playerGuids;
+        private readonly List<Guid> playerGuids;
 
         public CommunicationServer(IConnectionListener listener, string ipAddress, int portNumber)
         {
@@ -138,11 +136,11 @@ namespace CommunicationServer
         {
             switch (message)
             {
-                case ConnectPlayerMsg msg:
+                case ConnectPlayerMsg _:
                     //client.SendMessage(new GmNotConnectedYet());
                     break;
 
-                case ConnectGMMsg msg:
+                case ConnectGMMsg _:
                     if (RegisterGM(client))
                         HandleGmCommunication(client);
                     break;
@@ -211,7 +209,7 @@ namespace CommunicationServer
                     ForwardMessageFromGM(msg);
                     break;
 
-                case SetupMsg msg:
+                case SetupMsg _:
                     StartGame();
                     break;
 

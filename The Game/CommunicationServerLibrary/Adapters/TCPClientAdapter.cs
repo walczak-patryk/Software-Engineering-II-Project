@@ -105,20 +105,16 @@ namespace CommunicationServerLibrary.Adapters
         }
         public Message Listen()
         {
-            byte[] sizeBytes = null;
-            byte[] idBytes = null;
-            byte[] contentBytes = null;
-
             try
             {
-                sizeBytes = ReadBytesFromStream(client, messageSizeBitLength);
+                byte[] sizeBytes = ReadBytesFromStream(client, messageSizeBitLength);
                 if (sizeBytes == null)
                     return null; // To handle
 
                 int size = IPAddress.NetworkToHostOrder(
                     BitConverter.ToInt32(sizeBytes, 0));
 
-                contentBytes = ReadBytesFromStream(client, size);
+                byte[] contentBytes = ReadBytesFromStream(client, size);
                 if (contentBytes == null)
                     return null; // To handle
 
