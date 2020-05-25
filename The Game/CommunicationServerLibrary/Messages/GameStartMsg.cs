@@ -2,9 +2,8 @@
 
 namespace CommunicationServerLibrary.Messages
 {
-    public class GameStartMsg : Message
+    public class GameStartMsg : PlayerMsg
     {
-        public PlayerGuid playerGuid;
         public TeamColor team;
         public TeamRole teamRole;
         public int teamSize;
@@ -12,9 +11,8 @@ namespace CommunicationServerLibrary.Messages
         public GameMaster.Positions.Position position;
         public GameMaster.Boards.Board board;
         public GameStartMsg(PlayerGuid playerGuid, TeamColor team, TeamRole teamRole, int teamSize, 
-                            string[] teamGuids, GameMaster.Positions.Position position, GameMaster.Boards.Board board) : base("start")
+                            string[] teamGuids, GameMaster.Positions.Position position, GameMaster.Boards.Board board) : base(playerGuid,"start")
         {
-            this.playerGuid = playerGuid;
             this.team = team;
             this.teamRole = teamRole;
             this.teamSize = teamSize;
