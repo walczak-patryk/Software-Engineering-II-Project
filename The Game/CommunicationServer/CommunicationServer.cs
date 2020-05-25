@@ -207,8 +207,12 @@ namespace CommunicationServer
                     break;
 
                 case GameStartMsg msg:
-                    StartGame();
+                    //StartGame();
                     ForwardMessageFromGM(msg);
+                    break;
+
+                case SetupMsg msg:
+                    StartGame();
                     break;
 
                 default:
@@ -318,11 +322,17 @@ namespace CommunicationServer
         {
             int id = 0; // Player ID has to be retrieved from the message
 
-            if (msg.GetType() == typeof(ConnectPlayerResMsg))
+            if (typeof(PlayerMsg).IsAssignableFrom(msg.GetType()))
             {
-                id = playerGuids.FindIndex(x => x == (msg as ConnectPlayerResMsg).playerGuid.g) + 1;
+                id = playerGuids.FindIndex(x => x == (msg as PlayerMsg).playerGuid.g) + 1;
             }
-           
+
+            if (msg.GetType() == typeof(ConnectPlayerMsg))
+            {
+                if ((msg as ConnectPlayerResMsg).status == "OK")
+                    clients[id].IsInGame = true;
+            }
+
             if (id < 0 || id >= clients.Count || id == gmId.Value)
             {
                 CSLogger.LogError("CS ForwardMessageFromGM: "+msg.ToString());

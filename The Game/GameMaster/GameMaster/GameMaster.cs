@@ -336,7 +336,7 @@ namespace GameMaster
         {
             Logger.Log("Waiting for players");
             Message msg;
-            Message response;
+            //Message response;
 
             while (!IsTeamsReady())
             {
@@ -351,6 +351,7 @@ namespace GameMaster
                 SendMessage(new ConnectPlayerResMsg(connectPlayerMsg.portNumber, connectPlayerMsg.playerGuid, "OK"));
             }
 
+            Thread.Sleep(2000);
             Logger.Log("All players connected");
             this.board = new GameMasterBoard(this.configuration.boardGoalHeight, this.configuration.boardGoalHeight, this.configuration.boardTaskHeight, this.configuration.predefinedGoalPositions);
             Logger.Log("Game prepared");
@@ -372,6 +373,7 @@ namespace GameMaster
                 SendMessage(msgRed);
                 Logger.Log($"GameStart message sent to player {player.g.ToString()}");
             }
+            SendMessage(new SetupMsg());
         }
 
         private bool IsEnd()
