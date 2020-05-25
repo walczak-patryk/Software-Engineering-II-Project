@@ -327,7 +327,7 @@ namespace CommunicationServer
                 id = playerGuids.FindIndex(x => x == (msg as PlayerMsg).playerGuid.g) + 1;
             }
 
-            if (msg.GetType() == typeof(ConnectPlayerMsg))
+            if (msg.GetType() == typeof(ConnectPlayerResMsg))
             {
                 if ((msg as ConnectPlayerResMsg).status == "OK")
                     clients[id].IsInGame = true;
