@@ -1,0 +1,5 @@
+$folderName = "_Debug"
+Start-Process -FilePath ".\$folderName\CommunicationServer\netcoreapp3.1\CommunicationServer.exe"
+Start-Process -FilePath ".\$folderName\GameMaster\netcoreapp3.1\GameMaster.exe"
+Start-Process -FilePath ".\$folderName\GamePlayer\netcoreapp3.1\GamePlayer.exe"
+Start-Process -FilePath ".\$folderName\GamePlayer\netcoreapp3.1\GamePlayer.exe"
