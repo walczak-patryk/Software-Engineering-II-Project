@@ -5,10 +5,9 @@ using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
-    public class PickUpMsg : Message
+    public class PickUpMsg : PlayerMsg
     {
-        public PlayerGuid playerGuid;
-        public PickUpMsg(PlayerGuid playerGuid) : base("pickup")
+        public PickUpMsg(PlayerGuid playerGuid) : base(playerGuid, "pickup")
         {
             this.playerGuid = playerGuid;
         }

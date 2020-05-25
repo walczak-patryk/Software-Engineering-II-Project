@@ -320,7 +320,7 @@ namespace CommunicationServer
 
         private void ForwardMessageFromGM(Message msg)
         {
-            int id = 0; // Player ID has to be retrieved from the message
+            int id = -1; // Player ID has to be retrieved from the message
 
             if (typeof(PlayerMsg).IsAssignableFrom(msg.GetType()))
             {

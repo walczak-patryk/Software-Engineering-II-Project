@@ -6,13 +6,11 @@ using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
-    public class DiscoverMsg : Message
+    public class DiscoverMsg : PlayerMsg
     {
-        public PlayerGuid playerGuid;
         public Position position;
-        public DiscoverMsg(PlayerGuid playerGuid, Position position) : base("discover")
+        public DiscoverMsg(PlayerGuid playerGuid, Position position) : base(playerGuid,"discover")
         {
-            this.playerGuid = playerGuid;
             this.position = position;
         }
     }

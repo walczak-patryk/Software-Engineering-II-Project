@@ -5,15 +5,13 @@ using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
-    public class PlaceResMsg : Message
+    public class PlaceResMsg : PlayerMsg
     {
-        public PlayerGuid playerGuid;
         public string placementResult;
         public string status;
 
-        public PlaceResMsg(PlayerGuid playerGuid, string placementResult, string status) : base("place status")
+        public PlaceResMsg(PlayerGuid playerGuid, string placementResult, string status) : base(playerGuid,"place status")
         {
-            this.playerGuid = playerGuid;
             this.placementResult = placementResult;
             this.status = status;
         }

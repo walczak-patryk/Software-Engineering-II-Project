@@ -5,13 +5,11 @@ using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
-    public class PickUpResMsg : Message
+    public class PickUpResMsg : PlayerMsg
     {
-        public PlayerGuid playerGuid;
         public string status;
-        public PickUpResMsg(PlayerGuid playerGuid, string status) : base("pickup status")
+        public PickUpResMsg(PlayerGuid playerGuid, string status) : base(playerGuid, "pickup status")
         {
-            this.playerGuid = playerGuid;
             this.status = status;
         }
     }
