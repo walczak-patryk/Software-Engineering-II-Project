@@ -5,12 +5,10 @@ using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
-    public class TestMsg : Message
+    public class TestMsg : PlayerMsg
     {
-        public PlayerGuid playerGuid;
-        public TestMsg(PlayerGuid playerGuid) : base("test")
+        public TestMsg(PlayerGuid playerGuid) : base(playerGuid,"test")
         {
-            this.playerGuid = playerGuid;
         }
     }
 }

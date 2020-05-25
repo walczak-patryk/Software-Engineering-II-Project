@@ -5,12 +5,10 @@ using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
-    public class ReadyMsg : Message
+    public class ReadyMsg : PlayerMsg
     {
-        public PlayerGuid playerGuid;
-        public ReadyMsg(PlayerGuid playerGuid) : base("ready")
+        public ReadyMsg(PlayerGuid playerGuid) : base(playerGuid,"ready")
         {
-            this.playerGuid = playerGuid;
         }
     }
 }

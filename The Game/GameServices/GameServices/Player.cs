@@ -61,6 +61,7 @@ namespace GameMaster
                 if (resp.GetType() == typeof(GameStartMsg))
                 {
                     ProcessMessage(resp);
+                    Console.WriteLine("Gamestart Received");
                     break;
                 }
             }
