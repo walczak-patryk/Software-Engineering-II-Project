@@ -29,7 +29,6 @@ namespace GameMaster
         private int serverPort;
         private IPAddress serverAddress;
         private IConnectionClient connection;
-        //tak to ma chyba ostatecznie wyglądać
         public PlayerGuid playerGuid;
         private PlayerState state;
 
@@ -141,56 +140,6 @@ namespace GameMaster
             this.isDiscovered = false;
         }
 
-
-        #region Communication wih GM
-
-        public string ReturnPath()
-        {
-            return Environment.CurrentDirectory;
-        }
-        //private string ReceiveFromGM()
-        //{
-        //    Console.WriteLine("PLAYER RECEIVE");
-        //    Console.WriteLine("Player_Pipe_Server" + id.ToString());
-        //        using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("Player_Pipe_Server" + id.ToString(), PipeDirection.In))
-        //        {
-        //            pipeServer.WaitForConnection();
-
-        //            using (StreamReader sr = new StreamReader(pipeServer))
-        //            {
-        //                return sr.ReadLine();
-        //                //string temp;
-        //                //while ((temp = sr.ReadLine()) != null)
-        //                //{
-        //                //    Console.WriteLine("Received from server: {0}", temp);
-        //                //}
-        //            }
-        //        }
-
-        //}
-
-        //public void SendToGM(string message)
-        //{
-        //    using (NamedPipeClientStream pipeClient =
-        //    new NamedPipeClientStream(".", "GM_Player_Server", PipeDirection.Out))
-        //    {
-        //        pipeClient.Connect();
-        //        try
-        //        {
-        //            using (StreamWriter sw = new StreamWriter(pipeClient))
-        //            {
-        //                sw.AutoFlush = true;
-        //                sw.WriteLine(message);
-        //            }
-        //        }
-        //        catch (IOException e)
-        //        {
-        //            Console.WriteLine("ERROR: {0}", e.Message);
-        //        }
-        //    }
-        //}
-        #endregion
-
         public void Move(Direction x)
         {
             int destinationX = position.x;
@@ -266,17 +215,6 @@ namespace GameMaster
                 board.GetCell(f.position).SetPlayerGuid(f.cell.GetPlayerGuid());
             }
         }
-
-        public void MakeAction()
-        {
-
-        }
-
-        public void listen()
-        {
-
-        }
-
 
         public void TakePiece()
         {
@@ -508,7 +446,6 @@ namespace GameMaster
                 throw new Exception("Connection lost, can't send message");
             }
         }
-
         private void ProcessMessage(Message m)
         {
             switch(m)
@@ -568,14 +505,10 @@ namespace GameMaster
         }
     }
 
-    
-
     public enum PlayerState
     {
         Initializing,
         Active,
         Completed
-    }
-
-    
+    }   
 }

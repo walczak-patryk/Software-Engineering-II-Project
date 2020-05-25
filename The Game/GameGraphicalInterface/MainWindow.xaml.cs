@@ -43,17 +43,6 @@ namespace GameGraphicalInterface
             GMboard = null;
             GMmsg = "";
             isPlaying = false;
-            var t1 = Task.Run(() =>
-            {
-                while (true)
-                {
-                    this.ReceiveFromGM();
-                    if (null == GMboard)
-                        ParseMessageFromGM();
-                }
-            });
-
-            StartSendingFromGM();
 
             //test
             //this.GMboard = new GameMasterBoard(10, 3, 12);
@@ -80,6 +69,16 @@ namespace GameGraphicalInterface
 
         private void StartPrinting(object sender, RoutedEventArgs e)
         {
+            var t1 = Task.Run(() =>
+            {
+                while (true)
+                {
+                    this.ReceiveFromGM();
+                    if (null == GMboard)
+                        ParseMessageFromGM();
+                }
+            });
+            StartSendingFromGM();
             if (!isPlaying)
                 return;
             Welcome.Width = new GridLength(0, GridUnitType.Pixel);
@@ -87,8 +86,10 @@ namespace GameGraphicalInterface
             this.PrintBoard();
             if (MsgTimer == null)
             {
-                MsgTimer = new DispatcherTimer();
-                MsgTimer.Interval = TimeSpan.FromMilliseconds(33);
+                MsgTimer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMilliseconds(33)
+                };
                 MsgTimer.Tick += Printing;
                 MsgTimer.Start();
             }
@@ -112,22 +113,20 @@ namespace GameGraphicalInterface
 
         private void SendToGM(string message)
         {
-            using (NamedPipeClientStream pipeClient =
-            new NamedPipeClientStream(".", "GM_Pipe_Server", PipeDirection.Out))
+            using NamedPipeClientStream pipeClient =
+            new NamedPipeClientStream(".", "GM_Pipe_Server", PipeDirection.Out);
+            pipeClient.Connect();
+            try
             {
-                pipeClient.Connect();
-                try
+                using StreamWriter sw = new StreamWriter(pipeClient)
                 {
-                    using (StreamWriter sw = new StreamWriter(pipeClient))
-                    {
-                        sw.AutoFlush = true;
-                        sw.WriteLine(message);
-                    }
-                }
-                catch (IOException e)
-                {
-                    MessageBox.Show("ERROR: {0}", e.Message);
-                }
+                    AutoFlush = true
+                };
+                sw.WriteLine(message);
+            }
+            catch (IOException e)
+            {
+                MessageBox.Show("ERROR: {0}", e.Message);
             }
         }
 
@@ -138,14 +137,12 @@ namespace GameGraphicalInterface
             new NamedPipeServerStream("GUI_Pipe_Server", PipeDirection.In))
             {
                 pipeServer.WaitForConnection();
-                using (StreamReader sr = new StreamReader(pipeServer))
+                using StreamReader sr = new StreamReader(pipeServer);
+                string temp;
+                while ((temp = sr.ReadLine()) != null)
                 {
-                    string temp;
-                    while ((temp = sr.ReadLine()) != null)
-                    {
-                        res = temp;
-                        MessageBox.Show("Received from server: " + temp, "Message");
-                    }
+                    res = temp;
+                    MessageBox.Show("Received from server: " + temp, "Message");
                 }
             }
             GMmsg = res;
@@ -159,11 +156,6 @@ namespace GameGraphicalInterface
             this.SendToGM("1_1");
         }
 
-        private void StopSendingFromGM()
-        {
-            this.SendToGM("1_0");
-        }
-
         private void PrintBoard()
         {
             if (GMboard == null) return;
@@ -174,21 +166,25 @@ namespace GameGraphicalInterface
 
                 for (int i = 0; i < GMboard.boardHeight; i++)
                 {
-                    StackPanel stkp = new StackPanel();
-                    stkp.Orientation = Orientation.Horizontal;
-                    stkp.HorizontalAlignment = HorizontalAlignment.Stretch;
-                    stkp.VerticalAlignment = VerticalAlignment.Stretch;
+                    StackPanel stkp = new StackPanel
+                    {
+                        Orientation = Orientation.Horizontal,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Stretch
+                    };
                     panel.Children.Add(stkp);
 
                     for (int j = 0; j < GMboard.boardWidth; j++)
                     {
-                        TextBox txtb = new TextBox();
-                        txtb.MinHeight = 30;
-                        txtb.Height = (this.Height-50) / GMboard.boardHeight;
-                        txtb.MinWidth = 30;
-                        txtb.Width = (this.Width-50) / GMboard.boardWidth;
-                        txtb.TextAlignment = TextAlignment.Center;
-                        txtb.IsReadOnly = true;
+                        TextBox txtb = new TextBox
+                        {
+                            MinHeight = 30,
+                            Height = (this.Height - 50) / GMboard.boardHeight,
+                            MinWidth = 30,
+                            Width = (this.Width - 50) / GMboard.boardWidth,
+                            TextAlignment = TextAlignment.Center,
+                            IsReadOnly = true
+                        };
                         stkp.Children.Add(txtb);
                     }
                 }

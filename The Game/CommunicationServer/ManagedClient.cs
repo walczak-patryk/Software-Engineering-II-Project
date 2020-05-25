@@ -6,8 +6,8 @@ namespace CommunicationServer
     internal class ManagedClient
     {
         private readonly object locker = new object();
-        private ThreadSafeVariable<bool> isInGame = new ThreadSafeVariable<bool>();
-        private IConnectionClient client;
+        private readonly ThreadSafeVariable<bool> isInGame = new ThreadSafeVariable<bool>();
+        private readonly IConnectionClient client;
 
         public ManagedClient(IConnectionClient client, int id)
         {
