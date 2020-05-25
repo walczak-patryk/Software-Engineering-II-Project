@@ -1,0 +1,8 @@
+05/25/2020 17:25:31: CommunicationServer started listening for clients on 127.0.0.1:13000
+
+05/25/2020 17:25:31: Client 0 connected 
+05/25/2020 17:25:32: GM registered and agents accepting started.
+05/25/2020 17:25:59: CommunicationServer started listening for clients on 127.0.0.1:13000
+
+05/25/2020 17:25:59: Client 0 connected 
+05/25/2020 17:25:59: GM registered and agents accepting started.
