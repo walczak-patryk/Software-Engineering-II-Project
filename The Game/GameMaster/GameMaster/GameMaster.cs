@@ -168,16 +168,16 @@ namespace GameMaster
         Message DecideDiscover(DiscoverMsg m)
         {
             System.Threading.Thread.Sleep(configuration.delayDiscover);
-            Position playerPosition = FindPlayer(m.playerGuid.ToString());
+            Position playerPosition = FindPlayer(m.playerGuid.g.ToString());
             if (playerPosition == null)
             {
-                Console.WriteLine("Player with guid {0} not found", m.playerGuid.ToString());
-                return new DiscoverResMsg(m.playerGuid, FindPlayer(m.playerGuid.ToString()), new List<Fields.Field>(), "DENIED");
+                Console.WriteLine("Player with guid {0} not found", m.playerGuid.g.ToString());
+                return new DiscoverResMsg(m.playerGuid, FindPlayer(m.playerGuid.g.ToString()), new List<Fields.Field>(), "DENIED");
             }
             else
             {
                 List<Field> list = board.Discover(playerPosition);
-                return new DiscoverResMsg(m.playerGuid, FindPlayer(m.playerGuid.ToString()), list, "OK");
+                return new DiscoverResMsg(m.playerGuid, FindPlayer(m.playerGuid.g.ToString()), list, "OK");
             }
         }
 
@@ -248,19 +248,39 @@ namespace GameMaster
         {
             Random random = new Random();
             var n = random.Next(0, 2);
-            if(n == 0)
+            if (n == 0)
             {
                 if (teamBlueGuids.Count() < configuration.maxTeamSize)
+                {
                     teamBlueGuids.Add(playerGuid);
+                    Cell cell = new Cell(1);
+                    cell.SetPlayerGuid(playerGuid.g.ToString());
+                    board.UpdateCell(cell, new Position(1, board.taskAreaHeight + board.goalAreaHeight + 1));
+                }
                 else
+                {
                     teamRedGuids.Add(playerGuid);
+                    Cell cell = new Cell(1);
+                    cell.SetPlayerGuid(playerGuid.g.ToString());
+                    board.UpdateCell(cell, new Position(1, 1));
+                }
             }
             else
             {
                 if (teamRedGuids.Count() < configuration.maxTeamSize)
+                {
                     teamRedGuids.Add(playerGuid);
+                    Cell cell = new Cell(1);
+                    cell.SetPlayerGuid(playerGuid.g.ToString());
+                    board.UpdateCell(cell, new Position(1, 1));
+                }
                 else
+                {
                     teamBlueGuids.Add(playerGuid);
+                    Cell cell = new Cell(1);
+                    cell.SetPlayerGuid(playerGuid.g.ToString());
+                    board.UpdateCell(cell, new Position(1, board.taskAreaHeight + board.goalAreaHeight + 1));
+                }
             }
         }
 
@@ -268,6 +288,8 @@ namespace GameMaster
         {
             Logger.Log("Waiting for players");
             Message msg;
+            this.board = new GameMasterBoard(this.configuration.boardGoalHeight, this.configuration.boardGoalHeight, this.configuration.boardTaskHeight, this.configuration.predefinedGoalPositions);
+
             //Message response;
 
             while (!IsTeamsReady())
@@ -285,7 +307,6 @@ namespace GameMaster
 
             Thread.Sleep(2000);
             Logger.Log("All players connected");
-            this.board = new GameMasterBoard(this.configuration.boardGoalHeight, this.configuration.boardGoalHeight, this.configuration.boardTaskHeight, this.configuration.predefinedGoalPositions);
             Logger.Log("Game prepared");
         }
 
