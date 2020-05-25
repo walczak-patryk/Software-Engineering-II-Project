@@ -93,7 +93,17 @@ namespace CommunicationServerLibrary.Adapters
 
             return true;
         }
+
         public Message GetMessage()
+        {
+            Message msg = null;
+            while (msg == null)
+            {
+                msg = Listen();
+            }
+            return msg;
+        }
+        public Message Listen()
         {
             byte[] sizeBytes = null;
             byte[] idBytes = null;

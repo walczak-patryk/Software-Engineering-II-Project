@@ -18,20 +18,27 @@ namespace GameMaster
         {
             Console.WriteLine("Player");
             string start = "";
+
             Console.Write("Please type Ip address of server\n# ");
             string ip = Console.ReadLine();
+            if (ip == "")
+                ip = "127.0.0.1";
             while (!ValidateIP(ip))
             {
                 Console.Write("Please type Ip address of server\n# ");
                 ip = Console.ReadLine();
             }
+
             Console.Write("Please type port number of server\n# ");
             string port = Console.ReadLine();
+            if (port == "")
+                port = "13000";
             while (!ValidatePort(port))
             {
                 Console.Write("Please type port number of server\n# ");
                 port = Console.ReadLine();
             }
+
             while (start != "start")
             {
                 Console.Write("type \"start\" to connect to the game\n# ");
