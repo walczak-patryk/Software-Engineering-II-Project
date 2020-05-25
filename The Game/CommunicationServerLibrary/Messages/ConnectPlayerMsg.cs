@@ -5,14 +5,12 @@ using GameMaster;
 
 namespace CommunicationServerLibrary.Messages
 {
-    public class ConnectPlayerMsg : Message
+    public class ConnectPlayerMsg : PlayerMsg
     {
         public string portNumber;
-        public PlayerGuid playerGuid;
-        public ConnectPlayerMsg(string portNumber, PlayerGuid playerGuid) : base("connect")
+        public ConnectPlayerMsg(string portNumber, PlayerGuid playerGuid) : base(playerGuid,"connect")
         {
             this.portNumber = portNumber;
-            this.playerGuid = playerGuid;
         }
     }
 }
