@@ -1,7 +1,6 @@
 ﻿using CommunicationServerLibrary.Adapters;
 using CommunicationServerLibrary.Interfaces;
 using CommunicationServerLibrary.Messages;
-using GameGraphicalInterface;
 using GameMaster.Boards;
 using GameMaster.Cells;
 using GameMaster.Fields;
@@ -42,54 +41,6 @@ namespace GameMaster
             teamRedGuids = new List<PlayerGuid>();
             isGuiWorking = false;
         }
-
-        //public void StartGame()
-        //{
-        //    bool color = false;
-        //    Task t = Task.Run(() =>
-        //    {
-        //        board.generatePiece(0.2, 5); // to dodaje z jakiegoś powodu 4 piece'y
-        //        //powinno dawać 1 xD
-        //        while (true)
-        //        {
-
-        //            //this.ReceiveFromGUI();
-        //            string message = ReceiveFromPlayer();
-        //            if (message == null)
-        //            {
-        //                continue;
-        //            }
-        //            //Console.WriteLine($"GM received from player: {message}");
-        //            string[] messageParts = message.Split("_");
-        //            if (messageParts.Length > 0)
-        //            {
-        //                if (FindPlayer(messageParts[0]) == null)
-        //                {
-        //                    Console.WriteLine("Creating new player with guid: {0}", messageParts[0]);
-        //                    Random r = new Random();
-        //                    board.cellsGrid[r.Next(0, board.boardWidth), r.Next(board.goalAreaHeight, board.goalAreaHeight + board.taskAreaHeight)].SetPlayerGuid(messageParts[0]);
-        //                    if (color)
-        //                        teamBlueGuids.Add(messageParts[0]);
-        //                    else
-        //                        teamRedGuids.Add(messageParts[0]);
-        //                    color = !color;
-
-        //                }
-        //                string answer= message + "_" + ParsePlayerAction(message);
-        //                Console.WriteLine($"GUID: {messageParts[0]}");
-        //                SendToPlayer(answer, messageParts[0]);
-        //                Console.WriteLine();
-        //            }
-        //        }
-        //    });
-
-        //    while (true) //to nie działa bo nie jest w osobnym wątku
-        //    {
-        //        System.Threading.Thread.Sleep(5000);
-        //        board.generatePiece(0.2, 5);
-        //    }
-        //}
-
         public void Run()
         {
             //StartGUIAsync();
@@ -246,15 +197,6 @@ namespace GameMaster
                 return new PlaceResMsg(m.playerGuid, "Correct", "OK");
             else
                 return new PlaceResMsg(m.playerGuid, "Pointless", "OK");
-        }
-
-        void StartPlayer()
-        {
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.FileName = "GamePlayer.exe";
-            psi.Arguments = new Player(1, new Team(),true).ReturnPath();
-            psi.UseShellExecute = true;
-            Process.Start(psi);
         }
         #endregion
         #region Server Communication
@@ -429,34 +371,9 @@ namespace GameMaster
                 connectionClient.SafeDisconnect();
         }
         #endregion
-        private void listen()
-        {
-
-        }
-
         public GameMasterConfiguration LoadConfigurationFromJSON(string path)
         {
             return null;
-        }
-
-        public void SaveConfigurationToJSON(string path)
-        {
-
-        }
-
-        private void PutNewPiece()
-        {
-            board.generatePiece(configuration.shamProbability, configuration.maxPieces);
-        }
-
-        private void PrintBoard()
-        {
-
-        }
-
-        public void MessageHandler(string message)
-        {
-
         }
 
         public bool TakePiece(string playerGUID)
@@ -499,7 +416,6 @@ namespace GameMaster
             }
             return null;
         }
-
         public bool Move(PlayerGuid playerGUID, Direction direction)
         {
             System.Threading.Thread.Sleep(configuration.delayMove);
@@ -592,50 +508,6 @@ namespace GameMaster
             }
 
             return false;
-        }
-
-        private string ReceiveFromPlayer()   
-        {
-            using (NamedPipeServerStream pipeServer =
-            new NamedPipeServerStream("GM_Player_Server", PipeDirection.In))
-            {
-                pipeServer.WaitForConnection();
-
-                using (StreamReader sr = new StreamReader(pipeServer))
-                {
-                    string temp;
-                    while ((temp = sr.ReadLine()) != null)
-                    {
-                        Console.WriteLine("Received from player: {0}", temp);
-                        return temp;
-                    }
-                    Console.WriteLine("Received null");
-                    return null;
-                }
-            }
-        }
-
-        public void SendToPlayer(string message, string guid)
-        {
-            Console.WriteLine("GM SENDING: {0}", message);
-            Console.WriteLine("Player_Pipe_Server" + guid);
-            using (NamedPipeClientStream pipeClient =
-            new NamedPipeClientStream(".", "Player_Pipe_Server"+guid, PipeDirection.Out))
-            {
-                pipeClient.Connect();
-                try
-                {
-                    using (StreamWriter sw = new StreamWriter(pipeClient))
-                    {
-                        sw.AutoFlush = true;
-                        sw.WriteLine(message);
-                    }
-                }
-                catch (IOException e)
-                {
-                    Console.WriteLine("ERROR: {0}", e.Message);
-                }
-            }
         }
 
         public string MessageOptionsForGUI()
