@@ -1,4 +1,4 @@
-$folderName = "Debug"
+$folderName = "_Debug"
 New-Item -ItemType Directory -Force -Path ".\$folderName"
 
 Copy-Item  -Force -Recurse '.\The Game\GameMaster\bin\Debug\netcoreapp3.1\'	-Destination ".\$folderName\GameMaster"
