@@ -226,6 +226,7 @@ namespace GameMaster
 
         Message DecideDiscover(DiscoverMsg m)
         {
+            System.Threading.Thread.Sleep(configuration.delayDiscover);
             Position playerPosition = FindPlayer(m.playerGuid.ToString());
             if (playerPosition == null)
             {
@@ -460,6 +461,7 @@ namespace GameMaster
 
         public bool TakePiece(string playerGUID)
         {
+            System.Threading.Thread.Sleep(configuration.delayPick);
             foreach (var elem in board.cellsGrid)
             {
                 if(elem.GetPlayerGuid()==playerGUID)
@@ -476,6 +478,7 @@ namespace GameMaster
 
         public bool TestPiece()
         {
+            System.Threading.Thread.Sleep(configuration.delayTest);
             Random rand = new Random();
             if (rand.NextDouble() < configuration.shamProbability)
                 return false;
@@ -499,6 +502,7 @@ namespace GameMaster
 
         public bool Move(PlayerGuid playerGUID, Direction direction)
         {
+            System.Threading.Thread.Sleep(configuration.delayMove);
             Position playerPosition = FindPlayer(playerGUID.g.ToString());
             int destinationX = playerPosition.x;
             int destinationY = playerPosition.y;
@@ -563,6 +567,7 @@ namespace GameMaster
 
         public bool PlacePiece(PlayerGuid playerGUID)
         {
+            System.Threading.Thread.Sleep(configuration.delayNextPiecePlace);
             Position playerPosition = FindPlayer(playerGUID.g.ToString());
 
             TeamColor teamColor;
