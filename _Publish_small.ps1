@@ -13,6 +13,9 @@ dotnet publish -r win-x64 -c Release /p:PublishSingleFile=true --output "$local/
 cd -Path "$local\The Game\GameMaster"
 dotnet publish -r win-x64 -c Release /p:PublishSingleFile=true --output "$local/$folderName" /p:PublishTrimmed=true
 
+cd -Path "$local\The Game\GameGraphicalInterface"
+dotnet publish -r win-x64 -c Release /p:PublishSingleFile=true --output "$local/$folderName" /p:PublishTrimmed=true
+
 foreach($file in Get-ChildItem "$local\$folderName")
 {
     if ($file -Like "*.pdb" )
