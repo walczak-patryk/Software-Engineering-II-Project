@@ -266,7 +266,7 @@ namespace GameMaster
                     this.piece = false;
                     this.pieceIsSham = true;
                     this.isDiscovered = false;
-                    turnsSinceDiscover = 0;
+                    turnsSinceDiscover = 1;
                     return;
                 }
             }
@@ -403,7 +403,7 @@ namespace GameMaster
                     {
                         if (position.y < board.taskAreaHeight + board.goalAreaHeight)
                         {
-                            return new MoveMsg(playerGuid, Direction.Up);
+                            return new MoveMsg(playerGuid, Direction.Down);
                         }
                         else
                         {
@@ -422,7 +422,7 @@ namespace GameMaster
                     {
                         if (position.y > board.goalAreaHeight)
                         {
-                            return new MoveMsg(playerGuid, Direction.Down);
+                            return new MoveMsg(playerGuid, Direction.Up);
                         }
                         else
                         {
