@@ -32,6 +32,8 @@ namespace GameMaster
         private Process GuiWindow;
         private bool isGuiWorking;
 
+        private bool debug;
+
         public GameMaster()
         {
             this.configuration = new GameMasterConfiguration();
@@ -40,6 +42,7 @@ namespace GameMaster
             teamBlueGuids = new List<PlayerGuid>();
             teamRedGuids = new List<PlayerGuid>();
             isGuiWorking = false;
+            debug = true;
         }
         public void Run()
         {
@@ -136,6 +139,9 @@ namespace GameMaster
 
         Message DecideMove(MoveMsg m)
         {
+            if(debug)
+                Console.WriteLine("DEBUG: player {0} position - {1} , {2} - move {3}", m.playerGuid.g.ToString(), FindPlayer(m.playerGuid.g.ToString()).x, FindPlayer(m.playerGuid.g.ToString()).y, m.direction.ToString());
+            
             if (Move(m.playerGuid, m.direction))
                 return new MoveResMsg(m.playerGuid, m.direction, "OK", FindPlayer(m.playerGuid.g.ToString()));
             else
@@ -144,6 +150,9 @@ namespace GameMaster
 
         Message DecideTake(PickUpMsg m)
         {
+            if (debug)
+                Console.WriteLine("DEBUG: player {0} position - {1} , {2} - take", m.playerGuid.g.ToString(), FindPlayer(m.playerGuid.g.ToString()).x, FindPlayer(m.playerGuid.g.ToString()).y);
+
             if (TakePiece(m.playerGuid.g.ToString()))
                 return new PickUpResMsg(m.playerGuid, "OK");
             else
@@ -152,7 +161,10 @@ namespace GameMaster
 
         Message DecideTest(TestMsg m)
         {
-            if(TestPiece())
+            if (debug)
+                Console.WriteLine("DEBUG: player {0} position - {1} , {2} - test", m.playerGuid.g.ToString(), FindPlayer(m.playerGuid.g.ToString()).x, FindPlayer(m.playerGuid.g.ToString()).y);
+
+            if (TestPiece())
                 return new TestResMsg(m.playerGuid, true, "OK");
             else
                 return new TestResMsg(m.playerGuid, false, "OK");
@@ -160,6 +172,9 @@ namespace GameMaster
 
         Message DecideDiscover(DiscoverMsg m)
         {
+            if (debug)
+                Console.WriteLine("DEBUG: player {0} position - {1} , {2} - discover", m.playerGuid.g.ToString(), FindPlayer(m.playerGuid.g.ToString()).x, FindPlayer(m.playerGuid.g.ToString()).y);
+
             System.Threading.Thread.Sleep(configuration.delayDiscover);
             Position playerPosition = FindPlayer(m.playerGuid.g.ToString());
             if (playerPosition == null)
@@ -176,6 +191,9 @@ namespace GameMaster
 
         Message DecidePlace(PlaceMsg m)
         {
+            if (debug)
+                Console.WriteLine("DEBUG: player {0} position - {1} , {2} - place", m.playerGuid.g.ToString(), FindPlayer(m.playerGuid.g.ToString()).x, FindPlayer(m.playerGuid.g.ToString()).y);
+
             if (PlacePiece(m.playerGuid))
                 return new PlaceResMsg(m.playerGuid, "Correct", "OK");
             else
