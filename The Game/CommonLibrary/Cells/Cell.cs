@@ -8,9 +8,10 @@ namespace GameMaster.Cells
 {
     public class Cell
     {
-        private CellState cellState;
-        private int distance;
-        private string playerGuid;
+        //na private nie działa serialize
+        public CellState cellState;
+        public int distance;
+        public string playerGuid;
 
         public Cell(int maxsize)
         {
