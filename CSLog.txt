@@ -18,3 +18,15 @@
 
 05/25/2020 18:33:57: Client 0 connected 
 05/25/2020 18:33:58: GM registered and agents accepting started.
+26.05.2020 14:51:50: CommunicationServer started listening for clients on 127.0.0.1:13000
+
+26.05.2020 14:51:50: Client 0 connected 
+05/26/2020 14:52:42: CommunicationServer started listening for clients on 127.0.0.1:13000
+
+05/26/2020 14:52:42: Client 0 connected 
+05/26/2020 14:52:42: GM registered and agents accepting started.
+05/26/2020 14:53:00: Client 1 connected 
+05/26/2020 14:53:04: Client 2 connected 
+05/26/2020 14:53:07: Game started.
+05/26/2020 14:53:07: Communication Server stopped listening for clients.
+
