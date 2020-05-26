@@ -142,6 +142,7 @@ namespace GameMaster
 
         public void Move(Direction x)
         {
+            turnsSinceDiscover++;
             int destinationX = position.x;
             int destinationY = position.y;
             if (x == Direction.Right)
@@ -210,10 +211,14 @@ namespace GameMaster
         {
             foreach (Field f in fields)
             {
-                board.GetCell(f.position).SetCellState(f.cell.GetCellState());
-                board.GetCell(f.position).SetDistance(f.cell.GetDistance());
-                board.GetCell(f.position).SetPlayerGuid(f.cell.GetPlayerGuid());
+                if(f.position.x >= 0 && f.position.x < board.boardWidth && f.position.y >= 0 && f.position.y < board.boardHeight)
+                {
+                    board.GetCell(f.position).SetCellState(f.cell.GetCellState());
+                    board.GetCell(f.position).SetDistance(f.cell.GetDistance());
+                    board.GetCell(f.position).SetPlayerGuid(f.cell.GetPlayerGuid());
+                }
             }
+            turnsSinceDiscover = 0;
         }
 
         public void TakePiece()
@@ -261,6 +266,8 @@ namespace GameMaster
                     this.piece = false;
                     this.pieceIsSham = true;
                     this.isDiscovered = false;
+                    turnsSinceDiscover = 0;
+                    return;
                 }
             }
         }
