@@ -46,7 +46,9 @@ namespace GameMaster
             //StartGUIAsync();
             Task g = Task.Run(() =>
             {
-                this.ReceiveFromGUI();
+                while(!isGuiWorking)
+                    this.ReceiveFromGUI();
+
                 if (isGuiWorking)
                 {
                     TestMessageToGui();
