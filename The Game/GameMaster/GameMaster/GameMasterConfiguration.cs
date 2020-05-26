@@ -21,5 +21,6 @@ namespace GameMaster
         public int delayPick = 100;
         public int delayPlace = 100;
         //public int delayFail = 1000;
+        public int delayMsgToGUI = 100;
     }
 }

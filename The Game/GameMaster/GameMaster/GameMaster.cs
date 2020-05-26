@@ -46,15 +46,8 @@ namespace GameMaster
         }
         public void Run()
         {
-            //StartGUIAsync();
-            Task g = Task.Run(() =>
-            {
-                this.ReceiveFromGUI();
-                if (isGuiWorking)
-                {
-                    TestMessageToGui();
-                }
-            });
+            Task g = Task.Run(() => ListenForGUI());
+            Task s = Task.Run(() => SendStateToGUI());
 
             try
             {
@@ -591,6 +584,32 @@ namespace GameMaster
             message += "End;";
 
             return message;
+        }
+
+        private void ListenForGUI()
+        {
+            while (true)
+                ReceiveFromGUI();
+        }
+
+        private void SendStateToGUI()
+        {
+            while (true)
+            {
+                if (isGuiWorking)
+                {
+                    SendToGUI(MessageStateForGUI());
+                    //Console.WriteLine("Message to GUI.\n");
+
+                    Thread.Sleep(configuration.delayMsgToGUI);
+                    //Console.WriteLine("Wake up.\n");
+                }
+                else
+                {
+                    //Console.WriteLine("Wait for GUI connection.\n");
+                    Thread.Sleep(200);
+                }
+            }
         }
 
         // for testing

@@ -16,7 +16,9 @@
 
 
 
-        <Button x:Name="StartButton" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="100" Click="StartPrinting">Start Show</Button>
+        <Button x:Name="StartButton" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="100" Click="StartPrinting" Margin="0,0,0,100">Start Show</Button>
+
+        <Button Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="100" Click="Connect" Margin="0,100,0,0">Connect</Button>
 
     </Grid>
 </Window>

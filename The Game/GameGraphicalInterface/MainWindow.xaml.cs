@@ -22,7 +22,8 @@ namespace GameGraphicalInterface
         string GMmsg;
         bool newMsg;
 
-        private bool isPlaying;
+        private bool isPlaying = false;
+        private bool isConnected = false;
 
         public int redScore;
         public int blueScore;
@@ -42,7 +43,17 @@ namespace GameGraphicalInterface
             InitializeComponent();
             GMboard = null;
             GMmsg = "";
-            isPlaying = false;
+
+            var t1 = Task.Run(() =>
+            {
+                while (true)
+                {
+                    this.ReceiveFromGM();
+                    if (null == GMboard && newMsg)
+                        ParseMessageFromGM();
+                }
+            });
+
 
             //test
             //this.GMboard = new GameMasterBoard(10, 3, 12);
@@ -67,18 +78,16 @@ namespace GameGraphicalInterface
             //playerWs = new List<PlayerWindow>();
         }
 
+        private void Connect(object sender, RoutedEventArgs e)
+        {
+            if (!isPlaying)
+            {
+                StartSendingFromGM();
+            }
+        }
+
         private void StartPrinting(object sender, RoutedEventArgs e)
         {
-            var t1 = Task.Run(() =>
-            {
-                while (true)
-                {
-                    this.ReceiveFromGM();
-                    if (null == GMboard)
-                        ParseMessageFromGM();
-                }
-            });
-            StartSendingFromGM();
             if (!isPlaying)
                 return;
             Welcome.Width = new GridLength(0, GridUnitType.Pixel);
@@ -142,11 +151,12 @@ namespace GameGraphicalInterface
                 while ((temp = sr.ReadLine()) != null)
                 {
                     res = temp;
-                    MessageBox.Show("Received from server: " + temp, "Message");
+                    //MessageBox.Show("Received from server: " + temp, "Message");
                 }
             }
             GMmsg = res;
-            newMsg = true;
+            if(res != null)
+                newMsg = true;
             return;
         }
         #endregion
@@ -260,10 +270,11 @@ namespace GameGraphicalInterface
             if ("o" == parts[0])
             {
                 int width = -1, goalHeight = -1, taskHeight = -1;
-                
-                for(int i = 1; i < parts.Length; i++) {
+
+                for (int i = 1; i < parts.Length; i++)
+                {
                     string[] option = parts[i].Split(",");
-                    switch(option[0])
+                    switch (option[0])
                     {
                         case "w":
                             width = int.Parse(option[1]);
@@ -289,7 +300,8 @@ namespace GameGraphicalInterface
                         }
                     }
                 }
-                isPlaying = true;                  
+                isPlaying = true;
+                MessageBox.Show("Connected.");
             }
             else if (isPlaying && "s" == parts[0])
             {
@@ -341,7 +353,9 @@ namespace GameGraphicalInterface
                 isPlaying = false;
             }
             else
-                throw new Exception("Wrong message.");
+                //throw new Exception("Wrong message.");
+                // TODO: handle different messages
+                return;
         }
     }
 
