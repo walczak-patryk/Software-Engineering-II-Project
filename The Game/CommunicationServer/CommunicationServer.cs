@@ -186,7 +186,7 @@ namespace CommunicationServer
                 case ReadyMsg _:
                 case SetupMsg _:
                 case TestMsg _:
-                    client.SendMessage(message);
+                    clients[0].SendMessage(message);
                     break;
 
                 default:

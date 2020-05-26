@@ -17,6 +17,7 @@ namespace GameMaster.Boards
         {
             piecesPositions = new List<Position>();
             SetGoalsInGoalArea(predefinedGoalPositions);
+			generatePiece(0.5, 2);
         }
 
         public Position PlayerMove(PlayerDTO player, Direction direction) 
